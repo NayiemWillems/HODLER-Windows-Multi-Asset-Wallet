@@ -1,0 +1,220 @@
+unit tokenData;
+
+interface
+
+uses    System.IOUtils , sysutils, StrUtils, Velthuis.BigIntegers, System.Classes,
+  FMX.Graphics,
+   base58 ,
+   FMX.Dialogs;
+
+type tokenInfo = record
+  id:integer;
+  name: AnsiString;
+  shortcut: AnsiString;
+  //address: AnsiString;
+  decimals : Integer;
+end;
+
+
+
+
+
+type
+  Token = class
+    private
+
+    _id:integer;
+    _name: AnsiString;
+    _shortcut: AnsiString;
+    _contractAddress: AnsiString;
+    _decimals : Integer;
+    _WalletID : Integer;
+    _WalletAddress : AnsiString;
+
+
+
+
+    public
+    idInWallet : Integer;
+    bilance : BigInteger;
+
+
+    constructor CreateCustom( ContractAddress : AnsiString ; name : AnsiString ; shortCut : AnsiString ; decimals : Integer ; WalletAddress : AnsiString ); overload;
+    constructor Create( ContractAddress  : AnsiString ; index : Integer ; WalletAddress : AnsiString); overload ;
+    constructor fromString( str : AnsiString );
+    constructor fromStringList( list : TStringList );
+
+    function send( address : AnsiString ) : boolean; virtual ;
+    function toString() : AnsiString ;virtual;
+    function getIcon() : TBitmap; virtual ;
+
+    property name : AnsiString read _name;
+    property id : Integer read _id;
+    property image : TBitmap read getIcon;
+    property shortCut : AnsiString read _shortcut;
+    property ContractAddress : AnsiString read _contractAddress;
+    property decimals : Integer read _decimals;
+    property walletID : Integer read _walletid;
+    property WalletAddress : AnsiString read _WalletAddress;
+
+    // list all supported tokens
+    const availableToken : array[0..10] of tokeninfo =
+    (
+      (
+        id : 10000;
+        name : 'HODLER.TECH';
+        shortcut : 'HDL';
+        decimals : 18;
+      )
+      ,
+      (
+        id : 10001;
+        name : 'EOS';
+        shortcut : 'EOS';
+        decimals : 18;
+      )
+      ,
+      (
+        id : 10002;
+        name : 'Tronix';
+        shortcut : 'TRX';
+        decimals : 6;
+      ),
+      (
+       id : 10003;
+        name : 'VeChain';
+        shortcut : 'VEN';
+        decimals : 18;
+      ),
+      (
+         id : 10004;
+        name : 'Binance Coin';
+        shortcut : 'BNB';
+        decimals : 18;
+      )
+      ,
+      (
+       id : 10005;
+        name : 'OmiseGO';
+        shortcut : 'OMG';
+        decimals : 18;
+      ),
+      (
+         id : 10006;
+        name : 'ICON';
+        shortcut : 'ICX';
+        decimals : 18;
+      ) ,
+      (
+         id : 10007;
+        name : 'Zilliqa';
+        shortcut : 'ZIL';
+        decimals : 12;
+      )
+      ,
+      (
+         id : 10008;
+        name : 'Aeternity';
+        shortcut : 'AE';
+        decimals : 18;
+      ),
+      (
+         id : 10009;
+        name : 'Bytom';
+        shortcut : 'BTM';
+        decimals : 8;
+      ),
+      (
+         id : 10010;
+        name : '0x';
+        shortcut : 'ZRX';
+        decimals : 18;
+      )
+    );
+end;
+
+type
+  tokenERC20 = class(token)
+
+end;
+
+implementation
+uses misc , uHome;
+
+// return token icon  or generate syntetic when icon doesn't exist
+function token.getIcon() : TBitmap;
+begin
+//sry
+  if (id >= 10000) and (id < 10000+ length(availableToken)) then
+  begin
+    result := frmhome.TokenIcons.Source[id-10000].MultiResBitmap[0].Bitmap;
+  end
+  else
+    result := generateIcon( Contractaddress );
+
+end;
+
+//return string      you can build a token from it
+function Token.toString : AnsiString;
+begin
+  result := inttostr(id) + ' ' + name + ' ' + shortcut + ' ' + Contractaddress + ' ' +
+  inttostr(decimals) + ' ' + inttostr(walletID) + ' ' + walletAddress;
+end;
+
+// custom token constructor
+constructor token.CreateCustom( ContractAddress : AnsiString ; name : AnsiString ; shortCut : AnsiString ; decimals : Integer ; WalletAddress : AnsiString);
+begin
+  _id := -1;
+  _ContractAddress := ContractAddress;
+  _name := name;
+  _shortCut := shortCut;
+  _decimals := decimals;
+  _WalletAddress := WalletAddress;
+end;
+
+
+constructor Token.Create(ContractAddress : AnsiString; index: Integer; WalletAddress: AnsiString);
+begin
+  _id := token.availableToken[index].id;
+  _ContractAddress  := ContractAddress ;
+  _decimals := Token.availableToken[index].decimals;
+  _WalletAddress := WalletAddress;
+  _name := Token.availableToken[index].name;
+  _shortCut := token.availableToken[index].shortcut;
+end;
+
+// construct token from string
+constructor Token.fromString(str: AnsiString);
+var
+  strList : TStringList;
+begin
+  strList := SplitString(str);
+  fromStringList(strList);
+
+end;
+// construct token from list of single string
+constructor Token.fromStringList( list : TStringList);
+begin
+  if list.Count <> 7 then
+  begin
+
+    exit;
+  end;
+
+  _id := strtoInt(list[0]);
+  _name := list[1];
+  _shortcut := list[2];
+  _ContractAddress  := list[3];
+  _decimals := strtoint(list[4]);
+  _walletid := strtoint(list[5]);
+  _WalletAddress := list[6];
+
+
+end;
+
+function Token.send(address: AnsiString) : boolean;
+begin
+  
+end;
+
+end.

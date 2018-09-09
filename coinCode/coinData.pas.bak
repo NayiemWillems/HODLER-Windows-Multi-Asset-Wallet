@@ -1,0 +1,133 @@
+unit coinData;
+
+interface
+
+uses    System.IOUtils , sysutils, StrUtils,
+  FMX.Graphics, uHome , misc , base58 , FMX.Dialogs;
+
+
+function CreateCoin(id, x, y: Integer; MasterSeed: AnsiString ; description : AnsiString = '') : TWalletInfo;
+function getCoinIcon(id : Integer): TBitmap;
+function isValidForCoin(id : Integer ; address : AnsiString):Boolean;
+
+type
+  coinInfo = record
+    id:integer;
+    name: AnsiString;
+    shortcut : AnsiString;
+    p2sh: AnsiString;
+    p2pk: AnsiString;
+    flag: system.UInt32;
+    decimals: smallint;
+
+  end;
+
+const
+  // all supported coin
+  availableCoin: array [0 .. 4] of coinInfo = (
+    (
+    id:0;
+    name: 'bitcoin';
+    shortcut : 'BTC';
+    p2sh : '05';
+    p2pk: '00';
+
+    flag: 0;
+    decimals: 9;
+
+    ),
+    (
+    id:1;
+    name: 'litecoin';
+    shortcut : 'LTC';
+    p2sh: '05';
+    p2pk: '30';
+
+    flag: 0;
+    decimals: 9;
+
+    ) ,
+    (
+    id:1;
+    name: 'dash';
+    shortcut : 'DASH';
+    p2sh: '10'; 
+    p2pk: '4c';
+    flag: 0;
+    decimals: 9;
+
+    ),
+    (
+    id:1;
+    name: 'bitcoincash';
+    shortcut: 'BCH';
+    p2sh : '05';
+    p2pk: '00';
+
+    flag: 0;
+    decimals: 9;
+
+    ),
+    (
+    id:1;
+    name: 'ethererum';
+    shortcut : 'ETH';
+    p2pk: '00';
+    flag: 1;
+    decimals: 18;
+
+    )
+
+);
+
+implementation
+
+uses Bitcoin, Ethereum;
+
+function getCoinIcon(id : Integer): TBitmap;
+begin
+  result := frmhome.ImageList1.Source[id].MultiResBitmap[0].Bitmap;
+end;
+
+function CreateCoin(id, x, y: Integer; MasterSeed: AnsiString ; description : AnsiString = ''):TWalletInfo;
+begin
+  case availableCoin[id].flag of
+    0:
+      result := Bitcoin_createHD(id, x, y, MasterSeed);
+    1:
+      result := Ethereum_createHD(id, x, y, MasterSeed);
+  end;
+
+  //if description <> '' then
+  //begin
+    result.description := description;
+  ///end
+  //else
+    //result.description := result.addr;
+
+  wipeAnsiString(MasterSeed);
+end;
+// check if given address is of given coin
+function isValidForCoin(id : Integer ; address : AnsiString):Boolean;
+var
+  str : AnsiString;
+  x:integer;
+begin
+  result := false;
+  if availablecoin[id].flag = 0 then
+  begin
+    str := decode58(address);
+    x:=0{$IFDEF ANDROID}-1{$ENDIF};
+    result := ((str[2+ x] = availablecoin[id].p2pk[2+ x]) and (str[1+ x] = availablecoin[id].p2pk[1 + x]));
+     showmessage(str + '  sh  ' + availablecoin[id].p2sh + '  pk  ' + availablecoin[id].p2pk);
+  end
+  else if availablecoin[id].flag = 1 then
+  begin
+      showmessage(inttostr(length(address)));
+      result := ((isHex(rightStr(address , 40))) and (length(address) = 42));
+  end;
+
+
+end;
+
+end.
