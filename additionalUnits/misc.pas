@@ -301,6 +301,7 @@ function isValidETHAddress(address: AnsiString): boolean;
 function inputType(input: TBitcoinOutput): integer;
 procedure searchTokens(InAddress: AnsiString);
 function getDataFromForeginAPI(aURL: String): AnsiString;
+procedure prepareConfirmSendTabItem();
 
 // procedure refresh
 
@@ -342,6 +343,96 @@ var
   bitmapData: TBitmapData;
 
   /// ////////////////////////////////////////////////////////////////
+
+procedure prepareConfirmSendTabItem();
+var
+  MasterSeed, tced, Address: AnsiString;
+var
+  amount, fee, tempFee: BigInteger;
+var
+  CashAddr:AnsiString;
+begin
+with frmhome do
+begin
+
+  if not isEthereum then
+  begin
+    fee := StrFloatToBigInteger(wvFee.Text, AvailableCoin[CurrentCoin.coin]
+      .decimals);
+    tempFee := fee;
+  end
+  else
+  begin
+    fee := BigInteger.Parse(wvFee.Text);
+
+    if isTokenTransfer then
+      tempFee := BigInteger.Parse(wvFee.Text) * 66666
+    else
+      tempFee := BigInteger.Parse(wvFee.Text) * 21000;
+  end;
+
+
+
+  if (not isTokenTransfer) then
+  begin
+    amount := StrFloatToBigInteger(wvAmount.Text,
+      AvailableCoin[CurrentCoin.coin].decimals);
+    if FeeFromAmountSwitch.IsChecked then
+    begin
+      amount := amount - tempFee;
+    end;
+
+  end;
+
+  if (isEthereum) and (isTokenTransfer) then
+    amount := StrFloatToBigInteger(wvAmount.Text,
+      CurrentCryptoCurrency.decimals);
+  if  (not isTokenTransfer) then
+    if amount + tempFee > (CurrentCryptoCurrency.confirmed) then
+    begin
+      raise Exception.Create(dictionary['AmountExceed']);
+      exit;
+    end;
+
+
+
+  if ((amount) = 0) or ((fee) = 0) then
+  begin
+    raise Exception.Create(dictionary['InvalidValues']);
+
+    exit;
+  end;
+
+  Address := removeSpace(WVsendTO.Text);
+
+  if (CurrentCryptoCurrency is TwalletInfo) and
+    (TwalletInfo(CurrentCryptoCurrency).coin = 3) then
+  begin
+    CashAddr:=StringReplace(LowerCase(Address),'bitcoincash:','',[rfReplaceAll]);
+    if (LeftStr(CashAddr, 1) = 'q') or (LeftStr(CashAddr, 1) = 'p') then
+    begin
+      try
+        Address := BCHCashAddrToLegacyAddr(Address);
+      except
+        on E: Exception do
+        begin
+          showmessage('Wrong bech32 address');
+          exit;
+        end;
+      end;
+    end;
+  end;
+  //sendCoinsTO(CurrentCoin, Address, amount, fee, MasterSeed,
+  //  AvailableCoin[CurrentCoin.coin].name)
+  SendFromLabel.Text := CurrentCoin.addr;
+  SendToLabel.Text := Address;
+  SendValueLabel.Text := BigIntegerToFloatStr(amount , currentcoin.decimals);
+  sendFeeLabel.Text := BigIntegerToFloatStr(fee , currentcoin.decimals);
+
+
+
+end;
+end;
 
 function getDataFromForeginAPI(aURL: String): AnsiString;
 var

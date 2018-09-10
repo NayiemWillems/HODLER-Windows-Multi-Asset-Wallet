@@ -1,0 +1,11 @@
+.\assets\internal\PT.lang
+.\assets\internal\Win10ModernDark.Style
+.\assets\internal\Jet.style
+.\assets\internal\ZHX.lang
+.\assets\internal\FRA.lang
+.\assets\internal\ENG.lang
+.\assets\internal\JPN.lang
+.\assets\internal\DEU.lang
+.\assets\internal\POL.lang
+.\assets\internal\DUT.lang
+.\assets\internal\SPA.lang

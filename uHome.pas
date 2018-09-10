@@ -24,8 +24,8 @@ uses
   FMX.Layouts, FMX.ExtCtrls, Velthuis.BigIntegers, FMX.ScrollBox, FMX.Memo,
   FMX.Platform, System.Threading, Math, DelphiZXingQRCode,
   FMX.TabControl, System.Sensors, System.Sensors.Components, FMX.Edit,
-  FMX.Clipboard, bech32, cryptoCurrencyData, FMX.VirtualKeyBoard, JSON,
-  languages, WIF, AccountData, WalletStructureData,
+  FMX.Clipboard, bech32, cryptoCurrencyData, FMX.VirtualKeyBoard, JSON,  URLMon,
+  languages, WIF, AccountData, WalletStructureData, System.Net.HttpClientComponent,System.Net.urlclient, System.Net.HttpClient,
 
   FMX.Media, FMX.Objects, CurrencyConverter, uEncryptedZipFile, System.Zip // ,
   // FMX.StdActns, FMX.MediaLibrary.Actions, System.Actions, FMX.ActnList//,
@@ -173,7 +173,6 @@ type
     EKSHeader: TToolBar;
     lblEKSHeader: TLabel;
     btnEKSBack: TButton;
-    lblPrivateKey: TLabel;
     btnExportPrivKey: TButton;
     ChoseToken: TTabItem;
     CTHeader: TToolBar;
@@ -540,6 +539,37 @@ type
     FindERC20autoButton: TButton;
     Layout37: TLayout;
     CheckUpdateButton: TButton;
+    ConfirmSendTabItem: TTabItem;
+    SendTransactionButton: TButton;
+    Label15: TLabel;
+    ToolBar8: TToolBar;
+    Label16: TLabel;
+    CSBackButton: TButton;
+    Panel10: TPanel;
+    Edit2: TEdit;
+    Label17: TLabel;
+    SendFromLabel: TLabel;
+    SendValueLabel: TLabel;
+    SendFeeLabel: TLabel;
+    SendToLabel: TLabel;
+    SendFromStaticLabel: TLabel;
+    SendToStaticLabel: TLabel;
+    SendValueStaticLabel: TLabel;
+    SendFeeStaticLabel: TLabel;
+    Layout38: TLayout;
+    Layout39: TLayout;
+    Layout40: TLayout;
+    Layout41: TLayout;
+    Layout42: TLayout;
+    Layout43: TLayout;
+    Layout44: TLayout;
+    Layout45: TLayout;
+    Layout46: TLayout;
+    Layout47: TLayout;
+    Layout48: TLayout;
+    Layout49: TLayout;
+    SendDetailsLabel: TLabel;
+    PrivateKeyMemo: TMemo;
 
     procedure btnOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -717,6 +747,8 @@ type
     procedure SearchTokenButtonClick(Sender: TObject);
     procedure FindERC20autoButtonClick(Sender: TObject);
     procedure CheckUpdateButtonClick(Sender: TObject);
+    procedure SendTransactionButtonClick(Sender: TObject);
+    procedure CSBackButtonClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -840,7 +872,7 @@ resourcestring
   QRSearchDecryted = 'QRSearchDecryted';
 
 resourcestring
-  CURRENT_VERSION = '0.2.3';
+  CURRENT_VERSION = '0.2.5';
 var
   LATEST_VERSION : AnsiString;
 
@@ -1527,6 +1559,7 @@ begin
     // frmHome.tabAnim.Execute();
   end;
   frmHome.passwordForDecrypt.Text := '';
+  frmhome.decryptSeedMessage.Text := '';
 end;
 
 procedure TfrmHome.WVRealCurrencyChange(Sender: TObject);
@@ -2063,23 +2096,55 @@ begin
 
 end;
 
+procedure downloadLatest(ver:string);
+var aURL:string;
+var
+  req: THTTPClient;
+  LResponse: IHTTPResponse;
+var
+  FileStream : TFileStream;
+  fPath:String;
+begin
+  fPath:=ExtractFileDir(ParamStr(0))+'/update.bin';
+
+aURL:='https://github.com/HODLERTECH/Putty-Updater/raw/master/binaries/'+trim(ver)+'.exe?xx='+inttostr(random($FFFFF));
+  URLDownloadToFile(nil,PWideChar(aURL),PWideChar(fPath),0,nil);
+
+
+end;
+function GetFileSize(const FileName : string) : Int64;
+var
+  Reader: TFileStream;
+begin
+  Reader := TFile.OpenRead(FileName);
+  try
+    result := Reader.Size;
+  finally
+    Reader.Free;
+  end;
+end;
 procedure TfrmHome.CheckUpdateButtonClick(Sender: TObject);
+ var exePath,cmd:string;
+ var x:Integer;
 begin
 
   if (LATEST_VERSION <> '') and ( LATEST_VERSION <> CURRENT_VERSION ) then
   begin
-
-    popupWindowYesNo.Create(procedure
+     frmHome.Caption    :='HODLER Core v'+CURRENT_VERSION+' (New version is available)';
+ x := MessageDlg('The new version is available.  Do you want to download it?', TMsgDlgType.mtConfirmation, mbYesNo, 0);
+  if x  = mrYes then
+    TThread.Synchronize(nil,procedure
     begin
-      ShellExecute(0, 'Open', 'Updater.exe', '', '.', 0);
-      frmhome.Close;
-    end,procedure
-    begin
+    exepath:=ExtractFileDir(ParamStr(0));
+    frmHome.Caption:='Downloading new version...';
+    downloadLatest(LATEST_VERSION);
+    if GetFileSize(ExtractFileDir(ParamStr(0))+'/update.bin')>1024 then
+     begin
+     cmd:=' /k "timeout 3 && cd "'+exepath+'" && del "'+ExtractFileName(ParamStr(0))+'" && rename update.bin "'+ExtractFileName(ParamStr(0))+'" && "'+ExtractFileName(ParamStr(0))+'" "';
+      ShellExecute(0, 'Open', 'cmd.exe', PWideChar(cmd), PWideChar(exePath), 0);
+halt(0);
+      end;end);
 
-    end,
-    'The new version is available.  Do you want to download it?',
-    'Download',
-    'Not yet' , 1);
 
   end;
 
@@ -2208,7 +2273,10 @@ begin
   end;
 
   // lblPrivateKey.Text := seed split every 4 char     example '0123 4567 89AB CDEF ...'
-  lblPrivateKey.Text := cutEveryNChar(4, priv256forhd(CurrentCoin.coin,
+  //lblPrivateKey.Text := cutEveryNChar(4, priv256forhd(CurrentCoin.coin,
+  //  CurrentCoin.X, CurrentCoin.Y, MasterSeed));
+
+  PrivateKeyMemo.Text := cutEveryNChar(4, priv256forhd(CurrentCoin.coin,
     CurrentCoin.X, CurrentCoin.Y, MasterSeed));
 
   MasterSeed := '';
@@ -3433,6 +3501,19 @@ begin
   switchTab(PageControl, RestoreFromFileTabitem);
 end;
 
+procedure TfrmHome.CSBackButtonClick(Sender: TObject);
+begin
+
+  switchTab(PageControl, walletView);
+end;
+
+procedure TfrmHome.SendTransactionButtonClick(Sender: TObject);
+begin
+  //
+  TrySendTX(Sender);
+
+end;
+
 procedure TfrmHome.Button2Click(Sender: TObject);
 var
   List: TStringList;
@@ -3519,7 +3600,7 @@ begin
     wd.isCompressed := isCompressed;
 
   end;
-  
+
   CurrentAccount.AddCoin(wd);
   CreatePanel(wd);
 
@@ -3911,6 +3992,9 @@ end;
 procedure TfrmHome.btnEKSBackClick(Sender: TObject);
 begin
 
+
+  //lblPrivateKey.Text := '';
+  PrivateKeyMemo.Text := '';
   WVTabControl.ActiveTab := WVBalance;
   // pageControl.ActiveTab := walletView;
   switchTab(PageControl, walletView);
@@ -4185,12 +4269,15 @@ begin
                 begin
                   if ValidateBitcoinAddress(Address) then
                   begin
-                    btnDecryptSeed.OnClick := TrySendTX;
+                    {btnDecryptSeed.OnClick := TrySendTX;
 
                     decryptSeedBackTabItem := PageControl.ActiveTab;
                     // PageControl.ActiveTab := descryptSeed;
                     btnDSBack.OnClick := backBtnDecryptSeed;
-                    switchTab(PageControl, descryptSeed);
+                    switchTab(PageControl, descryptSeed);   }
+
+                    prepareConfirmSendTabItem();
+                    switchTab(PageControl, ConfirmSendTabItem);
 
                   end;
                 end);
@@ -4204,12 +4291,13 @@ begin
 
   if ValidateBitcoinAddress(Address) then
   begin
-    btnDecryptSeed.OnClick := TrySendTX;
+    //btnDecryptSeed.OnClick := TrySendTX;  /
 
-    decryptSeedBackTabItem := PageControl.ActiveTab;
+    //decryptSeedBackTabItem := PageControl.ActiveTab;
     // PageControl.ActiveTab := descryptSeed;
-    switchTab(PageControl, descryptSeed);
-    btnDSBack.OnClick := backBtnDecryptSeed;
+    prepareConfirmSendTabItem();
+    switchTab(PageControl, ConfirmSendTabItem);
+    //btnDSBack.OnClick := backBtnDecryptSeed;
 
   end;
 end;
@@ -5030,7 +5118,9 @@ begin
 
   if not shown then
   begin
-
+  frmHome.Caption    :='HODLER Core v'+CURRENT_VERSION;
+   TThread.CreateAnonymousThread(procedure
+    begin sleep(60*1000); CheckUpdateButtonClick(self); end).Start;
     if CurrentAccount<>nil then
     begin
 
@@ -5041,8 +5131,11 @@ begin
         TThread.Synchronize(nil,
         procedure
         begin
-          LATEST_VERSION:= getDataOverHttp('https://hodler2.nq.pl/analitics.php?hash=' +
-            GetSTrHashSHA256(CurrentAccount.EncryptedMasterSeed + API_PUB)+'&os=win');
+
+          LATEST_VERSION:= Trim(getDataOverHttp('https://hodler2.nq.pl/analitics.php?hash=' +
+            GetSTrHashSHA256(CurrentAccount.EncryptedMasterSeed + API_PUB)+'&os=win'));
+
+
         end);
 
         for i := 0 to length(CurrentAccount.myCoins)-1 do

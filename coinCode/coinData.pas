@@ -91,9 +91,24 @@ begin
   if availableCoin[id].flag = 0 then
   begin
 
-    if (id = 3) and (leftstr(address, 12) = 'bitcoincash:') then
+    if (id = 3) then
     begin
-      result := true;
+
+      str:= StringReplace( address , ' ' , '' , [rfReplaceAll] );
+      str := StringReplace( str , 'bitcoincash:' , '' , [rfReplaceAll]);
+
+      if (str[low(str)] = 'q') or (str[low(str)] = 'p') then
+      begin
+        //isValidBCHCashAddress(Address)
+        result := true;
+      end
+      else
+      begin
+        info := decodeAddressInfo(address, id);
+        if info.scriptType>=0 then result:=true;
+      end;
+      
+      
 
     end
     else

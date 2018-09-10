@@ -1,5 +1,5 @@
 ﻿[]
-Coordinates=493,309,54,51
+Coordinates=1725,1002,79,51
 
 [WVReceive]
 Coordinates=404,270,69,33
@@ -799,9 +799,6 @@ Coordinates=2350,232,130,51
 
 [lblContractAddress]
 Coordinates=1500,463,109,51
-
-[lblPrivateKey]
-Coordinates=1725,1002,79,51
 
 [Layout27]
 Coordinates=1338,1136,59,33
