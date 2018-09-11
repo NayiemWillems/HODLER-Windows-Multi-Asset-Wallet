@@ -473,7 +473,7 @@ begin
   if ((CurrentCryptoCurrency is TwalletInfo) and
     (TwalletInfo(CurrentCryptoCurrency).coin = 3)) then
   begin
-    CashAddr:=StringReplace(LowerCase(Address),'bitcoincash:','',[rfReplaceAll]);
+    CashAddr:=StringReplace(LowerCase(removeSpace(WVsendTO.Text)),'bitcoincash:','',[rfReplaceAll]);
     if (LeftStr(CashAddr, 1) = 'q') or (LeftStr(CashAddr, 1) = 'p') then
     begin
       SendToLabel.Text := bitcoinCashAddressToCashAddress(address);

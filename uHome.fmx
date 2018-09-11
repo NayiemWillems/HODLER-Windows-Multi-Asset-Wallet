@@ -33,7 +33,7 @@ object frmHome: TfrmHome
     Size.Height = 687.000000000000000000
     Size.PlatformDefault = False
     TabHeight = 49.000000000000000000
-    TabIndex = 29
+    TabIndex = 7
     TabOrder = 8
     TabPosition = None
     OnChange = closeVirtualKeyBoard
@@ -929,7 +929,7 @@ object frmHome: TfrmHome
         Size.Height = 639.000000000000000000
         Size.PlatformDefault = False
         TabHeight = 49.000000000000000000
-        TabIndex = 3
+        TabIndex = 2
         TabOrder = 1
         TabPosition = PlatformDefault
         OnChange = closeVirtualKeyBoard
@@ -1351,7 +1351,7 @@ object frmHome: TfrmHome
           CustomIcon = <
             item
             end>
-          IsSelected = False
+          IsSelected = True
           Size.Width = 47.000000000000000000
           Size.Height = 49.000000000000000000
           Size.PlatformDefault = False
@@ -1802,7 +1802,7 @@ object frmHome: TfrmHome
           CustomIcon = <
             item
             end>
-          IsSelected = True
+          IsSelected = False
           Size.Width = 63.000000000000000000
           Size.Height = 49.000000000000000000
           Size.PlatformDefault = False
@@ -8742,7 +8742,7 @@ object frmHome: TfrmHome
       CustomIcon = <
         item
         end>
-      IsSelected = False
+      IsSelected = True
       Size.Width = 8.000000000000000000
       Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
@@ -8931,6 +8931,7 @@ object frmHome: TfrmHome
         Size.PlatformDefault = False
         TabOrder = 12
         Text = 'Import Private Key'
+        Visible = False
         OnClick = ImportPrivateKeyButtonClick
       end
       object updateBtn: TButton
@@ -8946,7 +8947,7 @@ object frmHome: TfrmHome
       end
       object CheckUpdateButton: TButton
         Align = Top
-        Position.Y = 337.000000000000000000
+        Position.Y = 289.000000000000000000
         Size.Width = 450.000000000000000000
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
@@ -10035,8 +10036,8 @@ object frmHome: TfrmHome
         end
       end
       object btnOKAddNewCoinSettings: TButton
-        Align = Top
-        Position.Y = 144.000000000000000000
+        Align = Bottom
+        Position.Y = 639.000000000000000000
         Size.Width = 450.000000000000000000
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
@@ -10045,9 +10046,9 @@ object frmHome: TfrmHome
         OnClick = btnOKAddNewCoinSettingsClick
       end
       object Label4: TLabel
-        Align = Top
+        Align = Bottom
         StyledSettings = [Family, Size, Style]
-        Position.Y = 192.000000000000000000
+        Position.Y = 603.000000000000000000
         Size.Width = 450.000000000000000000
         Size.Height = 36.000000000000000000
         Size.PlatformDefault = False
@@ -10078,6 +10079,138 @@ object frmHome: TfrmHome
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           Text = '   Enter password'
+        end
+      end
+      object Panel11: TPanel
+        Align = Top
+        Position.Y = 144.000000000000000000
+        Size.Width = 450.000000000000000000
+        Size.Height = 49.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 6
+        object Layout50: TLayout
+          Align = Right
+          Position.X = 369.000000000000000000
+          Size.Width = 81.000000000000000000
+          Size.Height = 49.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object Switch1: TSwitch
+            Align = Center
+            IsChecked = False
+            Size.Width = 57.000000000000000000
+            Size.Height = 25.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            OnSwitch = Switch1Switch
+          end
+        end
+        object ImportPrivKeyStaticLabel: TLabel
+          Align = Client
+          Size.Width = 359.000000000000000000
+          Size.Height = 49.000000000000000000
+          Size.PlatformDefault = False
+          Text = 'Import from Private Key'
+          TabOrder = 1
+        end
+        object Layout52: TLayout
+          Align = MostLeft
+          Size.Width = 10.000000000000000000
+          Size.Height = 49.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 2
+        end
+      end
+      object PrivateKeySettingsLayout: TLayout
+        Align = Top
+        Position.Y = 193.000000000000000000
+        Size.Width = 450.000000000000000000
+        Size.Height = 308.000000000000000000
+        Size.PlatformDefault = False
+        Visible = False
+        TabOrder = 7
+        object Layout31: TLayout
+          Align = Top
+          Position.Y = 96.000000000000000000
+          Size.Width = 450.000000000000000000
+          Size.Height = 96.000000000000000000
+          Size.PlatformDefault = False
+          Visible = False
+          TabOrder = 0
+          object Label10: TLabel
+            Align = Left
+            Position.X = 10.000000000000000000
+            Size.Width = 249.000000000000000000
+            Size.Height = 96.000000000000000000
+            Size.PlatformDefault = False
+            Text = 
+              'If you put Private Key as hex you must indicate whether it is co' +
+              'mpressed or not'
+            TabOrder = 0
+          end
+          object Layout34: TLayout
+            Align = Client
+            Size.Width = 191.000000000000000000
+            Size.Height = 96.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            object HexPrivKeyDefaultRadioButton: TRadioButton
+              Position.X = 8.000000000000000000
+              Position.Y = 8.000000000000000000
+              Size.Width = 113.000000000000000000
+              Size.Height = 17.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 2
+              Text = 'Default'
+              Visible = False
+            end
+            object HexPrivKeyCompressedRadioButton: TRadioButton
+              Align = Top
+              Size.Width = 191.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 1
+              Text = 'Compressed'
+            end
+            object HexPrivKeyNotCompressedRadioButton: TRadioButton
+              Align = Client
+              Size.Width = 191.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 0
+              Text = 'Not Compressed'
+            end
+          end
+          object Layout51: TLayout
+            Align = MostLeft
+            Size.Width = 10.000000000000000000
+            Size.Height = 96.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 2
+          end
+        end
+        object ImportPrivKeyLabel: TLabel
+          Align = Top
+          Size.Width = 450.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          Text = '   Insert below private key:'
+          TabOrder = 1
+        end
+        object WIFEdit: TEdit
+          Touch.InteractiveGestures = [LongTap, DoubleTap]
+          Align = Top
+          TabOrder = 2
+          Position.Y = 48.000000000000000000
+          Size.Width = 450.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+        end
+        object LoadingKeyDataAniIndicator: TAniIndicator
+          Align = Center
+          Size.Width = 89.000000000000000000
+          Size.Height = 89.000000000000000000
+          Size.PlatformDefault = False
         end
       end
     end
@@ -11607,25 +11740,6 @@ object frmHome: TfrmHome
       Text = 'ImportPrivKeyTabItem'
       ExplicitSize.cx = 8.000000000000000000
       ExplicitSize.cy = 8.000000000000000000
-      object WIFEdit: TEdit
-        Touch.InteractiveGestures = [LongTap, DoubleTap]
-        Align = Top
-        TabOrder = 1
-        Position.Y = 96.000000000000000000
-        Size.Width = 450.000000000000000000
-        Size.Height = 48.000000000000000000
-        Size.PlatformDefault = False
-      end
-      object SaveNewPrivateKeyButton: TButton
-        Align = Bottom
-        Position.Y = 639.000000000000000000
-        Size.Width = 450.000000000000000000
-        Size.Height = 48.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 2
-        Text = 'Add From Private Key'
-        OnClick = SaveNewPrivateKeyButtonClick
-      end
       object ToolBar4: TToolBar
         Align = MostTop
         Size.Width = 450.000000000000000000
@@ -11664,80 +11778,12 @@ object frmHome: TfrmHome
           OnClick = IPKBackClick
         end
       end
-      object Layout31: TLayout
-        Align = Top
-        Position.Y = 144.000000000000000000
-        Size.Width = 450.000000000000000000
-        Size.Height = 96.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 3
-        object Label10: TLabel
-          Align = Left
-          Size.Width = 249.000000000000000000
-          Size.Height = 96.000000000000000000
-          Size.PlatformDefault = False
-          Text = 
-            'If you put Private Key as hex you must indicate whether it is co' +
-            'mpressed or not'
-          TabOrder = 0
-        end
-        object Layout34: TLayout
-          Align = Client
-          Size.Width = 201.000000000000000000
-          Size.Height = 96.000000000000000000
-          Size.PlatformDefault = False
-          TabOrder = 1
-          object HexPrivKeyDefaultRadioButton: TRadioButton
-            Position.X = 8.000000000000000000
-            Position.Y = 8.000000000000000000
-            Size.Width = 113.000000000000000000
-            Size.Height = 17.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 2
-            Text = 'Default'
-            Visible = False
-          end
-          object HexPrivKeyCompressedRadioButton: TRadioButton
-            Align = Top
-            Size.Width = 201.000000000000000000
-            Size.Height = 48.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 1
-            Text = 'Compressed'
-          end
-          object HexPrivKeyNotCompressedRadioButton: TRadioButton
-            Align = Client
-            Size.Width = 201.000000000000000000
-            Size.Height = 48.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 0
-            Text = 'Not Compressed'
-          end
-        end
-      end
-      object ImportPrivKeyLabel: TLabel
-        Align = Top
-        Position.Y = 48.000000000000000000
-        Size.Width = 450.000000000000000000
-        Size.Height = 48.000000000000000000
-        Size.PlatformDefault = False
-        Text = 'Insert below private key:'
-        TabOrder = 4
-      end
-      object LoadingKeyDataAniIndicator: TAniIndicator
-        Position.X = 136.000000000000000000
-        Position.Y = 424.000000000000000000
-        Size.Width = 89.000000000000000000
-        Size.Height = 89.000000000000000000
-        Size.PlatformDefault = False
-        Visible = False
-      end
     end
     object AddAccount: TTabItem
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 8.000000000000000000
       Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
@@ -12189,7 +12235,7 @@ object frmHome: TfrmHome
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 2
-        object Edit2: TEdit
+        object ConfirmSendPasswordEdit: TEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
           Align = Right
           TabOrder = 0

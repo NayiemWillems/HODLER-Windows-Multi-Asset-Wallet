@@ -1625,6 +1625,12 @@ inherited frmHome_Surface: TfrmHome_Surface
           Position.X = 559.000000000000000000
         end
       end
+      inherited Panel11: TPanel
+        Size.Width = 759.000000000000000000
+        inherited ImportPrivKeyStaticLabel: TLabel
+          Size.Width = 668.000000000000000000
+        end
+      end
     end
     inherited ChangeDescryptionScreen: TTabItem
       ExplicitSize.cx = 8.000000000000000000
@@ -1885,13 +1891,6 @@ inherited frmHome_Surface: TfrmHome_Surface
     inherited ImportPrivKeyTabItem: TTabItem
       ExplicitSize.cx = 8.000000000000000000
       ExplicitSize.cy = 8.000000000000000000
-      inherited WIFEdit: TEdit
-        Size.Width = 759.000000000000000000
-      end
-      inherited SaveNewPrivateKeyButton: TButton
-        Position.Y = 1872.000000000000000000
-        Size.Width = 759.000000000000000000
-      end
       inherited ToolBar4: TToolBar
         Size.Width = 759.000000000000000000
         inherited Label7: TLabel
@@ -1900,21 +1899,6 @@ inherited frmHome_Surface: TfrmHome_Surface
         inherited IPKQRButton: TButton
           Position.X = 711.000000000000000000
         end
-      end
-      inherited Layout31: TLayout
-        Size.Width = 759.000000000000000000
-        inherited Layout34: TLayout
-          Size.Width = 510.000000000000000000
-          inherited HexPrivKeyCompressedRadioButton: TRadioButton
-            Size.Width = 510.000000000000000000
-          end
-          inherited HexPrivKeyNotCompressedRadioButton: TRadioButton
-            Size.Width = 510.000000000000000000
-          end
-        end
-      end
-      inherited ImportPrivKeyLabel: TLabel
-        Size.Width = 759.000000000000000000
       end
     end
     inherited AddAccount: TTabItem
@@ -2050,7 +2034,7 @@ inherited frmHome_Surface: TfrmHome_Surface
       end
       inherited Panel10: TPanel
         Size.Width = 759.000000000000000000
-        inherited Edit2: TEdit
+        inherited ConfirmSendPasswordEdit: TEdit
           Position.X = 559.000000000000000000
         end
       end

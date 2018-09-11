@@ -461,7 +461,6 @@ type
     BCHCashAddrButton: TButton;
     ImportPrivKeyTabItem: TTabItem;
     WIFEdit: TEdit;
-    SaveNewPrivateKeyButton: TButton;
     IPKBack: TButton;
     ImportPrivateKeyButton: TButton;
     ToolBar4: TToolBar;
@@ -546,7 +545,7 @@ type
     Label16: TLabel;
     CSBackButton: TButton;
     Panel10: TPanel;
-    Edit2: TEdit;
+    ConfirmSendPasswordEdit: TEdit;
     Label17: TLabel;
     SendFromLabel: TLabel;
     SendValueLabel: TLabel;
@@ -570,6 +569,13 @@ type
     Layout49: TLayout;
     SendDetailsLabel: TLabel;
     PrivateKeyMemo: TMemo;
+    Layout50: TLayout;
+    Switch1: TSwitch;
+    ImportPrivKeyStaticLabel: TLabel;
+    Panel11: TPanel;
+    PrivateKeySettingsLayout: TLayout;
+    Layout51: TLayout;
+    Layout52: TLayout;
 
     procedure btnOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -727,7 +733,7 @@ type
     procedure IPKBackClick(Sender: TObject);
     procedure ImportPrivateKey(Sender: TObject);
     procedure ImportPrivateKeyButtonClick(Sender: TObject);
-    procedure SaveNewPrivateKeyButtonClick(Sender: TObject);
+    procedure APICheckCompressed(Sender: TObject);
     procedure ConfirmNewAccountButtonClick(Sender: TObject);
     // procedure AccountsNamesPopupBoxChange(Sender: TObject);
     procedure AddNewAccountButtonClick(Sender: TObject);
@@ -749,6 +755,7 @@ type
     procedure CheckUpdateButtonClick(Sender: TObject);
     procedure SendTransactionButtonClick(Sender: TObject);
     procedure CSBackButtonClick(Sender: TObject);
+    procedure Switch1Switch(Sender: TObject);
 
   private
     { Private declarations }
@@ -1749,8 +1756,51 @@ begin
 end;
 
 procedure TfrmHome.RestoreFromFileButtonClick(Sender: TObject);
+var
+  openDialog : TOpenDialog;
 begin
 
+  openDialog := TOpenDialog.Create( self );
+  openDialog.Title := 'Open File';
+  openDialog.InitialDir :=  GetCurrentDir;
+  openDialog.Filter := 'Zip File|*.zip';
+  openDialog.DefaultExt := 'zip';
+  openDialog.FilterIndex := 1;
+
+  if openDialog.Execute then
+  begin
+
+    frmHome.RFFPathEdit.Text := openDialog.FileName;
+    switchTab(PageControl , HSBPassword );
+
+  end;
+
+  openDialog.free;
+
+{
+saveDialog := TSaveDialog.Create(frmHome);
+  saveDialog.Title := 'Save your text or word file';
+  saveDialog.FileName := ExtractFileName(path);
+
+  saveDialog.InitialDir := GetCurrentDir;
+
+  saveDialog.Filter := 'Zip File|*.zip';
+
+  saveDialog.DefaultExt := 'zip';
+
+  saveDialog.FilterIndex := 1;
+
+  if saveDialog.Execute then
+  begin
+    TFile.Copy(path, saveDialog.FileName);
+    DeleteFile(path);
+
+  end; // ShowMessage('File : '+saveDialog.FileName)
+  // else ShowMessage('Save file was cancelled');
+
+  saveDialog.Free;
+  }
+(*
   clearVertScrollBox(BackupFileListVertScrollBox);
 {$IFDEF ANDROID}
   requestForPermission('android.permission.READ_EXTERNAL_STORAGE');
@@ -1857,7 +1907,7 @@ begin
     end).Start;
 
 
-{$ENDIF}
+{$ENDIF}    *)
 end;
 
 procedure TfrmHome.RestoreFromFileConfirmButtonClick(Sender: TObject);
@@ -2373,7 +2423,7 @@ begin
 
 
 
-  tced := TCA(passwordForDecrypt.Text);
+  tced := TCA(ConfirmSendPasswordEdit.Text);
   MasterSeed := SpeckDecrypt(tced, CurrentAccount.EncryptedMasterSeed);
   if not isHex(MasterSeed) then
   begin
@@ -2486,6 +2536,7 @@ begin
 
               switchTab(PageControl, walletView
                 {TTabItem(frmHome.FindComponent('dashbrd'))});
+                ConfirmSendPasswordEdit.Text := '';
 
             end);
         end).Start;
@@ -3875,6 +3926,13 @@ var
   wd: TwalletInfo;
   i: Integer;
   newID: Integer;
+var
+  ts: TStringList;
+  path: AnsiString;
+  out : AnsiString;
+  isCompressed: Boolean;
+  Data: WIFAddressData;
+  pub: AnsiString;
 begin
   i := 0;
 
@@ -3886,32 +3944,102 @@ begin
     exit;
   end;
 
-  SetLength(arr, CurrentAccount.countWalletBy(newcoinID));
-  for wd in CurrentAccount.myCoins do
+  if not Switch1.IsChecked then
   begin
-    if wd.coin = newcoinID then
+
+    SetLength(arr, CurrentAccount.countWalletBy(newcoinID));
+    for wd in CurrentAccount.myCoins do
     begin
-      arr[i] := wd.X;
-      inc(i);
+      if wd.coin = newcoinID then
+      begin
+        arr[i] := wd.X;
+        inc(i);
+      end;
     end;
-  end;
-  newID := i;
-  for i := 0 to length(arr) - 1 do
+    newID := i;
+    for i := 0 to length(arr) - 1 do
+    begin
+      if arr[i] <> i then
+      begin
+        newID := i;
+        break;
+      end;
+    end;
+
+    walletInfo := coindata.createCoin(newcoinID, newID, 0, MasterSeed,
+      NewCoinDescriptionEdit.Text);
+
+    CurrentAccount.AddCoin(walletInfo);
+    CreatePanel(walletInfo);
+    masterSeed := '';
+
+    switchTab(PageControl, walletView{TTabItem(frmHome.FindComponent('dashbrd'))});
+  end
+  else
   begin
-    if arr[i] <> i then
+
+    APICheckCompressed(sender);
+    
+      
+    if isHex(WIFEdit.Text) then
     begin
-      newID := i;
-      break;
+      if (length(WIFEdit.Text) = 64)  then
+      begin
+        if not (HexPrivKeyCompressedRadioButton.IsChecked or HexPrivKeyNotCompressedRadioButton.IsChecked) then
+        exit;
+        out := WIFEdit.Text;
+        if HexPrivKeyCompressedRadioButton.IsChecked then
+          isCompressed := true
+        else if HexPrivKeyNotCompressedRadioButton.IsChecked then
+          isCompressed := false
+        else
+          raise Exception.Create('compression not defined');
+      end
+      else
+      begin
+        popupWindow.Create('Private Key must have 64 characters');
+        exit;
+      end;
+      
+
+    end
+    else
+    begin
+      Data := wifToPrivKey(WIFEdit.Text);
+      isCompressed := Data.isCompressed;
+      out := Data.PrivKey;
     end;
+
+    pub := secp256k1_get_public(out , not isCompressed);
+    if ImportCoinID = 4 then
+    begin
+      wd := TwalletInfo.Create(ImportCoinID, -1, -1, Ethereum_PublicAddrToWallet(pub), NewCoinDescriptionEdit.Text);
+      wd.pub := pub;
+      wd.EncryptedPrivKey := speckEncrypt((TCA(MasterSeed)), out);
+      wd.isCompressed := isCompressed;
+    end
+    else
+    begin
+      wd := TwalletInfo.Create(ImportCoinID, -1, -1, Bitcoin_PublicAddrToWallet(pub,
+      AvailableCoin[ImportCoinID].p2pk), NewCoinDescriptionEdit.Text);
+      wd.pub := pub;
+      wd.EncryptedPrivKey := speckEncrypt((TCA(MasterSeed)), out);
+      wd.isCompressed := isCompressed;
+
+    end;
+
+    CurrentAccount.AddCoin(wd);
+    CreatePanel(wd);
+
+    MasterSeed := '';
+
+    if ImportCoinID = 4 then
+    begin
+      searchTokens(wd.addr);
+    end;
+
+    switchTab(PageControl, walletView{TTabItem(frmHome.FindComponent('dashbrd'))});
   end;
-
-  walletInfo := coindata.createCoin(newcoinID, newID, 0, MasterSeed,
-    NewCoinDescriptionEdit.Text);
-
-  CurrentAccount.AddCoin(walletInfo);
-  CreatePanel(walletInfo);
-
-  switchTab(PageControl, walletView{TTabItem(frmHome.FindComponent('dashbrd'))});
 end;
 
 procedure TfrmHome.btnChangeDescriptionClick(Sender: TObject);
@@ -4242,7 +4370,12 @@ end;
 procedure TfrmHome.btnAddNewCoinClick(Sender: TObject);
 begin
   createAddWalletView();
-  // PageControl.ActiveTab := AddNewWallet;
+
+  HexPrivKeyDefaultRadioButton.IsChecked := true;
+  Layout31.Visible := false;
+  WIFEdit.Text := '';
+  PrivateKeySettingsLayout.Visible := false;
+  
   switchTab(PageControl, AddNewCoin);
 end;
 
@@ -4386,6 +4519,7 @@ begin
     //btnDSBack.OnClick := backBtnDecryptSeed;
 
   end;
+  ConfirmSendPasswordEdit.Text := '';
 end;
 
 procedure TfrmHome.btnOCRClick(Sender: TObject);
@@ -5898,6 +6032,11 @@ begin
   ShowShareSheetAction1.TextMessage := CurrentCryptoCurrency.addr;
 end;
 
+procedure TfrmHome.Switch1Switch(Sender: TObject);
+begin
+  PrivateKeySettingsLayout.Visible := Switch1.IsChecked;
+end;
+
 procedure TfrmHome.SearchInDashBrdButtonClick(Sender: TObject);
 begin
   TLabel(frmHome.FindComponent('HeaderLabel')).Visible := false;
@@ -5935,7 +6074,7 @@ begin
   btnSkip.Enabled := frmHome.SwitchSavedSeed.IsChecked;
 end;
 // must be in the end        caused ide error
-procedure TfrmHome.SaveNewPrivateKeyButtonClick(Sender: TObject);
+procedure TfrmHome.APICheckCompressed(Sender: TObject);
 begin
 
   try
@@ -6005,7 +6144,7 @@ begin
                   procedure
                   begin
                     HexPrivKeyCompressedRadioButton.IsChecked := true;
-                    SaveNewPrivateKeyButtonClick(Sender);
+                    //btnOKAddNewCoinSettingsClick(Sender);
                     ts.free;
                     wd.free;
                     exit;
@@ -6019,7 +6158,7 @@ begin
                 procedure
                 begin
                   HexPrivKeyCompressedRadioButton.IsChecked := true;
-                  SaveNewPrivateKeyButtonClick(Sender);
+                  //btnOKAddNewCoinSettingsClick(Sender);
                   ts.free;
                   wd.free;
                   exit;
@@ -6049,7 +6188,7 @@ begin
                   procedure
                   begin
                     HexPrivKeyNotCompressedRadioButton.IsChecked := true;
-                    SaveNewPrivateKeyButtonClick(Sender);
+                   // btnOKAddNewCoinSettingsClick(Sender);
                     ts.free;
                     wd.free;
                     exit;
@@ -6062,7 +6201,7 @@ begin
                 procedure
                 begin
                   HexPrivKeyNotCompressedRadioButton.IsChecked := true;
-                  SaveNewPrivateKeyButtonClick(Sender);
+                  //btnOKAddNewCoinSettingsClick(Sender);
                   ts.free;
                   wd.free;
                   exit;
@@ -6098,11 +6237,7 @@ begin
     end;
   end;
 
-  btnDecryptSeed.OnClick := ImportPrivateKey;
 
-  decryptSeedBackTabItem := PageControl.ActiveTab;
-  PageControl.ActiveTab := descryptSeed;
-  btnDSBack.OnClick := backBtnDecryptSeed;
 end;
 
 end.

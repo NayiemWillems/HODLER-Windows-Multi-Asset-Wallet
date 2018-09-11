@@ -1704,6 +1704,12 @@ inherited frmHome_SmXhdpiPh: TfrmHome_SmXhdpiPh
       inherited NewCoinDescriptionPassPanel: TPanel
         Size.Width = 200.000000000000000000
       end
+      inherited Panel11: TPanel
+        Position.X = 32.000000000000000000
+      end
+      inherited PrivateKeySettingsLayout: TLayout
+        Position.X = 32.000000000000000000
+      end
     end
     inherited ChangeDescryptionScreen: TTabItem
       ExplicitSize.cx = 8.000000000000000000
@@ -1964,14 +1970,6 @@ inherited frmHome_SmXhdpiPh: TfrmHome_SmXhdpiPh
     inherited ImportPrivKeyTabItem: TTabItem
       ExplicitSize.cx = 8.000000000000000000
       ExplicitSize.cy = 8.000000000000000000
-      inherited WIFEdit: TEdit
-        Size.Width = 200.000000000000000000
-        Size.Height = 32.000000000000000000
-      end
-      inherited SaveNewPrivateKeyButton: TButton
-        Position.Y = 152.000000000000000000
-        Size.Width = 200.000000000000000000
-      end
       inherited ToolBar4: TToolBar
         Size.Width = 200.000000000000000000
         inherited Label7: TLabel
@@ -1980,16 +1978,6 @@ inherited frmHome_SmXhdpiPh: TfrmHome_SmXhdpiPh
         inherited IPKQRButton: TButton
           Position.X = 152.000000000000000000
         end
-      end
-      inherited Layout31: TLayout
-        Position.Y = 128.000000000000000000
-        Size.Width = 200.000000000000000000
-        inherited Layout34: TLayout
-          Size.Width = 0.000000000000000000
-        end
-      end
-      inherited ImportPrivKeyLabel: TLabel
-        Size.Width = 200.000000000000000000
       end
     end
     inherited AddAccount: TTabItem

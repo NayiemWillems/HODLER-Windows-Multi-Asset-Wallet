@@ -292,7 +292,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
           93s
           619s)
         inherited WVBalance: TTabItem
-          Size.Width = 39.000000000000000000
+          Size.Width = 23.000000000000000000
           ExplicitSize.cx = 414.000000000000000000
           ExplicitSize.cy = 49.000000000000000000
           inherited BalancePanel: TPanel
@@ -396,7 +396,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
           end
         end
         inherited WVReceive: TTabItem
-          Size.Width = 41.000000000000000000
+          Size.Width = 23.000000000000000000
           ExplicitSize.cx = 207.000000000000000000
           ExplicitSize.cy = 49.000000000000000000
           inherited ReceiveVertScrollBox: TVertScrollBox
@@ -463,7 +463,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
           end
         end
         inherited WVSend: TTabItem
-          Size.Width = 30.000000000000000000
+          Size.Width = 23.000000000000000000
           ExplicitSize.cx = 103.000000000000000000
           ExplicitSize.cy = 49.000000000000000000
           inherited SendVertScrollBox: TVertScrollBox
@@ -566,13 +566,14 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
                 end
                 inherited WVsendTO: TEdit
                   Size.Width = 45.000000000000000000
+                  Size.Height = 30.000000000000000000
                 end
               end
             end
           end
         end
         inherited WVSettings: TTabItem
-          Size.Width = 43.000000000000000000
+          Size.Width = 24.000000000000000000
           ExplicitSize.cx = 105.000000000000000000
           ExplicitSize.cy = 49.000000000000000000
           inherited btnExportPrivKey: TButton
@@ -1508,7 +1509,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Size.Width = 93.000000000000000000
       end
       inherited CheckUpdateButton: TButton
-        Position.Y = 333.000000000000000000
+        Position.Y = 285.000000000000000000
         Size.Width = 93.000000000000000000
       end
     end
@@ -1895,14 +1896,16 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Size.Width = 93.000000000000000000
         inherited NewCoinDescriptionEdit: TEdit
           Position.X = -107.000000000000000000
+          Position.Y = 9.000000000000000000
+          Size.Height = 30.000000000000000000
         end
       end
       inherited btnOKAddNewCoinSettings: TButton
-        Position.Y = 140.000000000000000000
+        Position.Y = 668.000000000000000000
         Size.Width = 93.000000000000000000
       end
       inherited Label4: TLabel
-        Position.Y = 188.000000000000000000
+        Position.Y = 632.000000000000000000
         Size.Width = 93.000000000000000000
       end
       inherited NewCoinDescriptionPassPanel: TPanel
@@ -1910,6 +1913,26 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Size.Width = 93.000000000000000000
         inherited NewCoinDescriptionPassEdit: TEdit
           Position.X = -107.000000000000000000
+          Position.Y = 9.000000000000000000
+          Size.Height = 30.000000000000000000
+        end
+      end
+      inherited Panel11: TPanel
+        Position.Y = 140.000000000000000000
+        Size.Width = 93.000000000000000000
+        inherited Layout50: TLayout
+          inherited Switch1: TSwitch
+            Size.Width = 55.000000000000000000
+            Size.Height = 35.000000000000000000
+          end
+        end
+        inherited ImportPrivKeyStaticLabel: TLabel
+          Size.Width = 2.000000000000000000
+        end
+      end
+      inherited PrivateKeySettingsLayout: TLayout
+        inherited WIFEdit: TEdit
+          Size.Height = 30.000000000000000000
         end
       end
     end
@@ -2224,15 +2247,6 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
       Size.Height = 11.000000000000000000
       ExplicitSize.cx = 8.000000000000000000
       ExplicitSize.cy = 8.000000000000000000
-      inherited WIFEdit: TEdit
-        Position.Y = 92.000000000000000000
-        Size.Width = 93.000000000000000000
-        Size.Height = 30.000000000000000000
-      end
-      inherited SaveNewPrivateKeyButton: TButton
-        Position.Y = 668.000000000000000000
-        Size.Width = 93.000000000000000000
-      end
       inherited ToolBar4: TToolBar
         Size.Width = 93.000000000000000000
         Size.Height = 44.000000000000000000
@@ -2247,17 +2261,6 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         inherited IPKBack: TButton
           Size.Height = 44.000000000000000000
         end
-      end
-      inherited Layout31: TLayout
-        Position.Y = 122.000000000000000000
-        Size.Width = 93.000000000000000000
-        inherited Layout34: TLayout
-          Size.Width = 0.000000000000000000
-        end
-      end
-      inherited ImportPrivKeyLabel: TLabel
-        Position.Y = 44.000000000000000000
-        Size.Width = 93.000000000000000000
       end
     end
     inherited AddAccount: TTabItem
@@ -2325,6 +2328,8 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Size.Width = 93.000000000000000000
         inherited RestoreNameEdit: TEdit
           Position.X = -107.000000000000000000
+          Position.Y = 9.000000000000000000
+          Size.Height = 30.000000000000000000
         end
       end
       inherited Panel7: TPanel
@@ -2332,6 +2337,8 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Size.Width = 93.000000000000000000
         inherited RestorePasswordEdit: TEdit
           Position.X = -107.000000000000000000
+          Position.Y = 9.000000000000000000
+          Size.Height = 30.000000000000000000
         end
       end
       inherited ToolBar6: TToolBar
@@ -2445,8 +2452,10 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
       inherited Panel10: TPanel
         Position.Y = 44.000000000000000000
         Size.Width = 93.000000000000000000
-        inherited Edit2: TEdit
+        inherited ConfirmSendPasswordEdit: TEdit
           Position.X = -107.000000000000000000
+          Position.Y = 9.000000000000000000
+          Size.Height = 30.000000000000000000
         end
       end
       inherited Layout38: TLayout
