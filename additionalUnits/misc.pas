@@ -302,6 +302,7 @@ function inputType(input: TBitcoinOutput): integer;
 procedure searchTokens(InAddress: AnsiString);
 function getDataFromForeginAPI(aURL: String): AnsiString;
 procedure prepareConfirmSendTabItem();
+procedure DeleteAccount(name:AnsiString);
 
 // procedure refresh
 
@@ -343,6 +344,49 @@ var
   bitmapData: TBitmapData;
 
   /// ////////////////////////////////////////////////////////////////
+
+procedure DeleteAccount(name:AnsiString);
+var
+  ac : Account ;
+  path : AnsiString;
+  ts : TStringList;
+  tempStr : AnsiString;
+  i, j : Integer;
+begin
+  ac := Account.Create(name);
+  //ts := TStringList.Create();
+
+  for path in ac.Paths do
+  begin
+    ts := TStringList.Create;
+    ts.LoadFromFile(Path);
+    ts.text := StringofChar('@', Length(ts.text));
+    ts.SaveToFile(Path);
+    ts.Free;
+    DeleteFile(Path);
+  end;
+
+  RemoveDir(ac.DirPath);
+
+  for i := 0 to length(AccountsNames)-1 do
+  begin
+    if AccountsNames[i] = name then
+    begin
+      for j := i to length(accountsNames)-2 do
+      begin
+        AccountsNames[j] := AccountsNames[j+1];
+      end;
+    end;
+  end;
+
+
+
+  setLength(AccountsNames , length(accountsNames)-1);
+
+
+  ac.Free;
+
+end;
 
 procedure prepareConfirmSendTabItem();
 var
@@ -426,6 +470,16 @@ begin
   //  AvailableCoin[CurrentCoin.coin].name)
   SendFromLabel.Text := CurrentCoin.addr;
   SendToLabel.Text := Address;
+  if ((CurrentCryptoCurrency is TwalletInfo) and
+    (TwalletInfo(CurrentCryptoCurrency).coin = 3)) then
+  begin
+    CashAddr:=StringReplace(LowerCase(Address),'bitcoincash:','',[rfReplaceAll]);
+    if (LeftStr(CashAddr, 1) = 'q') or (LeftStr(CashAddr, 1) = 'p') then
+    begin
+      SendToLabel.Text := bitcoinCashAddressToCashAddress(address);
+    end;
+  end;
+
   SendValueLabel.Text := BigIntegerToFloatStr(amount , currentcoin.decimals);
   sendFeeLabel.Text := BigIntegerToFloatStr(fee , currentcoin.decimals);
 

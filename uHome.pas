@@ -811,6 +811,7 @@ type
     procedure importPrivCoinListPanelClick(Sender: TObject);
     procedure LoadAccountPanelClick(Sender: TObject);
     procedure SelectFileInBackupFileList(Sender: TObject);
+    procedure removeAccount(Sender : TObject);
 
   var
     shown: Boolean;
@@ -886,6 +887,51 @@ uses ECCObj, Bitcoin, Ethereum, secp256k1, uSeedCreation, coindata, base58,
 {$R *.LgXhdpiPh.fmx ANDROID}
 {$R *.Windows.fmx MSWINDOWS}
 {$R *.Surface.fmx MSWINDOWS}
+
+
+procedure TfrmHome.removeAccount(Sender : TObject);
+begin
+  if Sender is TButton then
+  begin
+    popupWindowYesNo.Create(procedure
+    begin
+
+      tthread.CreateAnonymousThread(procedure
+      begin
+
+        Tthread.Synchronize(nil , procedure
+        var
+          i : Integer;
+        begin
+
+          DeleteAccount(TButton(Sender).TagString);
+
+          for i := 0 to AccountsListVertScrollBox.Content.ChildrenCount- 1 do
+          begin
+            if Tbutton(AccountsListVertScrollBox.Content.Children[i]).Text = TButton(Sender).TagString then
+            begin
+              Tbutton(AccountsListVertScrollBox.Content.Children[i]).DisposeOf;
+            end;
+
+          end;
+          refreshWalletDat();
+
+        end);
+
+      end).Start();
+
+    end, procedure
+    begin
+
+    end,
+    'Are you sure you want to delete this account from the wallet? '+
+    'If you do not have a backup, you will lose access to the funds in this account.',
+    'Yes, I want to delete this account',
+    'No');
+
+
+  end;
+end;
 
 procedure TfrmHome.QRChangeTimerTimer(Sender: TObject);
 procedure qrFix;
@@ -1960,7 +2006,7 @@ begin
   if SyncBalanceThr.Finished = false then
   begin
     try
-      SyncBalanceThr.Suspend();
+      SyncBalanceThr.Terminate();
     except
       on E: Exception do
       begin
@@ -1973,7 +2019,7 @@ begin
   begin
 
     try
-      SyncHistoryThr.Suspend();
+      SyncHistoryThr.Terminate();
     except
       on E: Exception do
       begin
@@ -1982,6 +2028,24 @@ begin
     end;
 
   end;
+  SyncHistoryThr.WaitFor;
+  SyncBalanceThr.WaitFor;
+
+
+  if not (AccountsListVertScrollBox.Content.ChildrenCount = 0) then
+  begin
+
+    for fmxObj in AccountsListVertScrollBox.Content.Children do
+    begin
+      if fmxObj is TButton then
+      begin
+        Tbutton(TButton(fmxObj).Children[1]).DisposeOf; // remove [X] button
+      end;
+    end;
+
+  end;
+
+
 
   CurrentAccount.SaveFiles();
 
@@ -2178,7 +2242,7 @@ begin
   CurrentAccount.addToken(t);
   CreatePanel(t);
 
-  switchTab(PageControl, TTabItem(frmHome.FindComponent('dashbrd')));
+  switchTab(PageControl, walletView);
 
 end;
 
@@ -2420,8 +2484,8 @@ begin
             procedure
             begin
 
-              switchTab(PageControl,
-                TTabItem(frmHome.FindComponent('dashbrd')));
+              switchTab(PageControl, walletView
+                {TTabItem(frmHome.FindComponent('dashbrd'))});
 
             end);
         end).Start;
@@ -3329,7 +3393,7 @@ begin
   CurrentAccount.addToken(t);
   CurrentAccount.SaveFiles();
 
-  switchTab(PageControl, TTabItem(frmHome.FindComponent('dashbrd')));
+  switchTab(PageControl, walletView{TTabItem(frmHome.FindComponent('dashbrd'))});
 
 end;
 
@@ -3611,7 +3675,7 @@ begin
     searchTokens(wd.addr);
   end;
 
-  switchTab(PageControl, TTabItem(frmHome.FindComponent('dashbrd')));
+  switchTab(PageControl, walletView{TTabItem(frmHome.FindComponent('dashbrd'))});
 end;
 
 procedure TfrmHome.IPKBackClick(Sender: TObject);
@@ -3692,12 +3756,34 @@ begin
 
   // switchTab(PageControl, TTabItem(frmHome.FindComponent('dashbrd')));
 
+  for fmxObj in AccountsListVertScrollBox.Content.Children do
+  begin
+
+    if fmxObj is TButton then
+    begin
+      Button := TButton.Create(fmxObj);
+      Button.Width := Panel.Height;
+      Button.Align := TAlignLayout.Mostright;
+      Button.Text := 'X';
+      Button.TagString := Tbutton(fmxObj).Text;
+      Button.Visible := true;
+      Button.Parent := fmxObj;
+      Button.OnClick := removeAccount;
+    end;
+
+
+  end;
+
+
+
   SearchInDashBrdButton.Visible := false;
   NewCryptoLayout.Visible := false;
   WalletList.Visible := false;
   OrganizeList.Visible := true;
   BackToBalanceViewButton.Visible := true;
   btnSync.Visible := false;
+
+
 end;
 
 procedure TfrmHome.ShowHideAdvancedButtonClick(Sender: TObject);
@@ -3825,7 +3911,7 @@ begin
   CurrentAccount.AddCoin(walletInfo);
   CreatePanel(walletInfo);
 
-  switchTab(PageControl, TTabItem(frmHome.FindComponent('dashbrd')));
+  switchTab(PageControl, walletView{TTabItem(frmHome.FindComponent('dashbrd'))});
 end;
 
 procedure TfrmHome.btnChangeDescriptionClick(Sender: TObject);
@@ -4933,12 +5019,15 @@ var
   fmxObj: TfmxObject;
 begin
   try
-    if not frmHome.AccountsListVertScrollBox.Content.ChildrenCount = 0 then
+    if not (frmHome.AccountsListVertScrollBox.Content.ChildrenCount = 0) then
+    begin
+
       for fmxObj in frmHome.AccountsListVertScrollBox.Content.Children do
         if TButton(fmxObj).Text = name then
           TButton(fmxObj).Enabled := false
         else
           TButton(fmxObj).Enabled := true;
+    end;
 
     clearVertScrollBox(frmHome.WalletList);
     if (SyncBalanceThr <> nil) and (not SyncBalanceThr.Finished) then
@@ -5101,7 +5190,7 @@ begin
 
       ChangeAccountButton.Text := lastClosedAccount;
 
-      LoadCurrentAccount(AccountsNames[0]);
+      LoadCurrentAccount(lastClosedAccount);
     except
       on E: Exception do
       begin
