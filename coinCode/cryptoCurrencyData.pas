@@ -17,6 +17,7 @@ type
     values: Array of BigInteger;
     CountValues: BigInteger;
     lastBlock: System.uint64;
+    confirmation : Integer;
 
     function toString(): AnsiString;
     procedure FromString(str: AnsiString);

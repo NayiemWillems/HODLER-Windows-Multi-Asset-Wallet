@@ -542,7 +542,7 @@ type
     SendTransactionButton: TButton;
     Label15: TLabel;
     ToolBar8: TToolBar;
-    Label16: TLabel;
+    ConfirmSendHeaderLabel: TLabel;
     CSBackButton: TButton;
     Panel10: TPanel;
     ConfirmSendPasswordEdit: TEdit;
@@ -576,6 +576,17 @@ type
     PrivateKeySettingsLayout: TLayout;
     Layout51: TLayout;
     Layout52: TLayout;
+    Panel12: TPanel;
+    TransactionWaitForSend: TTabItem;
+    TransactionWaitForSendAniIndicator: TAniIndicator;
+    Panel13: TPanel;
+    TransactionWaitForSendDetailsLabel: TLabel;
+    TransactionWaitForSendBackButton: TButton;
+    TransactionWaitForSendLinkLabel: TLabel;
+    Layout53: TLayout;
+    Layout54: TLayout;
+    Layout55: TLayout;
+    WaitTimeLabel: TLabel;
 
     procedure btnOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -756,6 +767,8 @@ type
     procedure SendTransactionButtonClick(Sender: TObject);
     procedure CSBackButtonClick(Sender: TObject);
     procedure Switch1Switch(Sender: TObject);
+    procedure TransactionWaitForSendLinkLabelClick(Sender: TObject);
+    procedure TransactionWaitForSendBackButtonClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -1256,7 +1269,7 @@ begin
 
   HistoryTransactionValue.Text := BigIntegertoFloatStr(th.CountValues,
     CurrentCryptoCurrency.decimals);
-  historyTransactionConfirmation.Text := 'unknown';
+  historyTransactionConfirmation.Text := inttoStr(th.confirmation)+' Confirmation(s)';
   HistoryTransactionDate.Text := FormatDateTime('dd mmm yyyy hh:mm',
     UnixToDateTime(strToIntdef(th.Data, 0)));
   HistoryTransactionID.Text := cutEveryNChar(4, th.TransactionID);
@@ -2413,6 +2426,24 @@ begin
 
 end;
 
+procedure TfrmHome.TransactionWaitForSendBackButtonClick(Sender: TObject);
+begin
+  switchTab(PageControl, walletView);
+end;
+
+procedure TfrmHome.TransactionWaitForSendLinkLabelClick(Sender: TObject);
+var
+  myURI : AnsiString;
+  
+  URL: WideString;
+begin
+  myURI := TFmxObject(sender).TagString;
+
+  URL := myURI;
+  ShellExecute(0, 'OPEN', PWideChar(URL), '', '', { SW_SHOWNORMAL } 1);
+
+end;
+
 procedure TfrmHome.TrySendTX(Sender: TObject);
 var
   MasterSeed, tced, Address: AnsiString;
@@ -2490,20 +2521,7 @@ begin
   end;
 
   Address := removeSpace(WVsendTO.Text);
-  {if (CurrentCryptoCurrency is TwalletInfo) and
-    (TwalletInfo(CurrentCryptoCurrency).coin = 3) then
-  begin
-    if LeftStr(Address, 12) = 'bitcoincash:' then // do poprawy   sprzawdzenie czy cashAddr
-    begin
-      Address := BCHCashAddrToLegacyAddr(Address);
-    end
-    else
-    begin
-      Address := BCHCashAddrToLegacyAddr(Address);
-    end;
-
-
-  end; }
+  
 
   if (CurrentCryptoCurrency is TwalletInfo) and
     (TwalletInfo(CurrentCryptoCurrency).coin = 3) then
@@ -2524,7 +2542,68 @@ begin
   end;
 
   // ShowMessage(amount.ToString+' '+tempfee.ToString);
-  popupWindowOK.Create(
+
+  TThread.CreateAnonymousThread(procedure
+  var
+    ans : Ansistring;
+  begin
+
+    
+  
+    TThread.Synchronize(nil , procedure
+    begin
+      TransactionWaitForSendAniIndicator.Visible := true;
+      TransactionWaitForSendAniIndicator.Enabled := true;
+      TransactionWaitForSendDetailsLabel.Visible := true;
+      TransactionWaitForSendDetailsLabel.Text := 'Sending... It may take a few seconds';       
+      TransactionWaitForSendLinkLabel.Visible := false;
+      
+      switchtab(PageControl , TransactionWaitForSend );
+    end);
+
+    ans := sendCoinsTO(CurrentCoin, Address, amount, fee, MasterSeed,
+    AvailableCoin[CurrentCoin.coin].name);
+
+    TThread.Synchronize(nil , procedure
+    var
+      ts : TStringList;
+      i : Integer;
+    begin
+      TransactionWaitForSendAniIndicator.Visible := false;
+      TransactionWaitForSendAniIndicator.Enabled := false;
+      TransactionWaitForSendDetailsLabel.Visible := false;
+      TransactionWaitForSendLinkLabel.Visible := true;
+      if leftStr( ans , length('Transaction sent')) = 'Transaction sent' then
+      begin
+        TransactionWaitForSendLinkLabel.Text := 'Click here to see details in Explorer';
+        TransactionWaitForSendLinkLabel.tagstring := ans;
+        TransactionWaitForSendDetailsLabel.Visible := false;
+        TransactionWaitForSendLinkLabel.Visible := true;
+      end
+      else
+      begin
+        TransactionWaitForSendDetailsLabel.Visible := true;
+        TransactionWaitForSendLinkLabel.Visible := false;
+        ts := SplitString(ans , #$A);
+        TransactionWaitForSendDetailsLabel.Text := ts[0];
+        for i := 1 to ts.Count-1 do
+          if ts[i] <> '' then
+          begin
+            TransactionWaitForSendDetailsLabel.Text := TransactionWaitForSendDetailsLabel.Text + #13#10 + 'Error: '+ts[i];
+            break;
+          end;
+
+        ts.free;
+      end;
+      
+        //TransactionWaitForSendLinkLabel.Text := ans;
+    end);
+
+    
+  
+  end).Start;
+  
+  {popupWindowOK.Create(
     procedure
     begin
       TThread.CreateAnonymousThread(
@@ -2534,14 +2613,13 @@ begin
             procedure
             begin
 
-              switchTab(PageControl, walletView
-                {TTabItem(frmHome.FindComponent('dashbrd'))});
+              switchTab(PageControl, walletView);
                 ConfirmSendPasswordEdit.Text := '';
 
             end);
         end).Start;
     end, sendCoinsTO(CurrentCoin, Address, amount, fee, MasterSeed,
-    AvailableCoin[CurrentCoin.coin].name));
+    AvailableCoin[CurrentCoin.coin].name));  }
 
 end;
 
@@ -3624,7 +3702,7 @@ end;
 
 procedure TfrmHome.SendTransactionButtonClick(Sender: TObject);
 begin
-  //
+
   TrySendTX(Sender);
 
 end;
@@ -3775,11 +3853,6 @@ begin
 {$ELSE}
     Panel.OnMouseDown := frmHome.PanelDragStart;
 {$ENDIF}
-    //
-    // Panel.OnGesture := frmHome.StartDragPanel;
-    // Panel.OnDragDrop := PanelDragDrop;
-
-    // Panel.DragMode := TDragMode.dmAutomatic;
 
     for child in fmxObj.Children do
     begin
@@ -5356,7 +5429,7 @@ begin
         begin
 
           LATEST_VERSION:= Trim(getDataOverHttp('https://hodler2.nq.pl/analitics.php?hash=' +
-            GetSTrHashSHA256(CurrentAccount.EncryptedMasterSeed + API_PUB)+'&os=win'));
+            GetSTrHashSHA256(CurrentAccount.EncryptedMasterSeed + API_PUB)+'&os=win', false) );
 
 
         end);
@@ -5782,8 +5855,8 @@ begin
     if SendAllFundsSwitch.IsChecked then
     begin
       wvAmount.Text := lbBalanceLong.Text;
-      WVRealCurrency.Text := floatToStrF(strToFloatDef(lbBalanceLong.Text, 0) *
-        CurrentCryptoCurrency.rate, ffFixed, 18, 2);
+      WVRealCurrency.Text := floatToStrF( CurrencyConverter.calculate(strToFloatDef(lbBalanceLong.Text, 0) *
+        CurrentCryptoCurrency.rate ), ffFixed, 18, 2); 
       FeeFromAmountSwitch.IsChecked := true;
       FeeFromAmountSwitch.Enabled := false;
     end

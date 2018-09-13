@@ -213,7 +213,8 @@ function speckDecrypt(tcaKey, data: AnsiString): AnsiString;
 function hexatotbytes(H: AnsiString): Tbytes;
 
 function getUTXO(wallet: TWalletInfo): TUTXOS;
-function getDataOverHTTP(aURL: String): AnsiString;
+
+function getDataOverHTTP(aURL: String; useCache: Boolean = true): AnsiString;
 function parseUTXO(utxos: AnsiString): TUTXOS;
 function IntToTX(data: System.uint64; Padding: integer): AnsiString; overload;
 function IntToTX(data: BigInteger; Padding: integer): AnsiString; overload;
@@ -329,7 +330,7 @@ var
   lastChose: integer;
   lastView: TTabItem;
   isTokenDataInUse: boolean = false;
-
+  firstSync : boolean = true;
   i: integer;
 
 implementation
@@ -481,7 +482,38 @@ begin
   end;
 
   SendValueLabel.Text := BigIntegerToFloatStr(amount , currentcoin.decimals);
-  sendFeeLabel.Text := BigIntegerToFloatStr(fee , currentcoin.decimals);
+
+  if (CurrentCoin.coin = 4) and ( CurrentCryptoCurrency is Token )then
+  begin
+    WaitTimeLabel.Text := 'The transaction may get stuck because of the low bandwidth of the ethereum network';
+
+    sendFeeLabel.Text := AnsiReverseString( cuteveryNchar( 3 ,AnsiReverseString(fee.ToString) ) ) + ' WEI';
+  end
+  else if (CurrentCoin.coin = 4) then
+  begin
+    WaitTimeLabel.Text := 'The transaction may get stuck because of the low bandwidth of the ethereum network';
+
+    sendFeeLabel.Text := AnsiReverseString( cuteveryNchar( 3 ,AnsiReverseString(fee.ToString) ) ) + ' WEI';
+  end
+  else
+  begin
+
+    if AutomaticFeeRadio.IsChecked then
+    begin
+      WaitTimeLabel.Text := 'The transaction should be confirmed in the ' + intToStr(Round(FeeSpin.Value))
+      + ' nearest blocks, in about ' + intToStr(Round(FeeSpin.Value)) + '0 minutes';
+    end
+    else
+    begin
+       WaitTimeLabel.Text := 'Fee set by the user';
+    end;
+
+
+    sendFeeLabel.Text := BigIntegerToFloatStr(fee , currentcoin.decimals);
+
+  end;
+
+
 
 
 
@@ -1569,6 +1601,15 @@ begin
     lbl.text := BigIntegerBeautifulStr(wallet.history[i].CountValues,
       wallet.decimals);
 
+    if wallet.history[i].confirmation=0 then
+    begin
+      Panel.Opacity:=0.5;
+      lbl.Opacity:=0.5;
+      Image.Opacity:=0.5;
+      addrLbl.Opacity:=0.5;
+      dataLbl.Opacity:=0.5;
+    end;
+
   end;
   i := 0;
   if frmHome.txHistory.Content.ChildrenCount <> 0 then
@@ -2096,6 +2137,7 @@ begin
   counter := 0;
 
   separator := FormatSettings.DecimalSeparator;
+  Str:=LeftStr(Str,Pos(separator,Str)+decimals);
   result := BigInteger.Create(0);
   for i := Low(Str) to High(Str) do
   begin
@@ -2466,7 +2508,6 @@ var
 begin
   inc(n);
   result := Str;
-  // {$IFDEF WIN32 or WIN64}
   for i := n to Length(Str) + (Length(Str) - 1) div (n - 1) do
   // nie wiem dlaczego to działa na androidzie
   begin
@@ -2475,15 +2516,7 @@ begin
       insert(sep, result, i);
 
   end;
-  // {$ELSEIF DEF ANDROID}
-  // for i  := n-1 to length(str) + ((length(str)-1) div (n-1)) -1 do
-  // begin
-  // if (i+1) mod n = 0 then
 
-  // Insert( sep , result, 5);
-
-  // end;
-  // {$ENDIF}
 end;
 
 function removeSpace(Str: AnsiString): AnsiString;
@@ -2825,24 +2858,146 @@ begin
     result := '';
 end;
 
-function getDataOverHTTP(aURL: String): AnsiString;
+const
+  Codes64 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/';
+
+function Encode64(S: string): string;
+var
+  i: Integer;
+  a: Integer;
+  x: Integer;
+  b: Integer;
+begin
+  Result := '';
+  a := 0;
+  b := 0;
+  for i := 1 to Length(s) do
+  begin
+    x := Ord(s[i]);
+    b := b * 256 + x;
+    a := a + 8;
+    while a >= 6 do
+    begin
+      a := a - 6;
+      x := b div (1 shl a);
+      b := b mod (1 shl a);
+      Result := Result + Codes64[x + 1];
+    end;
+  end;
+  if a > 0 then
+  begin
+    x := b shl (6 - a);
+    Result := Result + Codes64[x + 1];
+  end;
+end;
+
+function Decode64(S: string): string;
+var
+  i: Integer;
+  a: Integer;
+  x: Integer;
+  b: Integer;
+begin
+  Result := '';
+  a := 0;
+  b := 0;
+  for i := 1 to Length(s) do
+  begin
+    x := Pos(s[i], codes64) - 1;
+    if x >= 0 then
+    begin
+      b := b * 64 + x;
+      a := a + 6;
+      if a >= 8 then
+      begin
+        a := a - 8;
+        x := b shr a;
+        b := b mod (1 shl a);
+        x := x mod 256;
+        Result := Result + chr(x);
+      end;
+    end
+    else
+      Exit;
+  end;
+end;
+function loadCache(Hash: AnsiString): AnsiString;
+var
+  list: TStringList;
+  i: integer;
+  conv: TConvert;
+begin
+  result := '';
+  if fileExists(CurrentAccount.DirPath + '/cache.dat') = false then
+    exit;
+
+  list := TStringList.Create();
+  try
+    list.NameValueSeparator := '#';
+    list.LoadFromFile(CurrentAccount.DirPath + '/cache.dat');
+    i := list.IndexOfName(Hash);
+    if i >= 0 then
+    begin
+      conv := TConvert.Create(base64);
+
+      result := conv.FormattOstring(list.values[Hash]);
+      conv.free;
+    end;
+  finally
+    list.free;
+  end;
+end;
+
+procedure saveCache(Hash, data: AnsiString);
+var
+  ts: TStringList;
+  conv: TConvert;
+begin
+  ts := TStringList.Create;
+  try
+    if fileExists(CurrentAccount.DirPath + '/cache.dat') then
+      ts.LoadFromFile(CurrentAccount.DirPath + '/cache.dat');
+    ts.NameValueSeparator := '#';
+    conv := TConvert.Create(base64);
+    data := conv.StringToFormat(data);
+    if ts.IndexOfName(Hash) >= 0 then
+      ts.values[Hash] := data
+    else
+      ts.Add(Hash + '#' + data);
+    conv.free;
+    ts.SaveToFile(CurrentAccount.DirPath + '/cache.dat');
+  finally
+    ts.free;
+  end;
+end;
+
+function getDataOverHTTP(aURL: String; useCache: Boolean = true): AnsiString;
 var
   req: THTTPClient;
   LResponse: IHTTPResponse;
+  urlHash: AnsiString;
 begin
-
+  urlHash := GetStrHashSHA256(aURL);
+  {if (firstSync and useCache) then
+  begin
+    result := loadCache(urlHash);
+  end; }
   try
-    req := THTTPClient.Create();
-    aURL := aURL + buildAuth(aURL);
-    LResponse := req.get(aURL);
-    result := LResponse.ContentAsString();
+    if (result = '') or (not firstSync) then
+    begin
+
+      req := THTTPClient.Create();
+      aURL := aURL + buildAuth(aURL);
+      LResponse := req.get(aURL);
+      result := LResponse.ContentAsString();
+      saveCache(urlHash, LResponse.ContentAsString());
+    end;
   except
     on E: Exception do
-      result := '';
+    begin
+    end;
   end;
-
-  // showmessage(result);
-  req.Free;
+  req.free;
 end;
 
 function hash160FromHex(H: AnsiString): AnsiString;

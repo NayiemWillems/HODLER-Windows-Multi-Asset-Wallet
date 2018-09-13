@@ -190,6 +190,7 @@ var
   transHist: TransactionHistory;
   j: integer;
   sum: BigInteger;
+  tempts : TStringList;
 begin
   sum := 0;
 
@@ -221,7 +222,10 @@ begin
       transHist.lastBlock := strtoint64def(ts.Strings[i], 0);
       inc(i);
 
-      transHist.data := ts.Strings[i];
+      tempts := SplitString( ts[i] );
+      transHist.data := tempts.Strings[0];
+      transHist.confirmation := strToInt(tempts[1]);
+      tempts.Free;
       inc(i);
 
       setLength(transHist.addresses, number);
@@ -264,6 +268,7 @@ var
   i, j, number: integer;
   transHist: TransactionHistory;
   sum: BigInteger;
+  tempTs : TStringList;
 begin
 
   sum := 0;
@@ -293,7 +298,11 @@ begin
       transHist.lastBlock := strtoint64def(ts.Strings[i], 0);
       inc(i);
 
-      transHist.data := ts.Strings[i];
+
+      tempts := SplitString( ts[i] );
+      transHist.data := tempts.Strings[0];
+      transHist.confirmation := strToInt(tempts[1]);
+      tempts.Free;
       inc(i);
 
       setLength(transHist.addresses, number);
@@ -439,6 +448,7 @@ var
   transHist: TransactionHistory;
   j: integer;
   sum: BigInteger;
+  tempts : TStringList;
 begin
 
   ts := TStringList.Create();
@@ -465,7 +475,10 @@ begin
       inc(i);
       continue;
     end;
-    transHist.data := ts.Strings[i];
+    tempts := SplitString( ts[i] );
+    transHist.data := tempts.Strings[0];
+    transHist.confirmation := strToInt(tempts[1]);
+    tempts.Free;
     inc(i);
 
     setLength(transHist.addresses, number);
@@ -763,6 +776,7 @@ begin
   setLength(CoinDataArray, 0);
 
   CurrentAccount.SaveFiles();
+  firstSync:=false;
 end;
 
 end.
