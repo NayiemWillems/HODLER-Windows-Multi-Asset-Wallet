@@ -413,30 +413,10 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
             Size.Height = 598.000000000000000000
             Viewport.Width = 129.000000000000000000
             Viewport.Height = 598.000000000000000000
-            inherited btnSend: TButton
-              Size.Width = 129.000000000000000000
-            end
             inherited SendAmountLayout: TLayout
-              Size.Width = 129.000000000000000000
               inherited lblAmount: TLabel
                 Opacity = 0.899999976158142100
-                Size.Width = 129.000000000000000000
                 Size.Height = 22.000000000000000000
-              end
-              inherited wvAmount: TEdit
-                Size.Width = 129.000000000000000000
-              end
-              inherited WVRealCurrency: TEdit
-                Size.Width = 129.000000000000000000
-                inherited lblCoinFiat: TLabel
-                  Size.Width = 119.000000000000000000
-                end
-              end
-            end
-            inherited Layout3: TLayout
-              Size.Width = 129.000000000000000000
-              inherited ShowHideAdvancedButton: TButton
-                Size.Width = 129.000000000000000000
               end
             end
             inherited TransactionFeeLayout: TLayout
@@ -475,16 +455,8 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
               end
             end
             inherited SendToLayout: TLayout
-              Size.Width = 129.000000000000000000
               inherited lblSendTo: TLabel
-                Size.Width = 129.000000000000000000
                 Size.Height = 22.000000000000000000
-              end
-              inherited AddressQRLayout: TLayout
-                Size.Width = 129.000000000000000000
-                inherited WVsendTO: TEdit
-                  Size.Width = 81.000000000000000000
-                end
               end
             end
           end
@@ -2192,6 +2164,7 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
         end
         inherited TransactionWaitForSendLinkLabel: TLabel
           Size.Width = 129.000000000000000000
+          TextSettings.Font.StyleExt = {04070000000000000004000000}
         end
       end
       inherited TransactionWaitForSendBackButton: TButton

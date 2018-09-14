@@ -3,7 +3,7 @@ unit SyncThr;
 interface
 
 uses System.classes, System.sysutils, FMX.Controls, FMX.StdCtrls, FMX.dialogs,
-  StrUtils, WalletStructureData, tokenData;
+  StrUtils, WalletStructureData, tokenData, cryptoCurrencyData;
 
 type
   SynchronizeBalanceThread = class(TThread)
@@ -35,10 +35,120 @@ procedure parseCoinHistory(text: AnsiString; wallet: TWalletInfo);
 procedure parseTokenHistory(text: AnsiString; T: Token);
 procedure synchronizeHistory;
 function segwitParameters(wi: TWalletInfo): AnsiString;
+procedure SynchronizeCryptoCurrency(cc: cryptoCurrency);
+procedure parseBalances(s: AnsiString; var wd: TWalletInfo);
+procedure parseETHHistory(text: AnsiString; wallet: TWalletInfo);
+
+procedure parseDataForERC20(s: string; var wd: Token);
 
 implementation
 
-uses uhome, misc, coinData, CryptoCurrencyData, Velthuis.BigIntegers, Bitcoin;
+uses uhome, misc, coinData, Velthuis.BigIntegers, Bitcoin;
+
+procedure SynchronizeCryptoCurrency(cc: cryptoCurrency);
+var
+  data: AnsiString;
+begin
+  if cc is TWalletInfo then
+  begin
+
+    case TWalletInfo(cc).coin of
+
+      0:
+        begin
+          data := getDataOverHTTP(HODLER_URL + 'getSegwitBalance.php?coin=' +
+            availablecoin[TWalletInfo(cc).coin].name + '&' +
+            segwitParameters(TWalletInfo(cc)));
+
+          data := getDataOverHTTP(HODLER_URL + 'getSegwitUTXO.php?coin=' +
+            availablecoin[TWalletInfo(cc).coin].name + '&' +
+            segwitParameters(TWalletInfo(cc)));
+
+          parseBalances(data, TWalletInfo(cc));
+          TWalletInfo(cc).UTXO := parseUTXO(data);
+
+        end;
+
+      4:
+        begin
+          data := getDataOverHTTP(HODLER_ETH + '/?cmd=accInfo&addr=' +
+            TWalletInfo(cc).addr);
+          parseDataForETH(data, TWalletInfo(cc));
+        end
+    else
+      begin
+        data := getDataOverHTTP(HODLER_URL + 'getBalance.php?coin=' +
+          availablecoin[TWalletInfo(cc).coin].name + '&address=' +
+          TWalletInfo(cc).addr);
+
+        data := getDataOverHTTP(HODLER_URL + 'getUTXO.php?coin=' + availablecoin
+          [TWalletInfo(cc).coin].name + '&address=' + TWalletInfo(cc).addr);
+
+        parseBalances(data, TWalletInfo(cc));
+        TWalletInfo(cc).UTXO := parseUTXO(data);
+
+      end;
+    end;
+
+  end
+  else
+  begin
+    data := getDataOverHTTP(HODLER_ETH + '/?cmd=tokenInfo&addr=' + cc.addr +
+      '&contract=' + Token(cc).ContractAddress);
+
+    if Token(cc).lastBlock = 0 then
+      Token(cc).lastBlock := getHighestBlockNumber(Token(cc));
+
+    parseDataForERC20(data, Token(cc));
+  end;
+
+  /// ////////////////HISTORY//////////////////////////
+  if cc is TWalletInfo then
+  begin
+
+    case TWalletInfo(cc).coin of
+      0:
+        begin
+          data := getDataOverHTTP(HODLER_URL + 'getSegwitHistory.php?coin=' +
+            availablecoin[TWalletInfo(cc).coin].name + '&' +
+            segwitParameters(TWalletInfo(cc)));
+
+          parseCoinHistory(data, TWalletInfo(cc));
+        end;
+      4:
+        begin
+          data := getDataOverHTTP(HODLER_URL + 'getHistory.php?coin=' +
+            availablecoin[TWalletInfo(cc).coin].name + '&address=' +
+            TWalletInfo(cc).addr);
+          parseETHHistory(data, TWalletInfo(cc));
+        end;
+    else
+      begin
+        data := getDataOverHTTP(HODLER_URL + 'getHistory.php?coin=' +
+          availablecoin[TWalletInfo(cc).coin].name + '&address=' +
+          TWalletInfo(cc).addr);
+
+        parseCoinHistory(data, TWalletInfo(cc));
+      end;
+    end;
+
+  end
+  else
+  begin
+
+    if Token(cc).lastBlock = 0 then
+      Token(cc).lastBlock := getHighestBlockNumber(Token(cc));
+
+    data := getDataOverHTTP(HODLER_ETH + '/?cmd=tokenHistory&addr=' +
+      Token(cc).addr + '&contract=' + Token(cc).ContractAddress +
+      '&bno=' + inttostr(Token(cc).lastBlock));
+
+
+    parseTokenHistory( data , Token(cc));
+
+  end;
+
+end;
 
 function SynchronizeHistoryThread.TimeFromStart;
 begin
@@ -190,7 +300,7 @@ var
   transHist: TransactionHistory;
   j: integer;
   sum: BigInteger;
-  tempts : TStringList;
+  tempts: TStringList;
 begin
   sum := 0;
 
@@ -222,7 +332,7 @@ begin
       transHist.lastBlock := strtoint64def(ts.Strings[i], 0);
       inc(i);
 
-      tempts := SplitString( ts[i] );
+      tempts := SplitString(ts[i]);
       transHist.data := tempts.Strings[0];
       transHist.confirmation := strToInt(tempts[1]);
       tempts.Free;
@@ -230,6 +340,8 @@ begin
 
       setLength(transHist.addresses, number);
       setLength(transHist.values, number);
+
+      sum := 0;
 
       for j := 0 to number - 1 do
       begin
@@ -268,7 +380,7 @@ var
   i, j, number: integer;
   transHist: TransactionHistory;
   sum: BigInteger;
-  tempTs : TStringList;
+  tempts: TStringList;
 begin
 
   sum := 0;
@@ -298,8 +410,7 @@ begin
       transHist.lastBlock := strtoint64def(ts.Strings[i], 0);
       inc(i);
 
-
-      tempts := SplitString( ts[i] );
+      tempts := SplitString(ts[i]);
       transHist.data := tempts.Strings[0];
       transHist.confirmation := strToInt(tempts[1]);
       tempts.Free;
@@ -307,6 +418,8 @@ begin
 
       setLength(transHist.addresses, number);
       setLength(transHist.values, number);
+
+      sum := 0;
 
       for j := 0 to number - 1 do
       begin
@@ -448,7 +561,7 @@ var
   transHist: TransactionHistory;
   j: integer;
   sum: BigInteger;
-  tempts : TStringList;
+  tempts: TStringList;
 begin
 
   ts := TStringList.Create();
@@ -475,7 +588,7 @@ begin
       inc(i);
       continue;
     end;
-    tempts := SplitString( ts[i] );
+    tempts := SplitString(ts[i]);
     transHist.data := tempts.Strings[0];
     transHist.confirmation := strToInt(tempts[1]);
     tempts.Free;
@@ -776,7 +889,7 @@ begin
   setLength(CoinDataArray, 0);
 
   CurrentAccount.SaveFiles();
-  firstSync:=false;
+  firstSync := false;
 end;
 
 end.

@@ -2198,6 +2198,7 @@ inherited frmHome_SmXhdpiPh: TfrmHome_SmXhdpiPh
         end
         inherited TransactionWaitForSendLinkLabel: TLabel
           Size.Width = 200.000000000000000000
+          TextSettings.Font.StyleExt = {04070000000000000004000000}
         end
       end
       inherited TransactionWaitForSendBackButton: TButton

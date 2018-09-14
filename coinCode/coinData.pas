@@ -9,6 +9,7 @@ function CreateCoin(id, x, y: Integer; MasterSeed: AnsiString;
   description: AnsiString = ''): TWalletInfo;
 function getCoinIcon(id: Integer): TBitmap;
 function isValidForCoin(id: Integer; address: AnsiString): Boolean;
+function getURLToExplorer( id : Integer ; hash : AnsiString ): AnsiString;
 
 type
   coinInfo = record
@@ -54,6 +55,29 @@ const
 implementation
 
 uses Bitcoin, Ethereum , misc , UHome;
+
+
+function getURLToExplorer( id : Integer ; hash : AnsiString ):AnsiString;
+var
+  URL : AnsiString;
+begin
+
+  case id of
+      0:
+        URL := 'https://www.blockchain.com/btc/tx/';
+      1:
+        URL := 'http://explorer.litecoin.net/tx/';
+      2:
+        URL := 'https://chainz.cryptoid.info/dash/tx.dws?';
+      3:
+        URL := 'https://blockchair.com/bitcoin-cash/transaction/';
+      4:
+        URL := 'https://etherscan.io/tx/';
+
+  end;
+
+  result := URL + hash;
+end;
 
 function getCoinIcon(id: Integer): TBitmap;
 begin

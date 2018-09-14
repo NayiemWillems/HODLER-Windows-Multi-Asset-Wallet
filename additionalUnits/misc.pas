@@ -469,6 +469,8 @@ begin
   end;
   //sendCoinsTO(CurrentCoin, Address, amount, fee, MasterSeed,
   //  AvailableCoin[CurrentCoin.coin].name)
+
+
   SendFromLabel.Text := CurrentCoin.addr;
   SendToLabel.Text := Address;
   if ((CurrentCryptoCurrency is TwalletInfo) and

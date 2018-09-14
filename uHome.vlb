@@ -1,5 +1,5 @@
 ﻿[]
-Coordinates=1725,1002,79,51
+Coordinates=64,1136,68,33
 
 [WVReceive]
 Coordinates=404,270,69,33
@@ -1045,9 +1045,6 @@ Coordinates=458,366,60,51
 
 [HistoryTransactionVertScrollBox]
 Coordinates=2673,507,176,33
-
-[ImageList1]
-Coordinates=64,1136,68,33
 
 [imageSMV]
 Coordinates=333,942,66,51

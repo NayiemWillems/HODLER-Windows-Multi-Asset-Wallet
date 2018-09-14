@@ -2530,6 +2530,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         end
         inherited TransactionWaitForSendLinkLabel: TLabel
           Size.Width = 93.000000000000000000
+          TextSettings.Font.StyleExt = {04070000000000000004000000}
         end
       end
       inherited TransactionWaitForSendBackButton: TButton

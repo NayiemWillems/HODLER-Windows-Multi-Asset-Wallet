@@ -154,7 +154,6 @@ type
     ANWHeader: TToolBar;
     lblANWHeader: TLabel;
     btnANWBack: TButton;
-    ImageList1: TImageList;
     TokenIcons: TImageList;
     checkSeed: TTabItem;
     btnConfirm: TButton;
@@ -587,6 +586,7 @@ type
     Layout54: TLayout;
     Layout55: TLayout;
     WaitTimeLabel: TLabel;
+    ImageList1: TImageList;
 
     procedure btnOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -2564,6 +2564,8 @@ begin
     ans := sendCoinsTO(CurrentCoin, Address, amount, fee, MasterSeed,
     AvailableCoin[CurrentCoin.coin].name);
 
+    SynchronizeCryptoCurrency(CurrentCryptoCurrency);
+
     TThread.Synchronize(nil , procedure
     var
       ts : TStringList;
@@ -2576,7 +2578,11 @@ begin
       if leftStr( ans , length('Transaction sent')) = 'Transaction sent' then
       begin
         TransactionWaitForSendLinkLabel.Text := 'Click here to see details in Explorer';
-        TransactionWaitForSendLinkLabel.tagstring := ans;
+        ts := SplitString(ans ,#$A);
+        TransactionWaitForSendLinkLabel.tagstring := getURLToExplorer( CurrentCoin.coin , ts[ts.Count-1]);
+        TransactionWaitForSendLinkLabel.Text :=   TransactionWaitForSendLinkLabel.tagstring;
+        ts.Free;
+        //showmessage(getURLToExplorer( CurrentCoin.coin , ts[ts.Count-1]) + #$A + ans);
         TransactionWaitForSendDetailsLabel.Visible := false;
         TransactionWaitForSendLinkLabel.Visible := true;
       end
@@ -5615,7 +5621,7 @@ var
 
 {$ENDIF}
 begin
-  if CurrentCryptoCurrency is TwalletInfo then
+  {if CurrentCryptoCurrency is TwalletInfo then
   begin
     wd := TwalletInfo(CurrentCryptoCurrency);
 
@@ -5635,11 +5641,13 @@ begin
 
   end
   else
-    myURI := myURI + 'https://etherscan.io/tx/';
+    myURI := myURI + 'https://etherscan.io/tx/';  }
   // StringReplace(result, '-.', '-0.', [rfReplaceAll])
 
-  myURI := myURI + StringReplace(HistoryTransactionID.Text, ' ', '',
-    [rfReplaceAll]);
+  myURI := getURLToExplorer( CurrentCoin.coin , StringReplace( HistoryTransactionID.Text, ' ', '',[rfReplaceAll] ) );
+
+  //myURI := myURI + StringReplace(HistoryTransactionID.Text, ' ', '',
+  //  [rfReplaceAll]);
 
 {$IFDEF ANDROID}
   Intent := TJIntent.Create;
