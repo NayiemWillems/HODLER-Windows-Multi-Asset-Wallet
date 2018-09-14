@@ -1513,11 +1513,18 @@ inherited frmHome_Surface: TfrmHome_Surface
           Size.Width = 759.000000000000000000
         end
       end
+      inherited Layout56: TLayout
+        Size.Width = 759.000000000000000000
+        Size.Height = 1724.000000000000000000
+      end
+      inherited CopyPrivateKeyButton: TButton
+        Position.Y = 1872.000000000000000000
+        Size.Width = 759.000000000000000000
+      end
       inherited PrivateKeyMemo: TMemo
         Size.Width = 759.000000000000000000
-        Size.Height = 1872.000000000000000000
         Viewport.Width = 759.000000000000000000
-        Viewport.Height = 1872.000000000000000000
+        Viewport.Height = 100.000000000000000000
       end
     end
     inherited ChoseToken: TTabItem
@@ -2207,10 +2214,16 @@ inherited frmHome_Surface: TfrmHome_Surface
       inherited DeleteAccountButton: TButton
         Size.Width = 155.000000000000000000
       end
+      inherited OrganizeDragInfoLabel: TLabel
+        Size.Width = 155.000000000000000000
+      end
     end
     inherited BackToBalanceViewLayout: TLayout
       Position.Y = 1872.000000000000000000
       Size.Width = 155.000000000000000000
+      inherited BackToBalanceViewButton: TButton
+        Size.Width = 0.000000000000000000
+      end
     end
   end
   inherited Splitter1: TSplitter

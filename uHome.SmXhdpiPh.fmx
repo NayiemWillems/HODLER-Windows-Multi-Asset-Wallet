@@ -1597,11 +1597,13 @@ inherited frmHome_SmXhdpiPh: TfrmHome_SmXhdpiPh
           Size.Width = 200.000000000000000000
         end
       end
+      inherited CopyPrivateKeyButton: TButton
+        Position.X = 24.000000000000000000
+      end
       inherited PrivateKeyMemo: TMemo
-        Size.Width = 200.000000000000000000
-        Size.Height = 152.000000000000000000
-        Viewport.Width = 200.000000000000000000
-        Viewport.Height = 152.000000000000000000
+        Position.X = 16.000000000000000000
+        Viewport.Width = 450.000000000000000000
+        Viewport.Height = 100.000000000000000000
       end
     end
     inherited ChoseToken: TTabItem
@@ -2300,10 +2302,16 @@ inherited frmHome_SmXhdpiPh: TfrmHome_SmXhdpiPh
       inherited DeleteAccountButton: TButton
         Size.Width = 84.000000000000000000
       end
+      inherited OrganizeDragInfoLabel: TLabel
+        Size.Width = 84.000000000000000000
+      end
     end
     inherited BackToBalanceViewLayout: TLayout
       Position.Y = 327.000000000000000000
       Size.Width = 84.000000000000000000
+      inherited BackToBalanceViewButton: TButton
+        Size.Width = 0.000000000000000000
+      end
     end
   end
   inherited Splitter1: TSplitter

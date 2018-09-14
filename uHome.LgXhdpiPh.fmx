@@ -246,6 +246,7 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
           129s
           598s)
         inherited WVBalance: TTabItem
+          Size.Width = 32.000000000000000000
           ExplicitSize.cx = 450.000000000000000000
           ExplicitSize.cy = 49.000000000000000000
           inherited BalancePanel: TPanel
@@ -345,7 +346,7 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
           end
         end
         inherited WVReceive: TTabItem
-          Size.Width = 55.000000000000000000
+          Size.Width = 32.000000000000000000
           ExplicitSize.cx = 225.000000000000000000
           ExplicitSize.cy = 49.000000000000000000
           inherited ReceiveVertScrollBox: TVertScrollBox
@@ -404,7 +405,7 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
           end
         end
         inherited WVSend: TTabItem
-          Size.Width = 39.000000000000000000
+          Size.Width = 32.000000000000000000
           ExplicitSize.cx = 112.000000000000000000
           ExplicitSize.cy = 49.000000000000000000
           inherited SendVertScrollBox: TVertScrollBox
@@ -461,7 +462,7 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
           end
         end
         inherited WVSettings: TTabItem
-          Size.Width = 64.000000000000000000
+          Size.Width = 33.000000000000000000
           ExplicitSize.cx = 114.000000000000000000
           ExplicitSize.cy = 49.000000000000000000
           inherited btnExportPrivKey: TButton
@@ -1558,11 +1559,18 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
           Size.Width = 129.000000000000000000
         end
       end
+      inherited Layout56: TLayout
+        Size.Width = 129.000000000000000000
+        Size.Height = 499.000000000000000000
+      end
+      inherited CopyPrivateKeyButton: TButton
+        Position.Y = 647.000000000000000000
+        Size.Width = 129.000000000000000000
+      end
       inherited PrivateKeyMemo: TMemo
         Size.Width = 129.000000000000000000
-        Size.Height = 647.000000000000000000
         Viewport.Width = 129.000000000000000000
-        Viewport.Height = 647.000000000000000000
+        Viewport.Height = 100.000000000000000000
       end
     end
     inherited ChoseToken: TTabItem
@@ -2261,10 +2269,16 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
       inherited DeleteAccountButton: TButton
         Size.Width = 155.000000000000000000
       end
+      inherited OrganizeDragInfoLabel: TLabel
+        Size.Width = 155.000000000000000000
+      end
     end
     inherited BackToBalanceViewLayout: TLayout
       Position.Y = 647.000000000000000000
       Size.Width = 155.000000000000000000
+      inherited BackToBalanceViewButton: TButton
+        Size.Width = 0.000000000000000000
+      end
     end
   end
   inherited Splitter1: TSplitter

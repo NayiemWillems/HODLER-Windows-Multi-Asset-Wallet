@@ -294,7 +294,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
           93s
           619s)
         inherited WVBalance: TTabItem
-          Size.Width = 39.000000000000000000
+          Size.Width = 23.000000000000000000
           ExplicitSize.cx = 414.000000000000000000
           ExplicitSize.cy = 49.000000000000000000
           inherited BalancePanel: TPanel
@@ -398,7 +398,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
           end
         end
         inherited WVReceive: TTabItem
-          Size.Width = 41.000000000000000000
+          Size.Width = 23.000000000000000000
           ExplicitSize.cx = 207.000000000000000000
           ExplicitSize.cy = 49.000000000000000000
           inherited ReceiveVertScrollBox: TVertScrollBox
@@ -465,7 +465,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
           end
         end
         inherited WVSend: TTabItem
-          Size.Width = 30.000000000000000000
+          Size.Width = 23.000000000000000000
           ExplicitSize.cx = 103.000000000000000000
           ExplicitSize.cy = 49.000000000000000000
           inherited SendVertScrollBox: TVertScrollBox
@@ -574,7 +574,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
           end
         end
         inherited WVSettings: TTabItem
-          Size.Width = 43.000000000000000000
+          Size.Width = 24.000000000000000000
           ExplicitSize.cx = 105.000000000000000000
           ExplicitSize.cy = 49.000000000000000000
           inherited btnExportPrivKey: TButton
@@ -1759,11 +1759,19 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
           Size.Height = 44.000000000000000000
         end
       end
-      inherited PrivateKeyMemo: TMemo
+      inherited Layout56: TLayout
         Size.Width = 93.000000000000000000
-        Size.Height = 672.000000000000000000
+        Size.Height = 524.000000000000000000
+      end
+      inherited CopyPrivateKeyButton: TButton
+        Position.Y = 668.000000000000000000
+        Size.Width = 93.000000000000000000
+      end
+      inherited PrivateKeyMemo: TMemo
+        Position.Y = 44.000000000000000000
+        Size.Width = 93.000000000000000000
         Viewport.Width = 93.000000000000000000
-        Viewport.Height = 672.000000000000000000
+        Viewport.Height = 100.000000000000000000
       end
     end
     inherited ChoseToken: TTabItem
@@ -2630,10 +2638,16 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
       inherited DeleteAccountButton: TButton
         Size.Width = 155.000000000000000000
       end
+      inherited OrganizeDragInfoLabel: TLabel
+        Size.Width = 155.000000000000000000
+      end
     end
     inherited BackToBalanceViewLayout: TLayout
       Position.Y = 668.000000000000000000
       Size.Width = 155.000000000000000000
+      inherited BackToBalanceViewButton: TButton
+        Size.Width = 0.000000000000000000
+      end
     end
   end
   inherited Splitter1: TSplitter

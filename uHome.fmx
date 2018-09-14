@@ -33,7 +33,7 @@ object frmHome: TfrmHome
     Size.Height = 687.000000000000000000
     Size.PlatformDefault = False
     TabHeight = 49.000000000000000000
-    TabIndex = 7
+    TabIndex = 14
     TabOrder = 8
     TabPosition = None
     OnChange = closeVirtualKeyBoard
@@ -8788,7 +8788,7 @@ object frmHome: TfrmHome
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 8.000000000000000000
       Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
@@ -9551,7 +9551,7 @@ object frmHome: TfrmHome
       CustomIcon = <
         item
         end>
-      IsSelected = False
+      IsSelected = True
       Size.Width = 8.000000000000000000
       Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
@@ -9586,17 +9586,45 @@ object frmHome: TfrmHome
           OnClick = btnEKSBackClick
         end
       end
+      object Layout56: TLayout
+        Align = Client
+        Size.Width = 450.000000000000000000
+        Size.Height = 491.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        object PrivKeyQRImage: TImage
+          MultiResBitmap = <
+            item
+            end>
+          Align = Center
+          Size.Width = 241.000000000000000000
+          Size.Height = 239.000000000000000000
+          Size.PlatformDefault = False
+        end
+      end
+      object CopyPrivateKeyButton: TButton
+        Align = Bottom
+        Position.Y = 639.000000000000000000
+        Size.Width = 450.000000000000000000
+        Size.Height = 48.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 2
+        Text = 'Copy Private Key'
+        OnClick = CopyPrivateKeyButtonClick
+      end
       object PrivateKeyMemo: TMemo
         Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
         DataDetectorTypes = []
+        ReadOnly = True
         TextSettings.HorzAlign = Center
-        Align = Client
+        Align = Top
+        Position.Y = 48.000000000000000000
         Size.Width = 450.000000000000000000
-        Size.Height = 639.000000000000000000
+        Size.Height = 100.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 1
+        TabOrder = 3
         Viewport.Width = 446.000000000000000000
-        Viewport.Height = 635.000000000000000000
+        Viewport.Height = 96.000000000000000000
       end
     end
     object ChoseToken: TTabItem
@@ -13086,8 +13114,16 @@ object frmHome: TfrmHome
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
-        Text = 'DeleteAccountButton'
+        Text = 'Delete this account'
         OnClick = DeleteAccountButtonClick
+      end
+      object OrganizeDragInfoLabel: TLabel
+        Align = Client
+        Size.Width = 516.000000000000000000
+        Size.Height = 48.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Hold and drag wallet to change order.'
+        TabOrder = 1
       end
     end
     object BackToBalanceViewLayout: TLayout
@@ -13098,8 +13134,7 @@ object frmHome: TfrmHome
       Size.PlatformDefault = False
       TabOrder = 4
       object BackToBalanceViewButton: TButton
-        Align = Scale
-        Position.X = 258.000000000000000000
+        Align = Client
         Size.Width = 258.000000000000000000
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
@@ -13108,12 +13143,12 @@ object frmHome: TfrmHome
         OnClick = BackToBalanceViewButtonClick
       end
       object BackWithoutSavingButton: TButton
-        Align = Scale
+        Align = Left
         Size.Width = 258.000000000000000000
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
-        Text = 'BackWithoutSavingButton'
+        Text = 'Back without saving'
         OnClick = closeOrganizeView
       end
     end

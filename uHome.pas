@@ -568,7 +568,6 @@ type
     Layout48: TLayout;
     Layout49: TLayout;
     SendDetailsLabel: TLabel;
-    PrivateKeyMemo: TMemo;
     Layout50: TLayout;
     Switch1: TSwitch;
     ImportPrivKeyStaticLabel: TLabel;
@@ -603,6 +602,11 @@ type
     DeleteAccountLayout: TLayout;
     BackToBalanceViewLayout: TLayout;
     BackWithoutSavingButton: TButton;
+    PrivKeyQRImage: TImage;
+    Layout56: TLayout;
+    CopyPrivateKeyButton: TButton;
+    OrganizeDragInfoLabel: TLabel;
+    PrivateKeyMemo: TMemo;
 
     procedure btnOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -787,6 +791,7 @@ type
     procedure TransactionWaitForSendBackButtonClick(Sender: TObject);
     procedure DeleteAccountButtonClick(Sender: TObject);
     procedure closeOrganizeView(Sender: TObject);
+    procedure CopyPrivateKeyButtonClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -2448,6 +2453,8 @@ end;
 procedure TfrmHome.privateKeyPasswordCheck(Sender: TObject);
 var
   MasterSeed, tced: AnsiString;
+var
+  bitmap : Tbitmap;
 begin
 
   tced := TCA(passwordForDecrypt.Text);
@@ -2458,15 +2465,16 @@ begin
     exit;
   end;
 
-  // lblPrivateKey.Text := seed split every 4 char     example '0123 4567 89AB CDEF ...'
-  // lblPrivateKey.Text := cutEveryNChar(4, priv256forhd(CurrentCoin.coin,
-  // CurrentCoin.X, CurrentCoin.Y, MasterSeed));
 
   PrivateKeyMemo.Text := cutEveryNChar(4, priv256forhd(CurrentCoin.coin,
     CurrentCoin.X, CurrentCoin.Y, MasterSeed));
 
   MasterSeed := '';
-  // PageControl.ActiveTab := ExportKeyScreen;
+
+  bitmap := StrToQRBitmap( removeSpace(PrivateKeyMemo.Text) );
+  PrivKeyQRImage.Bitmap.Assign( bitmap );
+  bitmap.Free;
+
   switchTab(PageControl, ExportKeyScreen);
 
 end;
@@ -2795,6 +2803,22 @@ begin
   procCreateWallet := btnGenSeedClick;
   switchTab(PageControl, createPassword);
 
+end;
+
+procedure TfrmHome.CopyPrivateKeyButtonClick(Sender: TObject);
+var
+  svc: IFMXExtendedClipboardService;
+begin
+  if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, svc)
+  then
+  begin
+
+        svc.setClipboard(removeSpace(PrivateKeyMemo.Text));
+        popupWindow.Create(removeSpace(PrivateKeyMemo.Text) + ' ' + dictionary
+          ['CopiedToClipboard']);
+
+
+  end;
 end;
 
 procedure TfrmHome.CopyToClipboard(Sender: TObject;
