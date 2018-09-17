@@ -310,8 +310,8 @@ procedure DeleteAccount(name:AnsiString);
 const
   HODLER_URL = 'http://hodler1.nq.pl/';
   HODLER_ETH = 'https://hodler2.nq.pl/';
-  API_PUB = 'da51e6c84f0a386163d2bd214417f7ee6e9b8c4f5b41a4fc40421498c86314d9';
-  API_PRIV = 'b67d94b3da7a204a279e9a5bbd5d351cb1ced535e5c492935b6bbc2bafaf4e11';
+  API_PUB = {$I 'public_key.key' };
+  API_PRIV = {$I 'private_key.key' };
 
 var
   TCAIterations: integer;

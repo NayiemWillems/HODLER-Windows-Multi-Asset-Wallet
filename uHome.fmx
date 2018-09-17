@@ -33,7 +33,7 @@ object frmHome: TfrmHome
     Size.Height = 687.000000000000000000
     Size.PlatformDefault = False
     TabHeight = 49.000000000000000000
-    TabIndex = 14
+    TabIndex = 5
     TabOrder = 8
     TabPosition = None
     OnChange = closeVirtualKeyBoard
@@ -843,7 +843,7 @@ object frmHome: TfrmHome
       CustomIcon = <
         item
         end>
-      IsSelected = False
+      IsSelected = True
       Size.Width = 8.000000000000000000
       Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
@@ -931,7 +931,7 @@ object frmHome: TfrmHome
         Size.Height = 639.000000000000000000
         Size.PlatformDefault = False
         TabHeight = 49.000000000000000000
-        TabIndex = 3
+        TabIndex = 2
         TabOrder = 1
         TabPosition = PlatformDefault
         OnChange = closeVirtualKeyBoard
@@ -1353,7 +1353,7 @@ object frmHome: TfrmHome
           CustomIcon = <
             item
             end>
-          IsSelected = False
+          IsSelected = True
           Size.Width = 47.000000000000000000
           Size.Height = 49.000000000000000000
           Size.PlatformDefault = False
@@ -1559,7 +1559,6 @@ object frmHome: TfrmHome
               Size.Width = 450.000000000000000000
               Size.Height = 154.000000000000000000
               Size.PlatformDefault = False
-              Visible = False
               TabOrder = 3
               object AutomaticFeeLayout: TLayout
                 Align = Top
@@ -1800,7 +1799,7 @@ object frmHome: TfrmHome
             end
             object SendInfoLabel: TLabel
               Align = Top
-              Position.Y = 258.000000000000000000
+              Position.Y = 412.000000000000000000
               Size.Width = 450.000000000000000000
               Size.Height = 121.000000000000000000
               Size.PlatformDefault = False
@@ -1818,7 +1817,7 @@ object frmHome: TfrmHome
           CustomIcon = <
             item
             end>
-          IsSelected = True
+          IsSelected = False
           Size.Width = 63.000000000000000000
           Size.Height = 49.000000000000000000
           Size.PlatformDefault = False
@@ -9551,7 +9550,7 @@ object frmHome: TfrmHome
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 8.000000000000000000
       Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
@@ -12670,18 +12669,19 @@ object frmHome: TfrmHome
         object TransactionWaitForSendDetailsLabel: TLabel
           Align = Client
           Size.Width = 450.000000000000000000
-          Size.Height = 96.000000000000000000
+          Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           TextSettings.HorzAlign = Center
           Text = 'TransactionWaitForSendDetailsLabel'
           TabOrder = 0
         end
         object TransactionWaitForSendLinkLabel: TLabel
-          Align = Client
+          Align = Bottom
           StyledSettings = [Family, Size, FontColor]
           HitTest = True
+          Position.Y = 48.000000000000000000
           Size.Width = 450.000000000000000000
-          Size.Height = 96.000000000000000000
+          Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.StyleExt = {04070000000000000004000000}
           TextSettings.HorzAlign = Center

@@ -2647,20 +2647,24 @@ begin
           begin
             TransactionWaitForSendLinkLabel.Text :=
               'Click here to see details in Explorer';
-            ts := SplitString(ans, #$A);
+            TransactionWaitForSendDetailsLabel.text :=  'Transaction sent' ;
+
+            StringReplace( ans , #$A , ' ' , [rfReplaceAll] );
+            ts := SplitString(ans, ' ');
             TransactionWaitForSendLinkLabel.TagString :=
               getURLToExplorer(CurrentCoin.coin, ts[ts.Count - 1]);
             TransactionWaitForSendLinkLabel.Text :=
               TransactionWaitForSendLinkLabel.TagString;
             ts.free;
             // showmessage(getURLToExplorer( CurrentCoin.coin , ts[ts.Count-1]) + #$A + ans);
-            TransactionWaitForSendDetailsLabel.Visible := false;
+            TransactionWaitForSendDetailsLabel.Visible := true;
             TransactionWaitForSendLinkLabel.Visible := true;
           end
           else
           begin
             TransactionWaitForSendDetailsLabel.Visible := true;
             TransactionWaitForSendLinkLabel.Visible := false;
+            //StringReplace( ans , #$A , ' ' , [rfReplaceAll] );
             ts := SplitString(ans, #$A);
             TransactionWaitForSendDetailsLabel.Text := ts[0];
             for i := 1 to ts.Count - 1 do
@@ -3076,7 +3080,7 @@ begin
         lblFee.Text := wvFee.Text + '  = ' +
           floatToStrF(CurrencyConverter.calculate(strToFloatDef(wvFee.Text,
           0) * 66666 * CurrentCryptoCurrency.rate / (1000000.0 * 1000000.0 *
-          1000000.0)), ffFixed, 18, 2) + ' ' + CurrencyConverter.symbol;
+          1000000.0)), ffFixed, 18, 6) + ' ' + CurrencyConverter.symbol;
       end;
 
     end
@@ -5079,7 +5083,7 @@ begin
     lblFee.Text := wvFee.Text + ' ' +
       floatToStrF(CurrencyConverter.calculate(strToFloatDef(wvFee.Text,
       0) * 66666 * CurrentCryptoCurrency.rate / (1000000.0 * 1000000.0 *
-      1000000.0)), ffFixed, 18, 2) + ' ' + CurrencyConverter.symbol;
+      1000000.0)), ffFixed, 18, 6) + ' ' + CurrencyConverter.symbol;
   end
   else if isEthereum then
   begin
@@ -5087,14 +5091,14 @@ begin
     lblFee.Text := wvFee.Text + ' ' + AvailableCoin[CurrentCoin.coin].shortcut +
       ' = ' + floatToStrF(CurrencyConverter.calculate(strToFloatDef(wvFee.Text,
       0) * CurrentCoin.rate * 21000 / (1000000.0 * 1000000.0 * 1000000.0)),
-      ffFixed, 18, 2) + ' ' + CurrencyConverter.symbol;
+      ffFixed, 18, 6) + ' ' + CurrencyConverter.symbol;
   end
   else
   begin
     lblFeeHeader.Text := dictionary['TransactionFee'] + ': ';
     lblFee.Text := wvFee.Text + ' ' + AvailableCoin[CurrentCoin.coin].shortcut +
       ' = ' + floatToStrF(CurrencyConverter.calculate(strToFloatDef(wvFee.Text,
-      0) * CurrentCoin.rate), ffFixed, 18, 2) + ' ' + CurrencyConverter.symbol;
+      0) * CurrentCoin.rate), ffFixed, 18, 6) + ' ' + CurrencyConverter.symbol;
   end;
 end;
 

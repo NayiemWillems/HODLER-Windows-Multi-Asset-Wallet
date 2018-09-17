@@ -452,6 +452,9 @@ inherited frmHome_Surface: TfrmHome_Surface
                 end
               end
             end
+            inherited SendInfoLabel: TLabel
+              Size.Width = 759.000000000000000000
+            end
           end
         end
         inherited WVSettings: TTabItem
