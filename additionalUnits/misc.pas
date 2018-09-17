@@ -721,6 +721,7 @@ var
   balLabel: TLabel;
   adrLabel: TLabel;
   coinIMG: TImage;
+  price : TLabel;
 begin
   with frmHome.WalletList do
   begin
@@ -781,9 +782,9 @@ begin
       CurrencyConverter.symbol;
     balLabel.TextSettings.HorzAlign := TTextAlign.Trailing;
     balLabel.Visible := true;
-    balLabel.Width := 200;
-    balLabel.Height := 48;
-    balLabel.Align := TAlignLayout.FitRight;
+    //balLabel.Width := 200;
+    balLabel.Height := 40;
+    balLabel.Align := TAlignLayout.Top;
     balLabel.TextSettings.Font.size := adrLabel.TextSettings.Font.size - 3;
     balLabel.Margins.Right := 15;
     balLabel.TagString := 'balance';
@@ -810,6 +811,16 @@ begin
     // coinIMG.OnClick := frmHome.WVTokenChoseInWallet;
     // {$ENDIF}
     // coinIMG.Tag := T.idInWallet;
+
+    price := Tlabel.Create( panel );
+    price.Parent := panel;
+    price.Visible := true;
+    price.Text := FloatToStrF(CurrencyConverter.calculate(crypto.rate) , ffFixed, 18 , 2);
+    price.Align := TAlignLayout.Bottom;
+    price.Height := 24;
+    price.TextSettings.HorzAlign := TTextAlign.Trailing;
+    price.Margins.Right := 15;
+    price.TagString := 'price';
   end;
 end;
 
@@ -3658,6 +3669,16 @@ begin
         end;
       end;
 
+      if fmxObj.TagString = 'price' then
+      begin
+        try
+          TLabel(fmxObj).text := floatToStrF(CurrencyConverter.calculate(cc.rate) , ffFixed, 15, 2) +
+             ' ' + CurrencyConverter.symbol+'/' + cc.ShortCut;
+        finally
+
+        end;
+      end;
+
     end;
 
   end;
@@ -3744,15 +3765,7 @@ begin
 
   updateBalanceLabels();
   updateNameLabels();
-  { for i := 0 to myWalletsCount - 1 do
-    begin
 
-
-    end;
-    for T in myTokens do
-    begin
-    updateTokenLabels(T);
-    end; }
 end;
 
 { procedure addWalletToList(wd: TWalletInfo);
