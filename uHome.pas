@@ -556,17 +556,9 @@ type
     SendValueStaticLabel: TLabel;
     SendFeeStaticLabel: TLabel;
     Layout38: TLayout;
-    Layout39: TLayout;
-    Layout40: TLayout;
     Layout41: TLayout;
-    Layout42: TLayout;
-    Layout43: TLayout;
     Layout44: TLayout;
-    Layout45: TLayout;
-    Layout46: TLayout;
     Layout47: TLayout;
-    Layout48: TLayout;
-    Layout49: TLayout;
     SendDetailsLabel: TLabel;
     Layout50: TLayout;
     Switch1: TSwitch;
@@ -574,7 +566,6 @@ type
     Panel11: TPanel;
     PrivateKeySettingsLayout: TLayout;
     Layout51: TLayout;
-    Layout52: TLayout;
     Panel12: TPanel;
     TransactionWaitForSend: TTabItem;
     TransactionWaitForSendAniIndicator: TAniIndicator;
@@ -583,8 +574,6 @@ type
     TransactionWaitForSendBackButton: TButton;
     TransactionWaitForSendLinkLabel: TLabel;
     Layout53: TLayout;
-    Layout54: TLayout;
-    Layout55: TLayout;
     WaitTimeLabel: TLabel;
     ImageList1: TImageList;
     WelcomeTabInfoLabel: TLabel;
@@ -607,6 +596,10 @@ type
     CopyPrivateKeyButton: TButton;
     OrganizeDragInfoLabel: TLabel;
     PrivateKeyMemo: TMemo;
+    PopupBox1: TPopupBox;
+    PerByteFeeLayout: TLayout;
+    PerByteFeeRatio: TRadioButton;
+    PerByteFeeEdit: TEdit;
 
     procedure btnOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -792,6 +785,8 @@ type
     procedure DeleteAccountButtonClick(Sender: TObject);
     procedure closeOrganizeView(Sender: TObject);
     procedure CopyPrivateKeyButtonClick(Sender: TObject);
+    procedure PopupBox1Change(Sender: TObject);
+    procedure PerByteFeeEditChangeTracking(Sender: TObject);
 
   private
     { Private declarations }
@@ -914,7 +909,7 @@ resourcestring
   QRSearchDecryted = 'QRSearchDecryted';
 
 resourcestring
-  CURRENT_VERSION = '0.2.5';
+  CURRENT_VERSION = '0.2.6';
 
 var
   LATEST_VERSION: AnsiString;
@@ -1243,13 +1238,12 @@ begin
             begin
 
               DeleteAccount(CurrentAccount.name);
-              CurrentAccount.Free;
+              CurrentAccount.free;
               CurrentAccount := nil;
               lastClosedAccount := '';
               refreshWalletDat();
 
               RefreshAccountList(nil);
-
 
               closeOrganizeView(nil);
               FormShow(nil);
@@ -1340,8 +1334,12 @@ begin
 
   HistoryTransactionValue.Text := BigIntegertoFloatStr(th.CountValues,
     CurrentCryptoCurrency.decimals);
-  historyTransactionConfirmation.Text := inttoStr(th.confirmation) +
-    ' Confirmation(s)';
+  if th.confirmation > 0 then
+    historyTransactionConfirmation.Text := IntToStr(th.confirmation) +
+      ' Confirmation(s)'
+  else
+    historyTransactionConfirmation.Text := 'Unconfirmed';
+
   HistoryTransactionDate.Text := FormatDateTime('dd mmm yyyy hh:mm',
     UnixToDateTime(strToIntdef(th.Data, 0)));
   HistoryTransactionID.Text := cutEveryNChar(4, th.TransactionID);
@@ -1375,7 +1373,7 @@ begin
     Panel.Height := 36;
     Panel.Visible := true;
     Panel.Tag := i;
-    Panel.name := 'HistoryValueAddressPanel_' + inttoStr(i);
+    Panel.name := 'HistoryValueAddressPanel_' + IntToStr(i);
     Panel.Parent := HistoryTransactionVertScrollBox;
     Panel.Position.Y := 1000 + Panel.Height * i;
 
@@ -1589,6 +1587,157 @@ begin
   TPanel(Sender).Opacity := 0.5;
   // SetFocused(MovingPanel);
   OrganizeList.AniCalculations.TouchTracking := [];
+end;
+
+procedure TfrmHome.PerByteFeeEditChangeTracking(Sender: TObject);
+var
+  temp : BigInteger;
+  decimals : integer;
+  b : BigInteger;
+begin
+  temp := 180 + 2*34 + 10 + 1 ;
+
+  decimals := Pos( '.' , PerByteFeeEdit.Text );
+  if decimals = Low(PerByteFeeEdit.Text)-1 then
+  begin
+    decimals := 0 ;
+    b := StrtoIntDEf( PerByteFeeEdit.Text , 0 );
+  end
+  else
+  begin
+    decimals := length( PerByteFeeEdit.Text ) - decimals;
+    b := StrFloatToBigInteger( PerByteFeeEdit.Text , decimals );
+  end;
+
+
+  temp := (temp * b) div bigInteger.pow(10 , decimals) ;
+  wvFee.Text := BigIntegerToFloatStr( temp , CurrentCoin.decimals );
+end;
+
+procedure TfrmHome.PopupBox1Change(Sender: TObject);
+var
+  i, j: Integer;
+  swapFlag, rep: Boolean;
+  temp: Single;
+  function compLex(a, b: CryptoCurrency): Integer;
+  var
+    adesc, bdesc: AnsiString;
+  begin
+    if a.description = '' then
+      adesc := a.name
+    else
+      adesc := a.description;
+
+    if b.description = '' then
+      bdesc := b.name
+    else
+      bdesc := b.description;
+
+    if adesc = bdesc then
+      exit(0);
+    if adesc > bdesc then
+      exit(1);
+    exit(-1);
+
+  end;
+
+  function compVal(a, b: CryptoCurrency): Integer;
+  var
+    adesc, bdesc: AnsiString;
+  begin
+
+    if a.getFiat < b.getFiat then
+      exit(-1);
+    if a.getFiat > b.getFiat then
+      exit(1);
+    if a.confirmed > b.confirmed then
+      exit(1);
+    if a.confirmed < b.confirmed then
+      exit(-1);
+    exit(0);
+  end;
+  function compAmount(a, b: CryptoCurrency): Integer;
+  var
+    adesc, bdesc: AnsiString;
+  begin
+
+    if a.confirmed > b.confirmed then
+      exit(1);
+    if a.confirmed < b.confirmed then
+      exit(-1);
+    exit(0);
+  end;
+
+begin
+  rep := true;
+  while (rep) do
+  begin
+    rep := false;
+    for i := 0 to OrganizeList.Content.ChildrenCount - 1 do
+    begin
+
+      for j := 0 to OrganizeList.Content.ChildrenCount - 1 do
+      begin
+        swapFlag := false;
+
+        case PopupBox1.ItemIndex of
+          { 0:
+            begin
+            Tpanel(OrganizeList.Content.Children[i]).Position.Y := CryptoCurrency(OrganizeList.Content.Children[j]
+            .TagObject).orderInWallet-1;
+            break;
+            end; }
+
+          0:
+            if (compLex(CryptoCurrency(OrganizeList.Content.Children[i]
+              .TagObject), CryptoCurrency(OrganizeList.Content.Children[j]
+              .TagObject)) > 0) and
+              (TPanel(OrganizeList.Content.Children[i]).Position.Y <
+              TPanel(OrganizeList.Content.Children[j]).Position.Y) then
+              swapFlag := true;
+
+          1:
+            if (compVal(CryptoCurrency(OrganizeList.Content.Children[i]
+              .TagObject), CryptoCurrency(OrganizeList.Content.Children[j]
+              .TagObject)) > 0) and
+              (TPanel(OrganizeList.Content.Children[i]).Position.Y >
+              TPanel(OrganizeList.Content.Children[j]).Position.Y) then
+              swapFlag := true;
+
+          2:
+            if (compAmount(CryptoCurrency(OrganizeList.Content.Children[i]
+              .TagObject), CryptoCurrency(OrganizeList.Content.Children[j]
+              .TagObject)) > 0) and
+              (TPanel(OrganizeList.Content.Children[i]).Position.Y >
+              TPanel(OrganizeList.Content.Children[j]).Position.Y) then
+              swapFlag := true;
+
+        end;
+
+        if swapFlag then
+        begin
+
+          temp := TPanel(OrganizeList.Content.Children[i]).Position.Y;
+          TPanel(OrganizeList.Content.Children[i]).Position.Y :=
+            TPanel(OrganizeList.Content.Children[j]).Position.Y - 1;
+          TPanel(OrganizeList.Content.Children[j]).Position.Y := temp - 1;
+
+          if (i = 8) and (j = 11) then
+          begin
+            compLex(CryptoCurrency(OrganizeList.Content.Children[i].TagObject),
+              CryptoCurrency(OrganizeList.Content.Children[j].TagObject));
+          end;
+
+          rep := true;
+
+        end;
+
+      end;
+
+    end
+
+  end;
+
 end;
 
 procedure TfrmHome.LanguageBoxChange(Sender: TObject);
@@ -2166,7 +2315,6 @@ begin
   SyncHistoryThr.WaitFor;
   SyncBalanceThr.WaitFor;
 
-
   CurrentAccount.SaveFiles();
 
   clearVertScrollBox(WalletList);
@@ -2246,10 +2394,13 @@ begin
 end;
 
 procedure TfrmHome.changeFeeWay(Sender: TObject);
+var
+  temp : BigInteger;
 begin
 
   if AutomaticFeeRadio.IsChecked then
   begin
+    PerByteFeeEdit.Enabled := false;
     FeeSpin.Enabled := true;
     wvFee.Enabled := false;
     if FeeSpin.Value = FeeSpin.Max then
@@ -2265,12 +2416,30 @@ begin
 
     FeeSpin.Value
   end;
+
   if FixedFeeRadio.IsPressed then
   begin
     FeeSpin.Enabled := false;
     wvFee.Enabled := true;
+    PerByteFeeEdit.Enabled := false;
+
   end;
 
+  if PerByteFeeRatio.IsPressed then
+  begin
+
+    PerByteFeeEdit.Enabled := true;
+    wvFee.Enabled := false;
+    FeeSpin.Enabled := false;
+
+    PerByteFeeEditChangeTracking(nil);
+
+
+
+
+  end;
+
+  FeeToUSDUpdate(nil);
 end;
 
 procedure downloadLatest(ver: string);
@@ -2286,7 +2455,7 @@ begin
   fPath := ExtractFileDir(ParamStr(0)) + '/update.bin';
 
   aURL := 'https://github.com/HODLERTECH/Putty-Updater/raw/master/binaries/' +
-    trim(ver) + '.exe?xx=' + inttoStr(random($FFFFF));
+    trim(ver) + '.exe?xx=' + IntToStr(random($FFFFF));
   URLDownloadToFile(nil, PWideChar(aURL), PWideChar(fPath), 0, nil);
 
 end;
@@ -2371,6 +2540,8 @@ begin
 
   switchTab(PageControl, walletView);
 
+  btnSyncClick(nil);
+
 end;
 
 procedure TfrmHome.DebugBtnClick(Sender: TObject);
@@ -2454,7 +2625,7 @@ procedure TfrmHome.privateKeyPasswordCheck(Sender: TObject);
 var
   MasterSeed, tced: AnsiString;
 var
-  bitmap : Tbitmap;
+  Bitmap: TBitmap;
 begin
 
   tced := TCA(passwordForDecrypt.Text);
@@ -2465,15 +2636,14 @@ begin
     exit;
   end;
 
-
   PrivateKeyMemo.Text := cutEveryNChar(4, priv256forhd(CurrentCoin.coin,
     CurrentCoin.X, CurrentCoin.Y, MasterSeed));
 
   MasterSeed := '';
 
-  bitmap := StrToQRBitmap( removeSpace(PrivateKeyMemo.Text) );
-  PrivKeyQRImage.Bitmap.Assign( bitmap );
-  bitmap.Free;
+  Bitmap := StrToQRBitmap(removeSpace(PrivateKeyMemo.Text));
+  PrivKeyQRImage.Bitmap.Assign(Bitmap);
+  Bitmap.free;
 
   switchTab(PageControl, ExportKeyScreen);
 
@@ -2647,9 +2817,9 @@ begin
           begin
             TransactionWaitForSendLinkLabel.Text :=
               'Click here to see details in Explorer';
-            TransactionWaitForSendDetailsLabel.text :=  'Transaction sent' ;
+            TransactionWaitForSendDetailsLabel.Text := 'Transaction sent';
 
-            StringReplace( ans , #$A , ' ' , [rfReplaceAll] );
+            StringReplace(ans, #$A, ' ', [rfReplaceAll]);
             ts := SplitString(ans, ' ');
             TransactionWaitForSendLinkLabel.TagString :=
               getURLToExplorer(CurrentCoin.coin, ts[ts.Count - 1]);
@@ -2664,7 +2834,7 @@ begin
           begin
             TransactionWaitForSendDetailsLabel.Visible := true;
             TransactionWaitForSendLinkLabel.Visible := false;
-            //StringReplace( ans , #$A , ' ' , [rfReplaceAll] );
+            // StringReplace( ans , #$A , ' ' , [rfReplaceAll] );
             ts := SplitString(ans, #$A);
             TransactionWaitForSendDetailsLabel.Text := ts[0];
             for i := 1 to ts.Count - 1 do
@@ -2817,10 +2987,9 @@ begin
   then
   begin
 
-        svc.setClipboard(removeSpace(PrivateKeyMemo.Text));
-        popupWindow.Create(removeSpace(PrivateKeyMemo.Text) + ' ' + dictionary
-          ['CopiedToClipboard']);
-
+    svc.setClipboard(removeSpace(PrivateKeyMemo.Text));
+    popupWindow.Create(removeSpace(PrivateKeyMemo.Text) + ' ' + dictionary
+      ['CopiedToClipboard']);
 
   end;
 end;
@@ -3011,6 +3180,7 @@ var
   wd: TwalletInfo;
 begin
   try
+
     Splitter1.Visible := true;
     PageControl.Visible := true;
 
@@ -3155,6 +3325,20 @@ begin
       SearchTokenButton.Visible := true
     else
       SearchTokenButton.Visible := false;
+
+    AutomaticFeeRadio.Change;
+    FeeToUSDUpdate(nil);
+
+    if CurrentCoin.coin = 0 then
+    begin
+      PerByteFeeLayout.visible := true;
+      TransactionFeeLayout.Height := 186;
+    end
+    else
+    begin
+      PerByteFeeLayout.visible := false;
+      TransactionFeeLayout.Height := 186 - 32;
+    end;
 
   except
     on E: Exception do
@@ -3617,6 +3801,8 @@ begin
   CurrentAccount.addToken(t);
   CurrentAccount.SaveFiles();
 
+  btnSyncClick(nil);
+
   switchTab(PageControl,
     walletView { TTabItem(frmHome.FindComponent('dashbrd')) } );
 
@@ -3722,14 +3908,11 @@ end;
 
 procedure TfrmHome.LoadAccountPanelClick(Sender: TObject);
 begin
-
   if OrganizeList.Visible = true then
     closeOrganizeView(nil);
-
+  firstSync := true ;
 
   LoadCurrentAccount(TfmxObject(Sender).TagString);
-  // AccountsListPanel.Visible := false;
-
 end;
 
 procedure TfrmHome.NoPrintScreenImageClick(Sender: TObject);
@@ -3754,7 +3937,7 @@ begin
   begin
     fmxObj := AccountsListVertScrollBox.Content.Children[i];
 
-    flag := false ; //
+    flag := false; //
     for name in AccountsNames do
     begin
 
@@ -4240,6 +4423,8 @@ begin
     switchTab(PageControl,
       walletView { TTabItem(frmHome.FindComponent('dashbrd')) } );
   end;
+
+  btnSyncClick(nil);
 end;
 
 procedure TfrmHome.btnChangeDescriptionClick(Sender: TObject);
@@ -5069,7 +5254,7 @@ begin
   begin
     wvFee.Text := CurrentCoin.efee[round(FeeSpin.Value) - 1];
     lblBlockInfo.Text := dictionary['ConfirmInNext'] + ' ' +
-      inttoStr(round(FeeSpin.Value)) + ' ' + dictionary['Blocks'];
+      IntToStr(round(FeeSpin.Value)) + ' ' + dictionary['Blocks'];
   end
   else
     FeeSpin.Value := 1.0;
@@ -5331,7 +5516,7 @@ begin
   if gathener.Enabled then
 
     trngBuffer := trngBuffer + floattoStr(X * random($FFFF) * trngBufferCounter)
-      + floattoStr(Y * random($FFFF)) + inttoStr(random($FFFFFFFF))
+      + floattoStr(Y * random($FFFF)) + IntToStr(random($FFFFFFFF))
 end;
 
 procedure TfrmHome.FormResize(Sender: TObject);
@@ -5537,7 +5722,7 @@ begin
 
   if not shown then
   begin
-    frmHome.Caption := 'HODLER Core v' + CURRENT_VERSION;
+    frmHome.Caption := 'HODLER Core v' + CURRENT_VERSION + ' Special thanks to @szytka from forum.bitcoin.pl';
     tthread.CreateAnonymousThread(
       procedure
       begin
@@ -5666,7 +5851,7 @@ begin
   if trngBufferCounter mod 200 = 0 then
   begin
     // 10sec of gathering random data should be enough to get unique seed
-    trngBuffer := GetSTrHashSHA256(trngBuffer + inttoStr(random($FFFFFFFF)));
+    trngBuffer := GetSTrHashSHA256(trngBuffer + IntToStr(random($FFFFFFFF)));
     gathener.Enabled := false;
 
     // PageControl.ActiveTab := seedGenerated;
@@ -6036,7 +6221,7 @@ var
 
 var
   MasterSeed, tced: AnsiString;
-
+  Y, m, d: Word;
 begin
 
   tced := TCA(passwordForDecrypt.Text);
@@ -6052,8 +6237,11 @@ begin
   ImgPath := System.IOUtils.TPath.Combine
     (IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable('APPDATA')),
     'QRDecryptedSeed.png');
+  DecodeDate(Now, Y, m, d);
   zipPath := System.IOUtils.TPath.Combine
-    (System.IOUtils.TPath.GetDownloadsPath(), 'QRDecryptedSeed.zip');
+    (System.IOUtils.TPath.GetDownloadsPath(), 'QRDecryptedSeed' +
+    Format('%d.%d.%d', [Y, m, d]) + '.' + IntToStr(DateTimeToUnix(Now))
+    + '.zip');
 
   img.SaveToFile(ImgPath);
 
@@ -6093,7 +6281,7 @@ var
 
 var
   MasterSeed, tced: AnsiString;
-
+  Y, m, d: Word;
 begin
 
   tced := TCA(passwordForDecrypt.Text);
@@ -6109,8 +6297,11 @@ begin
 
   ImgPath := IncludeTrailingPathDelimiter
     (SysUtils.GetEnvironmentVariable('APPDATA')) + 'QREncryptedSeed.png';
+  DecodeDate(Now, Y, m, d);
   zipPath := System.IOUtils.TPath.Combine
-    (System.IOUtils.TPath.GetDownloadsPath(), 'QREncryptedSeed.zip');
+    (System.IOUtils.TPath.GetDownloadsPath(), 'QREncryptedSeed' +
+    Format('%d.%d.%d', [Y, m, d]) + '.' + IntToStr(DateTimeToUnix(Now))
+    + '.zip');
 
   img.SaveToFile(ImgPath);
 
@@ -6168,7 +6359,7 @@ var
   FileName: AnsiString;
 var
   MasterSeed, tced: AnsiString;
-
+  Y, m, d: Word;
 begin
 
   tced := TCA(passwordForDecrypt.Text);
@@ -6180,8 +6371,9 @@ begin
   end;
   tced := '';
   MasterSeed := '';
-
-  FileName := CurrentAccount.name + '_' + FormatDateTime('dd_mmm_yyyy', Now);
+  DecodeDate(Now, Y, m, d);
+  FileName := CurrentAccount.name + '_' + Format('%d.%d.%d', [Y, m, d]) + '.' +
+    IntToStr(DateTimeToUnix(Now));
 
   zipPath := System.IOUtils.TPath.Combine
     (System.IOUtils.TPath.GetDownloadsPath(), FileName + '.hsb.zip');
@@ -6321,38 +6513,55 @@ begin
 
         LoadingKeyDataAniIndicator.Enabled := true;
         LoadingKeyDataAniIndicator.Visible := true;
+        if ImportCoinID <> 4 then
+        begin
 
-        tthread.CreateAnonymousThread(
-          procedure
-          var
-            comkey: AnsiString;
-            notkey: AnsiString;
-            Data: AnsiString;
-            ts: TStringList;
-            wd: TwalletInfo;
-            request: AnsiString;
-          begin
-            comkey := secp256k1_get_public(WIFEdit.Text, false);
-            notkey := secp256k1_get_public(WIFEdit.Text, true);
-
-            wd := TwalletInfo.Create(ImportCoinID, -1, -1,
-              Bitcoin_PublicAddrToWallet(comkey,
-              AvailableCoin[ImportCoinID].p2pk), '');
-            wd.pub := comkey;
-            request := HODLER_URL + 'getSegwitBalance.php?coin=' + AvailableCoin
-              [wd.coin].name + '&' + segwitParameters(wd);
-            Data := getDataOverHttp(request);
-            ts := TStringList.Create();
-            ts.Text := Data;
-
-            if strToFloatDef(ts[0], 0) + strToFloatDef(ts[1], 0) = 0 then
+          tthread.CreateAnonymousThread(
+            procedure
+            var
+              comkey: AnsiString;
+              notkey: AnsiString;
+              Data: AnsiString;
+              ts: TStringList;
+              wd: TwalletInfo;
+              request: AnsiString;
             begin
-              Data := getDataOverHttp(HODLER_URL + 'getSegwitHistory.php?coin='
-                + AvailableCoin[wd.coin].name + '&' + segwitParameters(wd));
+              comkey := secp256k1_get_public(WIFEdit.Text, false);
+              notkey := secp256k1_get_public(WIFEdit.Text, true);
 
-              if length(Data) > 10 then
+              wd := TwalletInfo.Create(ImportCoinID, -1, -1,
+                Bitcoin_PublicAddrToWallet(comkey,
+                AvailableCoin[ImportCoinID].p2pk), '');
+              wd.pub := comkey;
+              request := HODLER_URL + 'getSegwitBalance.php?coin=' +
+                AvailableCoin[wd.coin].name + '&' + segwitParameters(wd);
+              Data := getDataOverHttp(request);
+              ts := TStringList.Create();
+              ts.Text := Data;
+
+              if strToFloatDef(ts[0], 0) + strToFloatDef(ts[1], 0) = 0 then
               begin
+                Data := getDataOverHttp(HODLER_URL +
+                  'getSegwitHistory.php?coin=' + AvailableCoin[wd.coin].name +
+                  '&' + segwitParameters(wd));
+                // ->
+                if length(Data) > 10 then
+                begin
 
+                  tthread.Synchronize(nil,
+                    procedure
+                    begin
+                      HexPrivKeyCompressedRadioButton.IsChecked := true;
+                      // btnOKAddNewCoinSettingsClick(Sender);
+                      ts.free;
+                      wd.free;
+                      exit;
+                    end);
+
+                end;
+              end
+              else
+              begin
                 tthread.Synchronize(nil,
                   procedure
                   begin
@@ -6362,40 +6571,40 @@ begin
                     wd.free;
                     exit;
                   end);
-
               end;
-            end
-            else
-            begin
-              tthread.Synchronize(nil,
-                procedure
-                begin
-                  HexPrivKeyCompressedRadioButton.IsChecked := true;
-                  // btnOKAddNewCoinSettingsClick(Sender);
-                  ts.free;
-                  wd.free;
-                  exit;
-                end);
-            end;
-            ts.free;
-            wd.free;
+              ts.free;
+              wd.free;
 
-            // // // // // // // // // // // // // // // // // // // //
+              // // // // // // // // // // // // // // // // // // // //
 
-            wd := TwalletInfo.Create(ImportCoinID, -1, -1,
-              Bitcoin_PublicAddrToWallet(notkey,
-              AvailableCoin[ImportCoinID].p2pk), '');
-            wd.pub := comkey;
+              wd := TwalletInfo.Create(ImportCoinID, -1, -1,
+                Bitcoin_PublicAddrToWallet(notkey,
+                AvailableCoin[ImportCoinID].p2pk), '');
+              wd.pub := comkey;
 
-            Data := getDataOverHttp(HODLER_URL + 'getBalance.php?coin=' +
-              AvailableCoin[wd.coin].name + '&address=' + wd.addr);
-            ts := TStringList.Create();
-            ts.Text := Data;
-            if strToFloatDef(ts[0], 0) + strToFloatDef(ts[1], 0) = 0 then
-            begin
-              Data := getDataOverHttp(HODLER_URL + 'getHistory.php?coin=' +
+              Data := getDataOverHttp(HODLER_URL + 'getBalance.php?coin=' +
                 AvailableCoin[wd.coin].name + '&address=' + wd.addr);
-              if length(Data) > 10 then
+              ts := TStringList.Create();
+              ts.Text := Data;
+              // *
+              if strToFloatDef(ts[0], 0) + strToFloatDef(ts[1], 0) = 0 then
+              begin
+                Data := getDataOverHttp(HODLER_URL + 'getHistory.php?coin=' +
+                  AvailableCoin[wd.coin].name + '&address=' + wd.addr);
+                if length(Data) > 10 then
+                begin
+                  tthread.Synchronize(nil,
+                    procedure
+                    begin
+                      HexPrivKeyNotCompressedRadioButton.IsChecked := true;
+                      // btnOKAddNewCoinSettingsClick(Sender);
+                      ts.free;
+                      wd.free;
+                      exit; // +
+                    end);
+                end;
+              end
+              else
               begin
                 tthread.Synchronize(nil,
                   procedure
@@ -6407,35 +6616,57 @@ begin
                     exit;
                   end);
               end;
-            end
-            else
-            begin
+              /// /****
+
+              ts.free;
+              wd.free;
+
               tthread.Synchronize(nil,
                 procedure
                 begin
-                  HexPrivKeyNotCompressedRadioButton.IsChecked := true;
-                  // btnOKAddNewCoinSettingsClick(Sender);
-                  ts.free;
-                  wd.free;
-                  exit;
+                  LoadingKeyDataAniIndicator.Enabled := false;
+                  LoadingKeyDataAniIndicator.Visible := false;
+                  Layout31.Visible := true;
                 end);
-            end;
 
-            ts.free;
-            wd.free;
+            end).Start();
+          exit;
+        end;
 
-            tthread.Synchronize(nil,
-              procedure
-              begin
-                LoadingKeyDataAniIndicator.Enabled := false;
-                LoadingKeyDataAniIndicator.Visible := false;
-                Layout31.Visible := true;
-              end);
+        if ImportCoinID = 4 then
+        begin
+          tthread.CreateAnonymousThread(
+            procedure
+            var
+              comkey: AnsiString;
+              notkey: AnsiString;
+              Data: AnsiString;
+              ts: TStringList;
+              wd: TwalletInfo;
+              request: AnsiString;
+            begin
+              comkey := secp256k1_get_public(WIFEdit.Text, true);
 
-          end).Start();
-        exit;
-      end;
+              wd := TwalletInfo.Create(ImportCoinID, -1, -1,
+                Ethereum_PublicAddrToWallet(comkey), 'Imported');
+              wd.pub := comkey;
 
+              tthread.Synchronize(nil,
+                procedure
+                begin
+                  LoadingKeyDataAniIndicator.Enabled := false;
+                  LoadingKeyDataAniIndicator.Visible := false;
+                  Layout31.Visible := true;
+                  HexPrivKeyNotCompressedRadioButton.IsChecked := true;
+                  // SaveNewPrivateKeyButtonClick(Sender);
+                end);
+
+            end).Start();
+          exit;
+
+        end;
+
+      end
     end
     else if WIFEdit.Text <> privKeyToWif(wifToPrivKey(WIFEdit.Text)) then
     begin

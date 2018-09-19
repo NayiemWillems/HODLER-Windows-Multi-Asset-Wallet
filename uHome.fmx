@@ -33,7 +33,7 @@ object frmHome: TfrmHome
     Size.Height = 687.000000000000000000
     Size.PlatformDefault = False
     TabHeight = 49.000000000000000000
-    TabIndex = 5
+    TabIndex = 22
     TabOrder = 8
     TabPosition = None
     OnChange = closeVirtualKeyBoard
@@ -177,14 +177,15 @@ object frmHome: TfrmHome
         end
       end
       object PanelLoading: TPanel
-        Align = Center
-        Size.Width = 384.000000000000000000
+        Align = VertCenter
+        Position.Y = 323.000000000000000000
+        Size.Width = 450.000000000000000000
         Size.Height = 88.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
         object labelForGenerating: TLabel
           Align = Client
-          Size.Width = 384.000000000000000000
+          Size.Width = 450.000000000000000000
           Size.Height = 78.000000000000000000
           Size.PlatformDefault = False
           TextSettings.HorzAlign = Center
@@ -195,7 +196,7 @@ object frmHome: TfrmHome
           Align = Bottom
           Orientation = Horizontal
           Position.Y = 78.000000000000000000
-          Size.Width = 384.000000000000000000
+          Size.Width = 450.000000000000000000
           Size.Height = 10.000000000000000000
           Size.PlatformDefault = False
         end
@@ -283,16 +284,19 @@ object frmHome: TfrmHome
           Align = Client
           TabOrder = 0
           Password = True
-          Size.Width = 270.000000000000000000
+          Size.Width = 258.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
         end
         object lblEnterPass: TLabel
           Align = Left
-          Size.Width = 180.000000000000000000
+          Margins.Left = 15.000000000000000000
+          Margins.Right = 15.000000000000000000
+          Position.X = 15.000000000000000000
+          Size.Width = 162.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
-          Text = '   Enter password'
+          Text = 'Enter password'
         end
       end
       object PanelRetypePassword: TPanel
@@ -307,16 +311,19 @@ object frmHome: TfrmHome
           Align = Client
           TabOrder = 0
           Password = True
-          Size.Width = 270.000000000000000000
+          Size.Width = 258.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
         end
         object lblRetypePass: TLabel
           Align = Left
-          Size.Width = 180.000000000000000000
+          Margins.Left = 15.000000000000000000
+          Margins.Right = 15.000000000000000000
+          Position.X = 15.000000000000000000
+          Size.Width = 162.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
-          Text = '   Retype password'
+          Text = 'Retype password'
         end
       end
       object btnGenSeed: TButton
@@ -703,16 +710,19 @@ object frmHome: TfrmHome
           Touch.InteractiveGestures = [LongTap, DoubleTap]
           Align = Client
           TabOrder = 0
-          Size.Width = 270.000000000000000000
+          Size.Width = 258.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
         end
         object AccountNameLabel: TLabel
           Align = Left
-          Size.Width = 180.000000000000000000
+          Margins.Left = 15.000000000000000000
+          Margins.Right = 15.000000000000000000
+          Position.X = 15.000000000000000000
+          Size.Width = 162.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
-          Text = '   Account Name'
+          Text = 'Account Name'
         end
       end
     end
@@ -843,7 +853,7 @@ object frmHome: TfrmHome
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 8.000000000000000000
       Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
@@ -1557,7 +1567,7 @@ object frmHome: TfrmHome
               Align = Top
               Position.Y = 258.000000000000000000
               Size.Width = 450.000000000000000000
-              Size.Height = 154.000000000000000000
+              Size.Height = 186.000000000000000000
               Size.PlatformDefault = False
               TabOrder = 3
               object AutomaticFeeLayout: TLayout
@@ -1612,7 +1622,7 @@ object frmHome: TfrmHome
                 Size.Width = 450.000000000000000000
                 Size.Height = 32.000000000000000000
                 Size.PlatformDefault = False
-                TabOrder = 1
+                TabOrder = 2
                 object FixedFeeRadio: TRadioButton
                   Align = Left
                   Size.Width = 120.000000000000000000
@@ -1641,7 +1651,7 @@ object frmHome: TfrmHome
                 Size.Width = 450.000000000000000000
                 Size.Height = 48.000000000000000000
                 Size.PlatformDefault = False
-                TabOrder = 2
+                TabOrder = 3
                 object lblFee: TLabel
                   Align = Bottom
                   AutoSize = True
@@ -1673,7 +1683,7 @@ object frmHome: TfrmHome
                 Size.Width = 450.000000000000000000
                 Size.Height = 42.000000000000000000
                 Size.PlatformDefault = False
-                TabOrder = 3
+                TabOrder = 4
                 Justify = Center
                 JustifyLastLine = Center
                 FlowDirection = RightToLeft
@@ -1741,6 +1751,36 @@ object frmHome: TfrmHome
                   end
                 end
               end
+              object PerByteFeeLayout: TLayout
+                Align = Bottom
+                Position.Y = 154.000000000000000000
+                Size.Width = 450.000000000000000000
+                Size.Height = 32.000000000000000000
+                Size.PlatformDefault = False
+                TabOrder = 1
+                object PerByteFeeRatio: TRadioButton
+                  Align = Left
+                  Size.Width = 120.000000000000000000
+                  Size.Height = 32.000000000000000000
+                  Size.PlatformDefault = False
+                  TabOrder = 0
+                  Text = 'sat/Byte'
+                  OnClick = ChangeFeeWay
+                end
+                object PerByteFeeEdit: TEdit
+                  Touch.InteractiveGestures = [LongTap, DoubleTap]
+                  Align = Client
+                  TabOrder = 1
+                  FilterChar = '0123456789.'
+                  Text = '2'
+                  TextSettings.HorzAlign = Center
+                  Enabled = False
+                  Size.Width = 330.000000000000000000
+                  Size.Height = 32.000000000000000000
+                  Size.PlatformDefault = False
+                  OnChangeTracking = PerByteFeeEditChangeTracking
+                end
+              end
             end
             object SendToLayout: TLayout
               Align = MostTop
@@ -1799,8 +1839,11 @@ object frmHome: TfrmHome
             end
             object SendInfoLabel: TLabel
               Align = Top
-              Position.Y = 412.000000000000000000
-              Size.Width = 450.000000000000000000
+              Margins.Left = 15.000000000000000000
+              Margins.Right = 15.000000000000000000
+              Position.X = 15.000000000000000000
+              Position.Y = 444.000000000000000000
+              Size.Width = 420.000000000000000000
               Size.Height = 121.000000000000000000
               Size.PlatformDefault = False
               Text = 
@@ -1857,8 +1900,11 @@ object frmHome: TfrmHome
           end
           object ExportPrivKeyInfoLabel: TLabel
             Align = Top
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Position.X = 15.000000000000000000
             Position.Y = 144.000000000000000000
-            Size.Width = 450.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 153.000000000000000000
             Size.PlatformDefault = False
             Text = 
@@ -1872,8 +1918,11 @@ object frmHome: TfrmHome
           end
           object ChangeDescriptionInfoLabel: TLabel
             Align = Top
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Position.X = 15.000000000000000000
             Position.Y = 297.000000000000000000
-            Size.Width = 450.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 72.000000000000000000
             Size.PlatformDefault = False
             Text = 
@@ -8914,7 +8963,9 @@ object frmHome: TfrmHome
         end
         object SettingsLanguageLabel: TLabel
           Align = Client
-          Size.Width = 338.000000000000000000
+          Margins.Left = 15.000000000000000000
+          Margins.Right = 15.000000000000000000
+          Size.Width = 308.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           Text = 'Language'
@@ -8940,7 +8991,9 @@ object frmHome: TfrmHome
         end
         object SettingsCurrencyLabel: TLabel
           Align = Client
-          Size.Width = 338.000000000000000000
+          Margins.Left = 15.000000000000000000
+          Margins.Right = 15.000000000000000000
+          Size.Width = 308.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           Text = 'Currency'
@@ -9002,8 +9055,11 @@ object frmHome: TfrmHome
       end
       object WipeWalletDataInfoLabel: TLabel
         Align = Top
+        Margins.Left = 15.000000000000000000
+        Margins.Right = 15.000000000000000000
+        Position.X = 15.000000000000000000
         Position.Y = 337.000000000000000000
-        Size.Width = 450.000000000000000000
+        Size.Width = 420.000000000000000000
         Size.Height = 56.000000000000000000
         Size.PlatformDefault = False
         Text = 
@@ -9014,8 +9070,11 @@ object frmHome: TfrmHome
       end
       object OrganizeInfoLabel: TLabel
         Align = Top
+        Margins.Left = 15.000000000000000000
+        Margins.Right = 15.000000000000000000
+        Position.X = 15.000000000000000000
         Position.Y = 393.000000000000000000
-        Size.Width = 450.000000000000000000
+        Size.Width = 420.000000000000000000
         Size.Height = 65.000000000000000000
         Size.PlatformDefault = False
         Text = 
@@ -9025,8 +9084,11 @@ object frmHome: TfrmHome
       end
       object CreateBackupInfoLabel: TLabel
         Align = Top
+        Margins.Left = 15.000000000000000000
+        Margins.Right = 15.000000000000000000
+        Position.X = 15.000000000000000000
         Position.Y = 458.000000000000000000
-        Size.Width = 450.000000000000000000
+        Size.Width = 420.000000000000000000
         Size.Height = 65.000000000000000000
         Size.PlatformDefault = False
         Text = 
@@ -9037,8 +9099,11 @@ object frmHome: TfrmHome
       end
       object CheckUpdateInfoLabel: TLabel
         Align = Top
+        Margins.Left = 15.000000000000000000
+        Margins.Right = 15.000000000000000000
+        Position.X = 15.000000000000000000
         Position.Y = 523.000000000000000000
-        Size.Width = 450.000000000000000000
+        Size.Width = 420.000000000000000000
         Size.Height = 46.000000000000000000
         Size.PlatformDefault = False
         Text = 
@@ -9617,12 +9682,15 @@ object frmHome: TfrmHome
         ReadOnly = True
         TextSettings.HorzAlign = Center
         Align = Top
+        Margins.Left = 15.000000000000000000
+        Margins.Right = 15.000000000000000000
+        Position.X = 15.000000000000000000
         Position.Y = 48.000000000000000000
-        Size.Width = 450.000000000000000000
+        Size.Width = 420.000000000000000000
         Size.Height = 100.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 3
-        Viewport.Width = 446.000000000000000000
+        Viewport.Width = 416.000000000000000000
         Viewport.Height = 96.000000000000000000
       end
     end
@@ -10160,10 +10228,13 @@ object frmHome: TfrmHome
         end
         object lblNewCoinDescription: TLabel
           Align = Left
+          Margins.Left = 15.000000000000000000
+          Margins.Right = 15.000000000000000000
+          Position.X = 15.000000000000000000
           Size.Width = 120.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
-          Text = '   Description'
+          Text = 'Description'
         end
       end
       object btnOKAddNewCoinSettings: TButton
@@ -10206,10 +10277,13 @@ object frmHome: TfrmHome
         end
         object lblNewCoinDescriptionPass: TLabel
           Align = Left
+          Margins.Left = 15.000000000000000000
+          Margins.Right = 15.000000000000000000
+          Position.X = 15.000000000000000000
           Size.Width = 120.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
-          Text = '   Enter password'
+          Text = 'Enter password'
         end
       end
       object Panel11: TPanel
@@ -10238,18 +10312,13 @@ object frmHome: TfrmHome
         end
         object ImportPrivKeyStaticLabel: TLabel
           Align = Client
-          Size.Width = 359.000000000000000000
+          Margins.Left = 15.000000000000000000
+          Margins.Right = 15.000000000000000000
+          Size.Width = 339.000000000000000000
           Size.Height = 49.000000000000000000
           Size.PlatformDefault = False
           Text = 'Import from Private Key'
           TabOrder = 1
-        end
-        object Layout52: TLayout
-          Align = MostLeft
-          Size.Width = 10.000000000000000000
-          Size.Height = 49.000000000000000000
-          Size.PlatformDefault = False
-          TabOrder = 2
         end
       end
       object PrivateKeySettingsLayout: TLayout
@@ -10853,7 +10922,7 @@ object frmHome: TfrmHome
       CustomIcon = <
         item
         end>
-      IsSelected = False
+      IsSelected = True
       Size.Width = 8.000000000000000000
       Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
@@ -11609,7 +11678,9 @@ object frmHome: TfrmHome
           end
           object MnemonicSeedDescriptionLabel: TLabel
             Align = Client
-            Size.Width = 450.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
             TextSettings.HorzAlign = Center
@@ -11625,7 +11696,9 @@ object frmHome: TfrmHome
           TabOrder = 1
           object HSBDescriptionLabel: TLabel
             Align = Client
-            Size.Width = 450.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
             TextSettings.HorzAlign = Center
@@ -11664,7 +11737,9 @@ object frmHome: TfrmHome
           end
           object EncryptedQRDescriptionLabel: TLabel
             Align = Client
-            Size.Width = 450.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
             TextSettings.HorzAlign = Center
@@ -11693,7 +11768,9 @@ object frmHome: TfrmHome
           end
           object DecryptedQRDescriptionLabel: TLabel
             Align = Client
-            Size.Width = 450.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 47.000000000000000000
             Size.PlatformDefault = False
             TextSettings.HorzAlign = Center
@@ -11703,8 +11780,11 @@ object frmHome: TfrmHome
         end
         object BackupInfoLabel: TLabel
           Align = Top
+          Margins.Left = 15.000000000000000000
+          Margins.Right = 15.000000000000000000
+          Position.X = 15.000000000000000000
           Position.Y = 384.000000000000000000
-          Size.Width = 450.000000000000000000
+          Size.Width = 420.000000000000000000
           Size.Height = 113.000000000000000000
           Size.PlatformDefault = False
           Text = 
@@ -11862,8 +11942,9 @@ object frmHome: TfrmHome
       ExplicitSize.cx = 8.000000000000000000
       ExplicitSize.cy = 8.000000000000000000
       object Panel5: TPanel
-        Align = Center
-        Size.Width = 384.000000000000000000
+        Align = VertCenter
+        Position.Y = 299.000000000000000000
+        Size.Width = 450.000000000000000000
         Size.Height = 88.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
@@ -11871,13 +11952,13 @@ object frmHome: TfrmHome
           Align = Bottom
           Orientation = Horizontal
           Position.Y = 78.000000000000000000
-          Size.Width = 384.000000000000000000
+          Size.Width = 450.000000000000000000
           Size.Height = 10.000000000000000000
           Size.PlatformDefault = False
         end
         object WaitForGenerationLabel: TLabel
           Align = Client
-          Size.Width = 384.000000000000000000
+          Size.Width = 450.000000000000000000
           Size.Height = 78.000000000000000000
           Size.PlatformDefault = False
           TextSettings.HorzAlign = Center
@@ -12066,15 +12147,18 @@ object frmHome: TfrmHome
       end
       object AddAccountInfoLabel: TLabel
         Align = Top
+        Margins.Left = 15.000000000000000000
+        Margins.Right = 15.000000000000000000
+        Position.X = 15.000000000000000000
         Position.Y = 434.000000000000000000
-        Size.Width = 450.000000000000000000
+        Size.Width = 420.000000000000000000
         Size.Height = 97.000000000000000000
         Size.PlatformDefault = False
         Text = 
           'Add a new account - you can create a new account from scratch, o' +
           'r make one by importing an existing seed. You will then be asked' +
           ' to set a name and password for the new account. With multiple a' +
-          'counts, many peaple can use HODLER wallet on the same computer w' +
+          'counts, many people can use HODLER wallet on the same computer w' +
           'ithout giving the other ones access to their funds.'
         TabOrder = 7
       end
@@ -12253,8 +12337,11 @@ object frmHome: TfrmHome
       end
       object RFFPathEdit: TLabel
         Align = MostTop
+        Margins.Left = 15.000000000000000000
+        Margins.Right = 15.000000000000000000
+        Position.X = 15.000000000000000000
         Position.Y = 48.000000000000000000
-        Size.Width = 450.000000000000000000
+        Size.Width = 420.000000000000000000
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
         Text = 'RFFPathEdit'
@@ -12306,7 +12393,10 @@ object frmHome: TfrmHome
         end
         object RestoreFromFileAccountNameLabel: TLabel
           Align = Top
-          Size.Width = 450.000000000000000000
+          Margins.Left = 15.000000000000000000
+          Margins.Right = 15.000000000000000000
+          Position.X = 15.000000000000000000
+          Size.Width = 420.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           Text = 'Name'
@@ -12332,7 +12422,10 @@ object frmHome: TfrmHome
         end
         object RFFPasswordInfo: TLabel
           Align = Top
-          Size.Width = 450.000000000000000000
+          Margins.Left = 15.000000000000000000
+          Margins.Right = 15.000000000000000000
+          Position.X = 15.000000000000000000
+          Size.Width = 420.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           Text = 'Password to file (same password for wallet)'
@@ -12413,17 +12506,20 @@ object frmHome: TfrmHome
           Align = Right
           TabOrder = 0
           Password = True
-          Position.X = 250.000000000000000000
-          Size.Width = 200.000000000000000000
+          Position.X = 184.000000000000000000
+          Size.Width = 266.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
         end
         object Label17: TLabel
           Align = Left
+          Margins.Left = 15.000000000000000000
+          Margins.Right = 15.000000000000000000
+          Position.X = 15.000000000000000000
           Size.Width = 120.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
-          Text = '   Enter password'
+          Text = 'Enter password'
         end
       end
       object Panel12: TPanel
@@ -12440,37 +12536,26 @@ object frmHome: TfrmHome
           Size.Height = 40.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
-          object Layout39: TLayout
-            Align = Left
-            Size.Width = 10.000000000000000000
-            Size.Height = 40.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 0
-          end
-          object Layout40: TLayout
-            Align = Right
-            Position.X = 440.000000000000000000
-            Size.Width = 10.000000000000000000
-            Size.Height = 40.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 1
-          end
           object SendFromLabel: TLabel
             Align = Client
-            Size.Width = 430.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 40.000000000000000000
             Size.PlatformDefault = False
             TextSettings.HorzAlign = Trailing
             Text = 'SendFromLabel'
-            TabOrder = 2
+            TabOrder = 0
           end
           object SendFromStaticLabel: TLabel
             Align = Client
-            Size.Width = 430.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 40.000000000000000000
             Size.PlatformDefault = False
             Text = 'From:'
-            TabOrder = 3
+            TabOrder = 1
           end
         end
         object Layout41: TLayout
@@ -12480,37 +12565,26 @@ object frmHome: TfrmHome
           Size.Height = 40.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 1
-          object Layout42: TLayout
-            Align = Left
-            Size.Width = 10.000000000000000000
-            Size.Height = 40.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 0
-          end
-          object Layout43: TLayout
-            Align = Right
-            Position.X = 440.000000000000000000
-            Size.Width = 10.000000000000000000
-            Size.Height = 40.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 1
-          end
           object SendFeeLabel: TLabel
             Align = Client
-            Size.Width = 430.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 40.000000000000000000
             Size.PlatformDefault = False
             TextSettings.HorzAlign = Trailing
             Text = 'SendFeeLabel'
-            TabOrder = 2
+            TabOrder = 0
           end
           object SendFeeStaticLabel: TLabel
             Align = Client
-            Size.Width = 430.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 40.000000000000000000
             Size.PlatformDefault = False
             Text = 'Fee:'
-            TabOrder = 3
+            TabOrder = 1
           end
         end
         object Layout44: TLayout
@@ -12520,37 +12594,26 @@ object frmHome: TfrmHome
           Size.Height = 40.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 2
-          object Layout45: TLayout
-            Align = Left
-            Size.Width = 10.000000000000000000
-            Size.Height = 40.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 0
-          end
-          object Layout46: TLayout
-            Align = Right
-            Position.X = 440.000000000000000000
-            Size.Width = 10.000000000000000000
-            Size.Height = 40.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 1
-          end
           object SendValueLabel: TLabel
             Align = Client
-            Size.Width = 430.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 40.000000000000000000
             Size.PlatformDefault = False
             TextSettings.HorzAlign = Trailing
             Text = 'SendValueLabel'
-            TabOrder = 2
+            TabOrder = 0
           end
           object SendValueStaticLabel: TLabel
             Align = Client
-            Size.Width = 430.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 40.000000000000000000
             Size.PlatformDefault = False
             Text = 'Amount:'
-            TabOrder = 3
+            TabOrder = 1
           end
         end
         object Layout47: TLayout
@@ -12560,37 +12623,26 @@ object frmHome: TfrmHome
           Size.Height = 40.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 4
-          object Layout48: TLayout
-            Align = Left
-            Size.Width = 10.000000000000000000
-            Size.Height = 40.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 0
-          end
-          object Layout49: TLayout
-            Align = Right
-            Position.X = 440.000000000000000000
-            Size.Width = 10.000000000000000000
-            Size.Height = 40.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 1
-          end
           object SendToLabel: TLabel
             Align = Client
-            Size.Width = 430.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 40.000000000000000000
             Size.PlatformDefault = False
             TextSettings.HorzAlign = Trailing
             Text = 'SendToLabel'
-            TabOrder = 2
+            TabOrder = 0
           end
           object SendToStaticLabel: TLabel
             Align = Client
-            Size.Width = 430.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 40.000000000000000000
             Size.PlatformDefault = False
             Text = 'To:'
-            TabOrder = 3
+            TabOrder = 1
           end
         end
         object SendDetailsLabel: TLabel
@@ -12611,30 +12663,17 @@ object frmHome: TfrmHome
           Size.Height = 40.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 3
-          object Layout54: TLayout
-            Align = Left
-            Size.Width = 10.000000000000000000
-            Size.Height = 40.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 0
-          end
-          object Layout55: TLayout
-            Align = Right
-            Position.X = 440.000000000000000000
-            Size.Width = 10.000000000000000000
-            Size.Height = 40.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 1
-          end
           object WaitTimeLabel: TLabel
             Align = Client
-            Size.Width = 430.000000000000000000
+            Margins.Left = 15.000000000000000000
+            Margins.Right = 15.000000000000000000
+            Size.Width = 420.000000000000000000
             Size.Height = 40.000000000000000000
             Size.PlatformDefault = False
             Text = 
               'The transaction should be confirmed in the 5 nearest blocks, in ' +
               'about 50 minutes'
-            TabOrder = 2
+            TabOrder = 0
           end
         end
       end
@@ -13119,11 +13158,26 @@ object frmHome: TfrmHome
       end
       object OrganizeDragInfoLabel: TLabel
         Align = Client
-        Size.Width = 516.000000000000000000
+        Margins.Left = 15.000000000000000000
+        Size.Width = 321.000000000000000000
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
         Text = 'Hold and drag wallet to change order.'
         TabOrder = 1
+      end
+      object PopupBox1: TPopupBox
+        Align = Right
+        Items.Strings = (
+          'Lexicographical'
+          'Highest value first'
+          'Largest amount first')
+        Position.X = 336.000000000000000000
+        Position.Y = 48.000000000000000000
+        Size.Width = 180.000000000000000000
+        Size.Height = 48.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 2
+        OnChange = PopupBox1Change
       end
     end
     object BackToBalanceViewLayout: TLayout

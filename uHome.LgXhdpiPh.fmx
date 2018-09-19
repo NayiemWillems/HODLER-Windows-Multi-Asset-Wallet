@@ -104,6 +104,16 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
           Size.Width = 129.000000000000000000
         end
       end
+      inherited PanelLoading: TPanel
+        Position.Y = 327.000000000000000000
+        Size.Width = 129.000000000000000000
+        inherited labelForGenerating: TLabel
+          Size.Width = 129.000000000000000000
+        end
+        inherited GenerateSeedProgressBar: TProgressBar
+          Size.Width = 129.000000000000000000
+        end
+      end
     end
     inherited createPassword: TTabItem
       ExplicitSize.cx = 8.000000000000000000
@@ -413,30 +423,10 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
             Size.Height = 598.000000000000000000
             Viewport.Width = 129.000000000000000000
             Viewport.Height = 598.000000000000000000
-            inherited btnSend: TButton
-              Size.Width = 129.000000000000000000
-            end
             inherited SendAmountLayout: TLayout
-              Size.Width = 129.000000000000000000
               inherited lblAmount: TLabel
                 Opacity = 0.899999976158142100
-                Size.Width = 129.000000000000000000
                 Size.Height = 22.000000000000000000
-              end
-              inherited wvAmount: TEdit
-                Size.Width = 129.000000000000000000
-              end
-              inherited WVRealCurrency: TEdit
-                Size.Width = 129.000000000000000000
-                inherited lblCoinFiat: TLabel
-                  Size.Width = 119.000000000000000000
-                end
-              end
-            end
-            inherited Layout3: TLayout
-              Size.Width = 129.000000000000000000
-              inherited ShowHideAdvancedButton: TButton
-                Size.Width = 129.000000000000000000
               end
             end
             inherited TransactionFeeLayout: TLayout
@@ -473,22 +463,17 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
               inherited SendSettingsFlowLayout: TFlowLayout
                 Size.Width = 129.000000000000000000
               end
-            end
-            inherited SendToLayout: TLayout
-              Size.Width = 129.000000000000000000
-              inherited lblSendTo: TLabel
+              inherited PerByteFeeLayout: TLayout
                 Size.Width = 129.000000000000000000
-                Size.Height = 22.000000000000000000
-              end
-              inherited AddressQRLayout: TLayout
-                Size.Width = 129.000000000000000000
-                inherited WVsendTO: TEdit
-                  Size.Width = 81.000000000000000000
+                inherited PerByteFeeEdit: TEdit
+                  Size.Width = 9.000000000000000000
                 end
               end
             end
-            inherited SendInfoLabel: TLabel
-              Size.Width = 129.000000000000000000
+            inherited SendToLayout: TLayout
+              inherited lblSendTo: TLabel
+                Size.Height = 22.000000000000000000
+              end
             end
           end
         end
@@ -506,10 +491,10 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
             Size.Width = 129.000000000000000000
           end
           inherited ExportPrivKeyInfoLabel: TLabel
-            Size.Width = 129.000000000000000000
+            Size.Width = 99.000000000000000000
           end
           inherited ChangeDescriptionInfoLabel: TLabel
-            Size.Width = 129.000000000000000000
+            Size.Width = 99.000000000000000000
           end
         end
       end
@@ -1390,7 +1375,7 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
           Size.Height = 32.000000000000000000
         end
         inherited SettingsLanguageLabel: TLabel
-          Size.Width = 17.000000000000000000
+          Size.Width = 0.000000000000000000
         end
       end
       inherited Panel3: TPanel
@@ -1401,7 +1386,7 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
           Size.Height = 32.000000000000000000
         end
         inherited SettingsCurrencyLabel: TLabel
-          Size.Width = 17.000000000000000000
+          Size.Width = 0.000000000000000000
         end
       end
       inherited DebugSaveSeedButton: TButton
@@ -1417,16 +1402,16 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
         Size.Width = 129.000000000000000000
       end
       inherited WipeWalletDataInfoLabel: TLabel
-        Size.Width = 129.000000000000000000
+        Size.Width = 99.000000000000000000
       end
       inherited OrganizeInfoLabel: TLabel
-        Size.Width = 129.000000000000000000
+        Size.Width = 99.000000000000000000
       end
       inherited CreateBackupInfoLabel: TLabel
-        Size.Width = 129.000000000000000000
+        Size.Width = 99.000000000000000000
       end
       inherited CheckUpdateInfoLabel: TLabel
-        Size.Width = 129.000000000000000000
+        Size.Width = 99.000000000000000000
       end
     end
     inherited descryptSeed: TTabItem
@@ -1442,6 +1427,8 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
         Size.Width = 129.000000000000000000
         inherited passwordForDecrypt: TEdit
           Position.X = -71.000000000000000000
+          Position.Y = 8.000000000000000000
+          Size.Height = 32.000000000000000000
         end
       end
       inherited btnDecryptSeed: TButton
@@ -1599,8 +1586,8 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
         Size.Width = 129.000000000000000000
       end
       inherited PrivateKeyMemo: TMemo
-        Size.Width = 129.000000000000000000
-        Viewport.Width = 129.000000000000000000
+        Size.Width = 99.000000000000000000
+        Viewport.Width = 99.000000000000000000
         Viewport.Height = 100.000000000000000000
       end
     end
@@ -1721,6 +1708,8 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
         Size.Width = 129.000000000000000000
         inherited NewCoinDescriptionEdit: TEdit
           Position.X = -71.000000000000000000
+          Position.Y = 8.000000000000000000
+          Size.Height = 32.000000000000000000
         end
       end
       inherited btnOKAddNewCoinSettings: TButton
@@ -1735,6 +1724,8 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
         Size.Width = 129.000000000000000000
         inherited NewCoinDescriptionPassEdit: TEdit
           Position.X = -71.000000000000000000
+          Position.Y = 8.000000000000000000
+          Size.Height = 32.000000000000000000
         end
       end
       inherited Panel11: TPanel
@@ -1747,7 +1738,7 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
           end
         end
         inherited ImportPrivKeyStaticLabel: TLabel
-          Size.Width = 38.000000000000000000
+          Size.Width = 18.000000000000000000
         end
       end
       inherited PrivateKeySettingsLayout: TLayout
@@ -1837,8 +1828,28 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
         Size.Height = 647.000000000000000000
         Viewport.Width = 109.000000000000000000
         Viewport.Height = 647.000000000000000000
+        inherited Layout16: TLayout
+          Size.Width = 109.000000000000000000
+          inherited Label11: TLabel
+            Size.Width = 109.000000000000000000
+          end
+          inherited HistoryTransactionID: TLabel
+            Size.Width = 109.000000000000000000
+          end
+        end
+        inherited Layout19: TLayout
+          Size.Width = 109.000000000000000000
+          inherited Layout21: TLayout
+            Size.Width = 0.000000000000000000
+          end
+        end
+        inherited Label3: TLabel
+          Size.Width = 109.000000000000000000
+        end
         inherited LinkLayout: TLayout
+          Size.Width = 109.000000000000000000
           inherited linkLabel: TLabel
+            Size.Width = 109.000000000000000000
             TextSettings.Font.StyleExt = {04070000000000000004000000}
           end
         end
@@ -1912,13 +1923,13 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
             Size.Width = 129.000000000000000000
           end
           inherited MnemonicSeedDescriptionLabel: TLabel
-            Size.Width = 129.000000000000000000
+            Size.Width = 99.000000000000000000
           end
         end
         inherited Layout26: TLayout
           Size.Width = 129.000000000000000000
           inherited HSBDescriptionLabel: TLabel
-            Size.Width = 129.000000000000000000
+            Size.Width = 99.000000000000000000
           end
           inherited SendWalletFileButton: TButton
             Size.Width = 129.000000000000000000
@@ -1930,7 +1941,7 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
             Size.Width = 129.000000000000000000
           end
           inherited EncryptedQRDescriptionLabel: TLabel
-            Size.Width = 129.000000000000000000
+            Size.Width = 99.000000000000000000
           end
         end
         inherited Layout28: TLayout
@@ -1939,7 +1950,7 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
             Size.Width = 129.000000000000000000
           end
           inherited DecryptedQRDescriptionLabel: TLabel
-            Size.Width = 129.000000000000000000
+            Size.Width = 99.000000000000000000
           end
         end
       end
@@ -1996,6 +2007,16 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
     inherited WaitWalletGenerate: TTabItem
       ExplicitSize.cx = 8.000000000000000000
       ExplicitSize.cy = 8.000000000000000000
+      inherited Panel5: TPanel
+        Position.Y = 303.000000000000000000
+        Size.Width = 129.000000000000000000
+        inherited WaitForGenerationProgressBar: TProgressBar
+          Size.Width = 129.000000000000000000
+        end
+        inherited WaitForGenerationLabel: TLabel
+          Size.Width = 129.000000000000000000
+        end
+      end
     end
     inherited ImportPrivKeyTabItem: TTabItem
       ExplicitSize.cx = 8.000000000000000000
@@ -2048,7 +2069,7 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
         end
       end
       inherited AddAccountInfoLabel: TLabel
-        Size.Width = 129.000000000000000000
+        Size.Width = 99.000000000000000000
         TabOrder = 6
       end
     end
@@ -2102,7 +2123,7 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
         Size.Width = 129.000000000000000000
       end
       inherited RFFPathEdit: TLabel
-        Size.Width = 129.000000000000000000
+        Size.Width = 99.000000000000000000
       end
       inherited ToolBar7: TToolBar
         Size.Width = 129.000000000000000000
@@ -2118,18 +2139,20 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
           Size.Height = 32.000000000000000000
         end
         inherited RestoreFromFileAccountNameLabel: TLabel
-          Size.Width = 129.000000000000000000
+          Size.Width = 99.000000000000000000
         end
       end
       inherited Layout36: TLayout
         Size.Width = 129.000000000000000000
         inherited RFFPassword: TEdit
+          Position.X = 15.000000000000000000
           Position.Y = 64.000000000000000000
-          Size.Width = 129.000000000000000000
+          Margins.Left = 15.000000000000000000
+          Size.Width = 114.000000000000000000
           Size.Height = 32.000000000000000000
         end
         inherited RFFPasswordInfo: TLabel
-          Size.Width = 129.000000000000000000
+          Size.Width = 99.000000000000000000
         end
       end
     end
@@ -2152,57 +2175,47 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
       inherited Panel10: TPanel
         Size.Width = 129.000000000000000000
         inherited ConfirmSendPasswordEdit: TEdit
-          Position.X = -71.000000000000000000
+          Position.X = -137.000000000000000000
+          Position.Y = 8.000000000000000000
+          Size.Height = 32.000000000000000000
         end
       end
       inherited Panel12: TPanel
         Size.Width = 129.000000000000000000
         inherited Layout38: TLayout
           Size.Width = 129.000000000000000000
-          inherited Layout40: TLayout
-            Position.X = 119.000000000000000000
-          end
           inherited SendFromLabel: TLabel
-            Size.Width = 109.000000000000000000
+            Size.Width = 99.000000000000000000
           end
           inherited SendFromStaticLabel: TLabel
-            Size.Width = 109.000000000000000000
+            Size.Width = 99.000000000000000000
           end
         end
         inherited Layout41: TLayout
           Size.Width = 129.000000000000000000
-          inherited Layout43: TLayout
-            Position.X = 119.000000000000000000
-          end
           inherited SendFeeLabel: TLabel
-            Size.Width = 109.000000000000000000
+            Size.Width = 99.000000000000000000
           end
           inherited SendFeeStaticLabel: TLabel
-            Size.Width = 109.000000000000000000
+            Size.Width = 99.000000000000000000
           end
         end
         inherited Layout44: TLayout
           Size.Width = 129.000000000000000000
-          inherited Layout46: TLayout
-            Position.X = 119.000000000000000000
-          end
           inherited SendValueLabel: TLabel
-            Size.Width = 109.000000000000000000
+            Size.Width = 99.000000000000000000
           end
           inherited SendValueStaticLabel: TLabel
-            Size.Width = 109.000000000000000000
+            Size.Width = 99.000000000000000000
           end
         end
         inherited Layout47: TLayout
           Size.Width = 129.000000000000000000
-          inherited Layout49: TLayout
-            Position.X = 119.000000000000000000
-          end
           inherited SendToLabel: TLabel
-            Size.Width = 109.000000000000000000
+            Size.Width = 99.000000000000000000
           end
           inherited SendToStaticLabel: TLabel
-            Size.Width = 109.000000000000000000
+            Size.Width = 99.000000000000000000
           end
         end
         inherited SendDetailsLabel: TLabel
@@ -2211,11 +2224,8 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
         end
         inherited Layout53: TLayout
           Size.Width = 129.000000000000000000
-          inherited Layout55: TLayout
-            Position.X = 119.000000000000000000
-          end
           inherited WaitTimeLabel: TLabel
-            Size.Width = 109.000000000000000000
+            Size.Width = 99.000000000000000000
           end
         end
       end
@@ -2301,7 +2311,12 @@ inherited frmHome_LgXhdpiPh: TfrmHome_LgXhdpiPh
         Size.Width = 155.000000000000000000
       end
       inherited OrganizeDragInfoLabel: TLabel
-        Size.Width = 155.000000000000000000
+        Size.Width = 0.000000000000000000
+      end
+      inherited PopupBox1: TPopupBox
+        Position.X = -25.000000000000000000
+        Position.Y = 56.000000000000000000
+        Size.Height = 32.000000000000000000
       end
     end
     inherited BackToBalanceViewLayout: TLayout

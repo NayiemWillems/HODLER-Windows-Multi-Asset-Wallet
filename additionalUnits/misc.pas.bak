@@ -307,12 +307,9 @@ procedure DeleteAccount(name: AnsiString);
 
 // procedure refresh
 
-{$WRITEABLECONST ON}
 const
-  HODLER_URL:string = 'https://hodler1.nq.pl/';
-  HODLER_URL2:string = 'https://hodlerstream.net/';
-  HODLER_ETH:string = 'https://hodler2.nq.pl/';
-  HODLER_ETH2:string = 'https://hodlernode.net/';
+  HODLER_URL = 'http://hodler1.nq.pl/';
+  HODLER_ETH = 'https://hodler2.nq.pl/';
   API_PUB = {$I 'public_key.key' };
   API_PRIV = {$I 'private_key.key' };
 
@@ -783,7 +780,7 @@ begin
     balLabel.TextSettings.HorzAlign := TTextAlign.Trailing;
     balLabel.Visible := true;
     // balLabel.Width := 200;
-    balLabel.Height := 48;
+    balLabel.Height := 40;
     balLabel.Align := TAlignLayout.Top;
     balLabel.TextSettings.Font.size := adrLabel.TextSettings.Font.size - 3;
     balLabel.Margins.Right := 15;
@@ -818,12 +815,12 @@ begin
     price.text := floatToStrF(CurrencyConverter.calculate(crypto.rate),
       ffFixed, 18, 2);
     price.Align := TAlignLayout.Bottom;
-    price.Height := 16;
-    price.TextSettings.HorzAlign := TTextAlign.Leading;
-    price.Margins.Left := coinIMG.Width + 2;
+    price.Height := 22;
+    price.TextSettings.HorzAlign := TTextAlign.Trailing;
+    price.Margins.Right := 15;
     price.TagString := 'price';
     price.StyledSettings := balLabel.StyledSettings - [TStyledSetting.size];
-    price.TextSettings.Font.size := 9;
+    price.TextSettings.Font.size := 10;
   end;
 end;
 
@@ -2137,21 +2134,10 @@ begin
     end;
     setLength(Str, Length(Str) - max(0, zeroCounter - 2));
 
-    {if Length(Str) > 9 then
+    if Length(Str) > 9 then
     begin
       setLength(Str, Pos(FormatSettings.DecimalSeparator, Str) - 1);
     end;
-        }
-
-    if (Length(Str)>9) and (Pos(FormatSettings.DecimalSeparator, Str)=2) then
-      SetLength(Str,9);
-    //end;
-    if Pos(FormatSettings.DecimalSeparator, Str) > 9 then
-    begin
-      setLength(Str, Pos(FormatSettings.DecimalSeparator, Str) - 1);
-    end;
-
-
     result := Str;
 
   end;
@@ -3005,49 +2991,17 @@ begin
   end;
 end;
 
-function apiStatus(aURL, aResult:string;exceptional:boolean=false): string;
-var
-  switch: Boolean;
-  tmp: string;
-begin
-switch:= exceptional;
-  result := '';
-  if Pos('Transport endpoint is not connected', aResult) > 0 then
-    switch := true;
-
-
-  if (Pos(HODLER_URL, aURL) > 0) and (switch) then
-  begin
-    switch := true;
-    aURL := StringReplace(aURL, HODLER_URL, HODLER_URL2, [rfReplaceAll]);
-    tmp := HODLER_URL2;
-    HODLER_URL2 := HODLER_URL;
-    HODLER_URL := tmp;
-  end;
-  if (Pos(HODLER_ETH, aURL) > 0) and (switch) then
-  begin
-    switch := true;
-    aURL := StringReplace(aURL, HODLER_ETH, HODLER_ETH2, [rfReplaceAll]);
-    tmp := HODLER_ETH2;
-    HODLER_ETH2 := HODLER_ETH;
-    HODLER_ETH := tmp;
-  end;
-  if switch then
-  result := getDataOverHTTP(aURL) else
-  result:=aResult;
-end;
-
-function getDataOverHTTP(aURL: String; useCache: Boolean = true): AnsiString;
+function getDataOverHTTP(aURL: String; useCache: boolean = true): AnsiString;
 var
   req: THTTPClient;
   LResponse: IHTTPResponse;
   urlHash: AnsiString;
 begin
   urlHash := GetStrHashSHA256(aURL);
-  if (firstSync and useCache) then
-  begin
+  { if (firstSync and useCache) then
+    begin
     result := loadCache(urlHash);
-  end;
+    end; }
   try
     if (result = '') or (not firstSync) then
     begin
@@ -3055,20 +3009,17 @@ begin
       req := THTTPClient.Create();
       aURL := aURL + buildAuth(aURL);
       LResponse := req.get(aURL);
-      result := apiStatus(aURL,LResponse.ContentAsString());
-      saveCache(urlHash, result);
-      if LResponse.StatusCode<>200 then
-      result := apiStatus(aURL,'',true);
+      result := LResponse.ContentAsString();
+      saveCache(urlHash, LResponse.ContentAsString());
     end;
   except
     on E: Exception do
     begin
-      result:=apiStatus(aURL,'',true);
-
     end;
   end;
   req.Free;
 end;
+
 function hash160FromHex(H: AnsiString): AnsiString;
 var
   ripemd160: TRIPEMD160Hash;
@@ -3412,16 +3363,10 @@ begin
 end;
 
 function priv256forHD(coin, x, y: integer; MasterSeed: AnsiString): AnsiString;
-var
-  bi: BigInteger;
 begin
   result := GetSHA256FromHex(IntToHex(x, 32) + GetSHA256FromHex(IntToHex(coin,
     8) + GetSHA256FromHex(IntToHex(coin, 8) + IntToHex(x, 32) + MasterSeed +
     IntToHex(y, 32))) + IntToHex(y, 32));
-  BigInteger.TryParse(result, 16, bi);
-  if bi > secp256k1.getN then
-    result := priv256forHD(coin, x, y, GetStrHashSHA256(result));
-
   wipeAnsiString(MasterSeed);
 end;
 

@@ -310,6 +310,8 @@ begin
 
   for data in myCoins do
   begin
+    if data.deleted then
+      Continue;
 
     ts.Add(inttostr(data.coin)); // Coin ID
     ts.Add(inttostr(data.x)); // X

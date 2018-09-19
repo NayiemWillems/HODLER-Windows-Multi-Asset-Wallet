@@ -101,6 +101,16 @@ inherited frmHome_Surface: TfrmHome_Surface
           Size.Width = 759.000000000000000000
         end
       end
+      inherited PanelLoading: TPanel
+        Position.Y = 940.000000000000000000
+        Size.Width = 759.000000000000000000
+        inherited labelForGenerating: TLabel
+          Size.Width = 759.000000000000000000
+        end
+        inherited GenerateSeedProgressBar: TProgressBar
+          Size.Width = 759.000000000000000000
+        end
+      end
     end
     inherited createPassword: TTabItem
       ExplicitSize.cx = 8.000000000000000000
@@ -108,13 +118,13 @@ inherited frmHome_Surface: TfrmHome_Surface
       inherited panelPassword: TPanel
         Size.Width = 759.000000000000000000
         inherited pass: TEdit
-          Size.Width = 579.000000000000000000
+          Size.Width = 567.000000000000000000
         end
       end
       inherited PanelRetypePassword: TPanel
         Size.Width = 759.000000000000000000
         inherited retypePass: TEdit
-          Size.Width = 579.000000000000000000
+          Size.Width = 567.000000000000000000
         end
       end
       inherited passwordMessage: TLabel
@@ -147,7 +157,7 @@ inherited frmHome_Surface: TfrmHome_Surface
       inherited AccountNamePanel: TPanel
         Size.Width = 759.000000000000000000
         inherited AccountNameEdit: TEdit
-          Size.Width = 579.000000000000000000
+          Size.Width = 567.000000000000000000
         end
       end
     end
@@ -436,6 +446,12 @@ inherited frmHome_Surface: TfrmHome_Surface
               inherited SendSettingsFlowLayout: TFlowLayout
                 Size.Width = 759.000000000000000000
               end
+              inherited PerByteFeeLayout: TLayout
+                Size.Width = 759.000000000000000000
+                inherited PerByteFeeEdit: TEdit
+                  Size.Width = 639.000000000000000000
+                end
+              end
             end
             inherited SendToLayout: TLayout
               Size.Width = 759.000000000000000000
@@ -452,9 +468,6 @@ inherited frmHome_Surface: TfrmHome_Surface
                 end
               end
             end
-            inherited SendInfoLabel: TLabel
-              Size.Width = 759.000000000000000000
-            end
           end
         end
         inherited WVSettings: TTabItem
@@ -470,10 +483,10 @@ inherited frmHome_Surface: TfrmHome_Surface
             Size.Width = 759.000000000000000000
           end
           inherited ExportPrivKeyInfoLabel: TLabel
-            Size.Width = 759.000000000000000000
+            Size.Width = 729.000000000000000000
           end
           inherited ChangeDescriptionInfoLabel: TLabel
-            Size.Width = 759.000000000000000000
+            Size.Width = 729.000000000000000000
           end
         end
       end
@@ -1343,7 +1356,7 @@ inherited frmHome_Surface: TfrmHome_Surface
           Position.X = 647.000000000000000000
         end
         inherited SettingsLanguageLabel: TLabel
-          Size.Width = 647.000000000000000000
+          Size.Width = 617.000000000000000000
         end
       end
       inherited Panel3: TPanel
@@ -1352,7 +1365,7 @@ inherited frmHome_Surface: TfrmHome_Surface
           Position.X = 647.000000000000000000
         end
         inherited SettingsCurrencyLabel: TLabel
-          Size.Width = 647.000000000000000000
+          Size.Width = 617.000000000000000000
         end
       end
       inherited CreateBackupButton: TButton
@@ -1365,16 +1378,16 @@ inherited frmHome_Surface: TfrmHome_Surface
         Size.Width = 759.000000000000000000
       end
       inherited WipeWalletDataInfoLabel: TLabel
-        Size.Width = 759.000000000000000000
+        Size.Width = 729.000000000000000000
       end
       inherited OrganizeInfoLabel: TLabel
-        Size.Width = 759.000000000000000000
+        Size.Width = 729.000000000000000000
       end
       inherited CreateBackupInfoLabel: TLabel
-        Size.Width = 759.000000000000000000
+        Size.Width = 729.000000000000000000
       end
       inherited CheckUpdateInfoLabel: TLabel
-        Size.Width = 759.000000000000000000
+        Size.Width = 729.000000000000000000
       end
     end
     inherited descryptSeed: TTabItem
@@ -1525,8 +1538,8 @@ inherited frmHome_Surface: TfrmHome_Surface
         Size.Width = 759.000000000000000000
       end
       inherited PrivateKeyMemo: TMemo
-        Size.Width = 759.000000000000000000
-        Viewport.Width = 759.000000000000000000
+        Size.Width = 729.000000000000000000
+        Viewport.Width = 729.000000000000000000
         Viewport.Height = 100.000000000000000000
       end
     end
@@ -1665,7 +1678,7 @@ inherited frmHome_Surface: TfrmHome_Surface
           Position.X = 678.000000000000000000
         end
         inherited ImportPrivKeyStaticLabel: TLabel
-          Size.Width = 668.000000000000000000
+          Size.Width = 648.000000000000000000
         end
       end
     end
@@ -1750,8 +1763,37 @@ inherited frmHome_Surface: TfrmHome_Surface
         Size.Height = 1872.000000000000000000
         Viewport.Width = 739.000000000000000000
         Viewport.Height = 1872.000000000000000000
+        inherited Layout16: TLayout
+          Size.Width = 739.000000000000000000
+          inherited Label11: TLabel
+            Size.Width = 739.000000000000000000
+          end
+          inherited HistoryTransactionID: TLabel
+            Size.Width = 739.000000000000000000
+          end
+        end
+        inherited Layout19: TLayout
+          Size.Width = 739.000000000000000000
+          inherited Layout21: TLayout
+            Size.Width = 578.000000000000000000
+            inherited HistoryTransactionValue: TLabel
+              Size.Width = 578.000000000000000000
+            end
+            inherited HistoryTransactionDate: TLabel
+              Size.Width = 578.000000000000000000
+            end
+            inherited historyTransactionConfirmation: TLabel
+              Size.Width = 578.000000000000000000
+            end
+          end
+        end
+        inherited Label3: TLabel
+          Size.Width = 739.000000000000000000
+        end
         inherited LinkLayout: TLayout
+          Size.Width = 739.000000000000000000
           inherited linkLabel: TLabel
+            Size.Width = 739.000000000000000000
             TextSettings.Font.StyleExt = {04070000000000000004000000}
           end
         end
@@ -1843,13 +1885,13 @@ inherited frmHome_Surface: TfrmHome_Surface
             Size.Width = 759.000000000000000000
           end
           inherited MnemonicSeedDescriptionLabel: TLabel
-            Size.Width = 759.000000000000000000
+            Size.Width = 729.000000000000000000
           end
         end
         inherited Layout26: TLayout
           Size.Width = 759.000000000000000000
           inherited HSBDescriptionLabel: TLabel
-            Size.Width = 759.000000000000000000
+            Size.Width = 729.000000000000000000
           end
           inherited SendWalletFileButton: TButton
             Size.Width = 759.000000000000000000
@@ -1861,7 +1903,7 @@ inherited frmHome_Surface: TfrmHome_Surface
             Size.Width = 759.000000000000000000
           end
           inherited EncryptedQRDescriptionLabel: TLabel
-            Size.Width = 759.000000000000000000
+            Size.Width = 729.000000000000000000
           end
         end
         inherited Layout28: TLayout
@@ -1870,7 +1912,7 @@ inherited frmHome_Surface: TfrmHome_Surface
             Size.Width = 759.000000000000000000
           end
           inherited DecryptedQRDescriptionLabel: TLabel
-            Size.Width = 759.000000000000000000
+            Size.Width = 729.000000000000000000
           end
         end
       end
@@ -1927,6 +1969,16 @@ inherited frmHome_Surface: TfrmHome_Surface
     inherited WaitWalletGenerate: TTabItem
       ExplicitSize.cx = 8.000000000000000000
       ExplicitSize.cy = 8.000000000000000000
+      inherited Panel5: TPanel
+        Position.Y = 916.000000000000000000
+        Size.Width = 759.000000000000000000
+        inherited WaitForGenerationProgressBar: TProgressBar
+          Size.Width = 759.000000000000000000
+        end
+        inherited WaitForGenerationLabel: TLabel
+          Size.Width = 759.000000000000000000
+        end
+      end
     end
     inherited ImportPrivKeyTabItem: TTabItem
       ExplicitSize.cx = 8.000000000000000000
@@ -1979,7 +2031,7 @@ inherited frmHome_Surface: TfrmHome_Surface
         end
       end
       inherited AddAccountInfoLabel: TLabel
-        Size.Width = 759.000000000000000000
+        Size.Width = 729.000000000000000000
         TabOrder = 6
       end
     end
@@ -2033,7 +2085,7 @@ inherited frmHome_Surface: TfrmHome_Surface
         Size.Width = 759.000000000000000000
       end
       inherited RFFPathEdit: TLabel
-        Size.Width = 759.000000000000000000
+        Size.Width = 729.000000000000000000
       end
       inherited ToolBar7: TToolBar
         Size.Width = 759.000000000000000000
@@ -2047,16 +2099,18 @@ inherited frmHome_Surface: TfrmHome_Surface
           Size.Width = 759.000000000000000000
         end
         inherited RestoreFromFileAccountNameLabel: TLabel
-          Size.Width = 759.000000000000000000
+          Size.Width = 729.000000000000000000
         end
       end
       inherited Layout36: TLayout
         Size.Width = 759.000000000000000000
         inherited RFFPassword: TEdit
-          Size.Width = 759.000000000000000000
+          Position.X = 15.000000000000000000
+          Margins.Left = 15.000000000000000000
+          Size.Width = 744.000000000000000000
         end
         inherited RFFPasswordInfo: TLabel
-          Size.Width = 759.000000000000000000
+          Size.Width = 729.000000000000000000
         end
       end
     end
@@ -2079,57 +2133,45 @@ inherited frmHome_Surface: TfrmHome_Surface
       inherited Panel10: TPanel
         Size.Width = 759.000000000000000000
         inherited ConfirmSendPasswordEdit: TEdit
-          Position.X = 559.000000000000000000
+          Position.X = 493.000000000000000000
         end
       end
       inherited Panel12: TPanel
         Size.Width = 759.000000000000000000
         inherited Layout38: TLayout
           Size.Width = 759.000000000000000000
-          inherited Layout40: TLayout
-            Position.X = 749.000000000000000000
-          end
           inherited SendFromLabel: TLabel
-            Size.Width = 739.000000000000000000
+            Size.Width = 729.000000000000000000
           end
           inherited SendFromStaticLabel: TLabel
-            Size.Width = 739.000000000000000000
+            Size.Width = 729.000000000000000000
           end
         end
         inherited Layout41: TLayout
           Size.Width = 759.000000000000000000
-          inherited Layout43: TLayout
-            Position.X = 749.000000000000000000
-          end
           inherited SendFeeLabel: TLabel
-            Size.Width = 739.000000000000000000
+            Size.Width = 729.000000000000000000
           end
           inherited SendFeeStaticLabel: TLabel
-            Size.Width = 739.000000000000000000
+            Size.Width = 729.000000000000000000
           end
         end
         inherited Layout44: TLayout
           Size.Width = 759.000000000000000000
-          inherited Layout46: TLayout
-            Position.X = 749.000000000000000000
-          end
           inherited SendValueLabel: TLabel
-            Size.Width = 739.000000000000000000
+            Size.Width = 729.000000000000000000
           end
           inherited SendValueStaticLabel: TLabel
-            Size.Width = 739.000000000000000000
+            Size.Width = 729.000000000000000000
           end
         end
         inherited Layout47: TLayout
           Size.Width = 759.000000000000000000
-          inherited Layout49: TLayout
-            Position.X = 749.000000000000000000
-          end
           inherited SendToLabel: TLabel
-            Size.Width = 739.000000000000000000
+            Size.Width = 729.000000000000000000
           end
           inherited SendToStaticLabel: TLabel
-            Size.Width = 739.000000000000000000
+            Size.Width = 729.000000000000000000
           end
         end
         inherited SendDetailsLabel: TLabel
@@ -2138,11 +2180,8 @@ inherited frmHome_Surface: TfrmHome_Surface
         end
         inherited Layout53: TLayout
           Size.Width = 759.000000000000000000
-          inherited Layout55: TLayout
-            Position.X = 749.000000000000000000
-          end
           inherited WaitTimeLabel: TLabel
-            Size.Width = 739.000000000000000000
+            Size.Width = 729.000000000000000000
           end
         end
       end
@@ -2218,7 +2257,10 @@ inherited frmHome_Surface: TfrmHome_Surface
         Size.Width = 155.000000000000000000
       end
       inherited OrganizeDragInfoLabel: TLabel
-        Size.Width = 155.000000000000000000
+        Size.Width = 0.000000000000000000
+      end
+      inherited PopupBox1: TPopupBox
+        Position.X = -25.000000000000000000
       end
     end
     inherited BackToBalanceViewLayout: TLayout

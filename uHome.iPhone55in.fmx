@@ -113,11 +113,15 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         end
       end
       inherited PanelLoading: TPanel
+        Position.Y = 336.000000000000000000
+        Size.Width = 93.000000000000000000
         inherited labelForGenerating: TLabel
+          Size.Width = 93.000000000000000000
           Size.Height = 84.000000000000000000
         end
         inherited GenerateSeedProgressBar: TProgressBar
           Position.Y = 84.000000000000000000
+          Size.Width = 93.000000000000000000
           Size.Height = 4.000000000000000000
         end
       end
@@ -557,6 +561,12 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
                   end
                 end
               end
+              inherited PerByteFeeLayout: TLayout
+                Size.Width = 93.000000000000000000
+                inherited PerByteFeeEdit: TEdit
+                  Size.Width = 0.000000000000000000
+                end
+              end
             end
             inherited SendToLayout: TLayout
               Size.Width = 93.000000000000000000
@@ -574,9 +584,6 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
                 end
               end
             end
-            inherited SendInfoLabel: TLabel
-              Size.Width = 93.000000000000000000
-            end
           end
         end
         inherited WVSettings: TTabItem
@@ -593,10 +600,10 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
             Size.Width = 93.000000000000000000
           end
           inherited ExportPrivKeyInfoLabel: TLabel
-            Size.Width = 93.000000000000000000
+            Size.Width = 63.000000000000000000
           end
           inherited ChangeDescriptionInfoLabel: TLabel
-            Size.Width = 93.000000000000000000
+            Size.Width = 63.000000000000000000
           end
         end
       end
@@ -1526,19 +1533,19 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
       end
       inherited WipeWalletDataInfoLabel: TLabel
         Position.Y = 333.000000000000000000
-        Size.Width = 93.000000000000000000
+        Size.Width = 63.000000000000000000
       end
       inherited OrganizeInfoLabel: TLabel
         Position.Y = 389.000000000000000000
-        Size.Width = 93.000000000000000000
+        Size.Width = 63.000000000000000000
       end
       inherited CreateBackupInfoLabel: TLabel
         Position.Y = 454.000000000000000000
-        Size.Width = 93.000000000000000000
+        Size.Width = 63.000000000000000000
       end
       inherited CheckUpdateInfoLabel: TLabel
         Position.Y = 519.000000000000000000
-        Size.Width = 93.000000000000000000
+        Size.Width = 63.000000000000000000
       end
     end
     inherited descryptSeed: TTabItem
@@ -1562,6 +1569,8 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Size.Width = 93.000000000000000000
         inherited passwordForDecrypt: TEdit
           Position.X = -107.000000000000000000
+          Position.Y = 9.000000000000000000
+          Size.Height = 30.000000000000000000
         end
       end
       inherited btnDecryptSeed: TButton
@@ -1703,7 +1712,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Viewport.Width = 93.000000000000000000
         Viewport.Height = 407.000000000000000000
         inherited SeedWordsFlowLayout: TFlowLayout
-          Size.Width = 414.000000000000000000
+          Size.Width = 93.000000000000000000
         end
       end
       inherited Memo1: TMemo
@@ -1722,7 +1731,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Viewport.Width = 93.000000000000000000
         Viewport.Height = 200.000000000000000000
         inherited ConfirmedSeedFlowLayout: TFlowLayout
-          Size.Width = 414.000000000000000000
+          Size.Width = 93.000000000000000000
         end
       end
     end
@@ -1775,8 +1784,8 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
       end
       inherited PrivateKeyMemo: TMemo
         Position.Y = 44.000000000000000000
-        Size.Width = 93.000000000000000000
-        Viewport.Width = 93.000000000000000000
+        Size.Width = 63.000000000000000000
+        Viewport.Width = 63.000000000000000000
         Viewport.Height = 100.000000000000000000
       end
     end
@@ -1936,6 +1945,8 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Size.Width = 93.000000000000000000
         inherited NewCoinDescriptionEdit: TEdit
           Position.X = -107.000000000000000000
+          Position.Y = 9.000000000000000000
+          Size.Height = 30.000000000000000000
         end
       end
       inherited btnOKAddNewCoinSettings: TButton
@@ -1951,6 +1962,8 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Size.Width = 93.000000000000000000
         inherited NewCoinDescriptionPassEdit: TEdit
           Position.X = -107.000000000000000000
+          Position.Y = 9.000000000000000000
+          Size.Height = 30.000000000000000000
         end
       end
       inherited Panel11: TPanel
@@ -1964,7 +1977,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
           end
         end
         inherited ImportPrivKeyStaticLabel: TLabel
-          Size.Width = 2.000000000000000000
+          Size.Width = 0.000000000000000000
         end
       end
       inherited PrivateKeySettingsLayout: TLayout
@@ -2073,8 +2086,28 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Size.Height = 672.000000000000000000
         Viewport.Width = 73.000000000000000000
         Viewport.Height = 672.000000000000000000
+        inherited Layout16: TLayout
+          Size.Width = 73.000000000000000000
+          inherited Label11: TLabel
+            Size.Width = 73.000000000000000000
+          end
+          inherited HistoryTransactionID: TLabel
+            Size.Width = 73.000000000000000000
+          end
+        end
+        inherited Layout19: TLayout
+          Size.Width = 73.000000000000000000
+          inherited Layout21: TLayout
+            Size.Width = 0.000000000000000000
+          end
+        end
+        inherited Label3: TLabel
+          Size.Width = 73.000000000000000000
+        end
         inherited LinkLayout: TLayout
+          Size.Width = 73.000000000000000000
           inherited linkLabel: TLabel
+            Size.Width = 73.000000000000000000
             TextSettings.Font.StyleExt = {04070000000000000004000000}
           end
         end
@@ -2177,13 +2210,13 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
             Size.Width = 93.000000000000000000
           end
           inherited MnemonicSeedDescriptionLabel: TLabel
-            Size.Width = 93.000000000000000000
+            Size.Width = 63.000000000000000000
           end
         end
         inherited Layout26: TLayout
           Size.Width = 93.000000000000000000
           inherited HSBDescriptionLabel: TLabel
-            Size.Width = 93.000000000000000000
+            Size.Width = 63.000000000000000000
           end
           inherited SendWalletFileButton: TButton
             Size.Width = 93.000000000000000000
@@ -2195,7 +2228,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
             Size.Width = 93.000000000000000000
           end
           inherited EncryptedQRDescriptionLabel: TLabel
-            Size.Width = 93.000000000000000000
+            Size.Width = 63.000000000000000000
           end
         end
         inherited Layout28: TLayout
@@ -2204,7 +2237,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
             Size.Width = 93.000000000000000000
           end
           inherited DecryptedQRDescriptionLabel: TLabel
-            Size.Width = 93.000000000000000000
+            Size.Width = 63.000000000000000000
           end
         end
       end
@@ -2273,11 +2306,15 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
       ExplicitSize.cx = 8.000000000000000000
       ExplicitSize.cy = 8.000000000000000000
       inherited Panel5: TPanel
+        Position.Y = 314.000000000000000000
+        Size.Width = 93.000000000000000000
         inherited WaitForGenerationProgressBar: TProgressBar
           Position.Y = 84.000000000000000000
+          Size.Width = 93.000000000000000000
           Size.Height = 4.000000000000000000
         end
         inherited WaitForGenerationLabel: TLabel
+          Size.Width = 93.000000000000000000
           Size.Height = 84.000000000000000000
         end
       end
@@ -2355,7 +2392,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
       end
       inherited AddAccountInfoLabel: TLabel
         Position.Y = 430.000000000000000000
-        Size.Width = 93.000000000000000000
+        Size.Width = 63.000000000000000000
         TabOrder = 6
       end
     end
@@ -2428,7 +2465,7 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
       end
       inherited RFFPathEdit: TLabel
         Position.Y = 44.000000000000000000
-        Size.Width = 93.000000000000000000
+        Size.Width = 63.000000000000000000
       end
       inherited ToolBar7: TToolBar
         Size.Width = 93.000000000000000000
@@ -2450,19 +2487,21 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
           Size.Height = 30.000000000000000000
         end
         inherited RestoreFromFileAccountNameLabel: TLabel
-          Size.Width = 93.000000000000000000
+          Size.Width = 63.000000000000000000
         end
       end
       inherited Layout36: TLayout
         Position.Y = 188.000000000000000000
         Size.Width = 93.000000000000000000
         inherited RFFPassword: TEdit
+          Position.X = 15.000000000000000000
           Position.Y = 66.000000000000000000
-          Size.Width = 93.000000000000000000
+          Margins.Left = 15.000000000000000000
+          Size.Width = 78.000000000000000000
           Size.Height = 30.000000000000000000
         end
         inherited RFFPasswordInfo: TLabel
-          Size.Width = 93.000000000000000000
+          Size.Width = 63.000000000000000000
         end
       end
     end
@@ -2494,7 +2533,9 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Position.Y = 44.000000000000000000
         Size.Width = 93.000000000000000000
         inherited ConfirmSendPasswordEdit: TEdit
-          Position.X = -107.000000000000000000
+          Position.X = -173.000000000000000000
+          Position.Y = 9.000000000000000000
+          Size.Height = 30.000000000000000000
         end
       end
       inherited Panel12: TPanel
@@ -2502,50 +2543,38 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Size.Width = 93.000000000000000000
         inherited Layout38: TLayout
           Size.Width = 93.000000000000000000
-          inherited Layout40: TLayout
-            Position.X = 83.000000000000000000
-          end
           inherited SendFromLabel: TLabel
-            Size.Width = 73.000000000000000000
+            Size.Width = 63.000000000000000000
           end
           inherited SendFromStaticLabel: TLabel
-            Size.Width = 73.000000000000000000
+            Size.Width = 63.000000000000000000
           end
         end
         inherited Layout41: TLayout
           Size.Width = 93.000000000000000000
-          inherited Layout43: TLayout
-            Position.X = 83.000000000000000000
-          end
           inherited SendFeeLabel: TLabel
-            Size.Width = 73.000000000000000000
+            Size.Width = 63.000000000000000000
           end
           inherited SendFeeStaticLabel: TLabel
-            Size.Width = 73.000000000000000000
+            Size.Width = 63.000000000000000000
           end
         end
         inherited Layout44: TLayout
           Size.Width = 93.000000000000000000
-          inherited Layout46: TLayout
-            Position.X = 83.000000000000000000
-          end
           inherited SendValueLabel: TLabel
-            Size.Width = 73.000000000000000000
+            Size.Width = 63.000000000000000000
           end
           inherited SendValueStaticLabel: TLabel
-            Size.Width = 73.000000000000000000
+            Size.Width = 63.000000000000000000
           end
         end
         inherited Layout47: TLayout
           Size.Width = 93.000000000000000000
-          inherited Layout49: TLayout
-            Position.X = 83.000000000000000000
-          end
           inherited SendToLabel: TLabel
-            Size.Width = 73.000000000000000000
+            Size.Width = 63.000000000000000000
           end
           inherited SendToStaticLabel: TLabel
-            Size.Width = 73.000000000000000000
+            Size.Width = 63.000000000000000000
           end
         end
         inherited SendDetailsLabel: TLabel
@@ -2554,11 +2583,8 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         end
         inherited Layout53: TLayout
           Size.Width = 93.000000000000000000
-          inherited Layout55: TLayout
-            Position.X = 83.000000000000000000
-          end
           inherited WaitTimeLabel: TLabel
-            Size.Width = 73.000000000000000000
+            Size.Width = 63.000000000000000000
           end
         end
       end
@@ -2645,7 +2671,12 @@ inherited frmHome_iPhone55in: TfrmHome_iPhone55in
         Size.Width = 155.000000000000000000
       end
       inherited OrganizeDragInfoLabel: TLabel
-        Size.Width = 155.000000000000000000
+        Size.Width = 0.000000000000000000
+      end
+      inherited PopupBox1: TPopupBox
+        Position.X = -25.000000000000000000
+        Position.Y = 57.000000000000000000
+        Size.Height = 30.000000000000000000
       end
     end
     inherited BackToBalanceViewLayout: TLayout

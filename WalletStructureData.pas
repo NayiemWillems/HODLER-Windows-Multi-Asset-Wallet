@@ -82,6 +82,7 @@ begin
   ShortCut := availablecoin[id].shortcut;
   name := availablecoin[id].displayName;
   isCompressed := true;
+  deleted := false;
 
   if crTime = -1 then
     crTime := DateTimeToUnix(now);
