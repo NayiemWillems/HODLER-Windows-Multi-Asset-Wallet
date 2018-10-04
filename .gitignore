@@ -4,5 +4,5 @@ Win64/
 /**/__history/
 /**/__recovery/
 *.key
-**/*.bak
+/**/*.bak
 

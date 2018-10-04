@@ -2,62 +2,84 @@ unit Bitcoin;
 
 interface
 
-uses misc, SysUtils,secp256k1, HashObj, base58 , coinData;
+uses SysUtils, secp256k1, HashObj, base58, coinData, Velthuis.BigIntegers,
+  WalletStructureData;
 
-function Bitcoin_PublicAddrToWallet(pub: AnsiString; netbyte: AnsiString = '00')
-  : AnsiString;
+function reedemFromPub(pub: AnsiString): AnsiString;
+function Bitcoin_PublicAddrToWallet(pub: AnsiString; netbyte: AnsiString = '00';
+  scriptType: AnsiString = 'p2pkh'): AnsiString;
 function Bitcoin_createHD(coinid, x, y: integer; MasterSeed: AnsiString)
   : TWalletInfo;
 function createTransaction(from: TWalletInfo; sendto: AnsiString;
-  Amount, Fee: int64; inputs: TUTXOS; MasterSeed: AnsiString): AnsiString;
-function sendCoinsTO(from: TWalletInfo; sendto: AnsiString; Amount, Fee: int64;
-  MasterSeed: AnsiString; coin: AnsiString = 'bitcoin'): AnsiString;
-//function netbyteFromCoinID(coinid: integer): AnsiString;
+  Amount, Fee: BigInteger; inputs: TUTXOS; MasterSeed: AnsiString): AnsiString;
+function sendCoinsTO(from: TWalletInfo; sendto: AnsiString;
+  Amount, Fee: BigInteger; MasterSeed: AnsiString; coin: AnsiString = 'bitcoin')
+  : AnsiString;
+// function netbyteFromCoinID(coinid: integer): AnsiString;
+
+function generatep2sh(pub, netbyte: AnsiString): AnsiString;
+function generatep2pkh(pub, netbyte: AnsiString): AnsiString;
+function generatep2wpkh(pub: AnsiString): AnsiString;
 
 implementation
 
-uses uHome,transactions;
-
-{function netbyteFromCoinID(coinid: integer): AnsiString;
-begin
-  result := '00';
-  case coinid of
-    0:
-      result := '00';
-    1:
-      result := '30';
-    2:
-      result := '4c';
-    3:
-      result := '00';
-  end;
-
-end; }
+uses uHome, transactions, tokenData, bech32, misc;
 
 function Bitcoin_createHD(coinid, x, y: integer; MasterSeed: AnsiString)
   : TWalletInfo;
 var
   pub: AnsiString;
   p: AnsiString;
+
 begin
-  result.coin := coinid;
-  result.x := x;
-  result.y := y;
-  p := priv256forhd(result.coin, x, y, MasterSeed);
-  result.addr := Bitcoin_PublicAddrToWallet(secp256k1_get_public(p),
-    //netbyteFromCoinID(coinid));
-    availablecoin[coinid].p2pk );  // ?
+
+  p := priv256forhd(coinid, x, y, MasterSeed);
+  pub := secp256k1_get_public(p);
+  result := TWalletInfo.Create(coinid, x, y, Bitcoin_PublicAddrToWallet(pub,
+    availablecoin[coinid].p2pk), '');
+  result.pub := pub;
+  result.isCompressed := true;
+  wipeAnsiString(p);
   wipeAnsiString(MasterSeed);
 
 end;
 
-function Bitcoin_PublicAddrToWallet(pub: AnsiString; netbyte: AnsiString = '00')
-  : AnsiString;
+function generatep2pkh(pub, netbyte: AnsiString): AnsiString;
 var
   s, r: AnsiString;
 begin
-
   s := GetSHA256FromHex(pub);
+  s := hash160FromHex(s);
+  s := netbyte + s;
+  r := GetSHA256FromHex(s);
+  r := GetSHA256FromHex(r);
+{$IFDEF ANDROID}
+  s := s + copy(r, 0, 8);
+{$ELSE}
+  s := s + copy(r, 1, 8);
+{$ENDIF}
+  result := Encode58(s);
+
+end;
+
+function reedemFromPub(pub: AnsiString): AnsiString;
+var
+  s: AnsiString;
+begin
+  s := GetSHA256FromHex(pub);
+  s := hash160FromHex(s);
+  s := '0014' + s;
+  result := s;
+end;
+
+function generatep2sh(pub, netbyte: AnsiString): AnsiString;
+var
+  s, r: AnsiString;
+begin
+  s := GetSHA256FromHex(pub);
+  s := hash160FromHex(s);
+  s := '0014' + s;
+  s := GetSHA256FromHex(s);
   s := hash160FromHex(s);
   s := netbyte + s;
   r := GetSHA256FromHex(s);
@@ -70,165 +92,175 @@ begin
   result := Encode58(s);
 end;
 
-function createTransaction(from: TWalletInfo; sendto: AnsiString;
-  Amount, Fee: int64; inputs: TUTXOS; MasterSeed: AnsiString): AnsiString;
-{var
-  from160, dest160: AnsiString;
-    der: array of AnsiString;
-  netbyte, txhash: AnsiString;
-  tx: AnsiString;
-  inputsBalance: uint64;
-  inputsCount, i: System.UInt8;
-  pub, priv, scriptSig: AnsiString;    }
-  var TX:TXBuilder;
-  TXCash:TXBuilderBIP_143;
-  diff:uint64;
-begin
-
-if from.coin<>3 then
-begin
-result:='';
-TX:=TXBuilder.Create;
-TX.sender:=from;
-TX.inputs:=from.UTXO;
-TX.masterSeed:=masterseed;
-TX.addOutput(sendto,amount);
- diff:=TX.getAllToSPent-(Amount+Fee);
-if diff>0 then
-TX.addOutput(TX.sender.addr,diff);
-if Length(tx.getAsHex) mod 2 <> 0 then
-  begin
-    result := createTransaction(from, sendto, Amount, Fee, inputs, MasterSeed);
-    wipeAnsiString(MasterSeed);
-    exit;
-  end;
-  wipeAnsiString(MasterSeed);
-  result := tx.getAsHex;
-end else
-begin
-result:='';
-TXCash:=TXBuilderBIP_143.Create;
-TXCash.sender:=from;
-TXCash.inputs:=from.UTXO;
-TXCash.masterSeed:=masterseed;
-TXCash.addOutput(sendto,amount);
- diff:=TXCash.getAllToSPent-(Amount+Fee);
-if diff>0 then
-TXCash.addOutput(TXCash.sender.addr,diff);
-if Length(TXCash.getAsHex) mod 2 <> 0 then
-  begin
-    result := createTransaction(from, sendto, Amount, Fee, inputs, MasterSeed);
-    wipeAnsiString(MasterSeed);
-    exit;
-  end;
-  wipeAnsiString(MasterSeed);
-  result := TXCash.getAsHex;
-end;
-
-{  // MasterSeed := encryptedSeed;
-  from160 := copy(decode58(from.addr), 0, 42);
-  dest160 := copy(decode58(sendto), 0, 42);
-  netbyte := copy(dest160, 0, 2);
-
-  delete(from160, 1, 2);
-  delete(dest160, 1, 2);
-
-  inputsBalance := 0;
-
-  tx := '';
-  inputsCount := Length(inputs);
-  tx := tx + inttotx(1, 8);
-
-  tx := tx + inttotx(inputsCount, 2);
-  if inputsCount < 1 then
-    exit;
-
-  for i := 0 to inputsCount - 1 do
-  begin
-    tx := tx + ReverseHexOrder(inputs[i].txid);
-    tx := tx + inttotx(inputs[i].n, 8);
-    tx := tx + inttotx(Length(inputs[i].ScriptPubKey) div 2, 2);
-    tx := tx + inputs[i].ScriptPubKey;
-    tx := tx + 'ffffffff';
-    //tx := tx + inttotx(inputs[i].Amount,8);
-    inputsBalance := inputsBalance + inputs[i].Amount;
-  end;
-  tx := tx + '02';
-
-  tx := tx + inttotx(Amount, 16);
-  tx := tx + '1976a914' + dest160 + '88ac';
-  tx := tx + inttotx(inputsBalance - (Amount + Fee), 16);
-  tx := tx + '1976a914' + from160 + '88ac';
-  tx := tx + '00000000';
-  if myWallets[currentWallet].coin = 3 then
-    tx := tx + '41000000'
-  else // SIGHASH_FORKID BITCOIN CASH
-    tx := tx + '01000000';
-  txhash := (GetSHA256FromHex(GetSHA256FromHex(tx)));
-  priv := priv256forhd(from.coin, from.x, from.y, MasterSeed);
-
-  pub := secp256k1_get_public(priv);
-  setLength(der, inputsCount);
-  for i := 0 to inputsCount - 1 do
-  begin
-    scriptSig := secp256k1_signDER(txhash, priv);
-    if myWallets[currentWallet].coin = 3 then
-    der[i] := inttotx((Length(scriptSig) + 2) div 2, 2) + scriptSig + '41' +
-      inttotx((Length(pub)) div 2, 2) + pub else
-    der[i] := inttotx((Length(scriptSig) + 2) div 2, 2) + scriptSig + '01' +
-      inttotx((Length(pub)) div 2, 2) + pub;
-  end;
-  tx := '';
-  wipeAnsiString(priv);
-  tx := tx + inttotx(1, 8);
-  tx := tx + inttotx(inputsCount, 2);
-  for i := 0 to inputsCount - 1 do
-  begin
-    tx := tx + ReverseHexOrder(inputs[i].txid);
-    tx := tx + inttotx(inputs[i].n, 8);
-    tx := tx + inttotx(Length(der[i]) div 2, 2);
-    tx := tx + der[i];
-    tx := tx + 'ffffffff';
-
-  end;
-  tx := tx + '02';
-  tx := tx + inttotx(Amount, 16);
-  tx := tx + '1976a914' + dest160 + '88ac'; // output1
-  tx := tx + inttotx(inputsBalance - (Amount + Fee), 16); // REst
-  tx := tx + '1976a914' + from160 + '88ac'; // output1
-  tx := tx + '00000000';
-
- }
-end;
-
-function sendCoinsTO(from: TWalletInfo; sendto: AnsiString; Amount, Fee: int64;
-  MasterSeed: AnsiString; coin: AnsiString = 'bitcoin'): AnsiString;
+function generatep2wpkh(pub: AnsiString): AnsiString;
 var
-  tx: AnsiString;
-  txBuilder:TXBuilder_ETH;
+  s: AnsiString;
 begin
-if myWallets[currentWallet].coin<>4 then begin
-  tx := createTransaction(from, sendto, Amount, Fee, getUTXO(from), MasterSeed);
-
-end else
-begin
- txBuilder:=TXBuilder_ETH.Create;
- txBuilder.sender:=myWallets[currentWallet];
- txBuilder.nonce:=txBuilder.sender.nonce;
- txBuilder.gasPrice:=Fee;
- txBuilder.value:=Amount;
- txBuilder.gasLimit:=100*100;
- txBuilder.receiver:=StringReplace(sendto,'0x','',[rfReplaceAll]);
- txBuilder.data:='';
- txBuilder.createPreImage;
- txBuilder.sign(masterseed);
- tx:=txBuilder.Image;
+  s := GetSHA256FromHex(pub);
+  s := hash160FromHex(s);
+  result := segwit_addr_encode('bc', 0, s);
 end;
-result:=tx;
-exit;
-  if tx <> '' then
+
+function Bitcoin_PublicAddrToWallet(pub: AnsiString; netbyte: AnsiString = '00';
+  scriptType: AnsiString = 'p2pkh'): AnsiString;
+
+begin
+  result := 'UNKNOWN_SCRIPT_TYPE';
+  if scriptType = 'p2pkh' then
+    result := generatep2pkh(pub, netbyte);
+  if scriptType = 'p2sh' then
+    result := generatep2sh(pub, netbyte);
+  if scriptType = 'p2wpkh' then
+    result := generatep2wpkh(pub);
+
+end;
+
+function createSegwitTransaction(from: TWalletInfo; sendto: AnsiString;
+  Amount, Fee: BigInteger; inputs: TUTXOS; MasterSeed: AnsiString): AnsiString;
+var
+  TXBIP143: TXBuilderBIP_143;
+  diff: int64;
+begin
+  result := '';
+  TXBIP143 := TXBuilderBIP_143.Create;
+  TXBIP143.sender := from;
+  TXBIP143.inputs := from.UTXO;
+  TXBIP143.MasterSeed := MasterSeed;
+  TXBIP143.addOutput(sendto, Amount);
+  diff := TXBIP143.getAllToSPent - (Amount.AsInt64 + Fee.AsInt64);
+  if diff > 0 then
+    TXBIP143.addOutput(TXBIP143.sender.addr, diff);
+  if Length(TXBIP143.getAsHex(true)) mod 2 <> 0 then
+  begin
+    result := createSegwitTransaction(from, sendto, Amount, Fee, inputs,
+      MasterSeed);
+    wipeAnsiString(MasterSeed);
+    exit;
+  end;
+  wipeAnsiString(MasterSeed);
+  result := TXBIP143.getAsHex(true);
+end;
+
+function createTransaction(from: TWalletInfo; sendto: AnsiString;
+  Amount, Fee: BigInteger; inputs: TUTXOS; MasterSeed: AnsiString): AnsiString;
+
+var
+  TX: TXBuilder;
+  TXCash: TXBuilderBIP_143;
+  diff: int64;
+begin
+
+  if from.coin <> 3 then
+  begin
+    result := '';
+    TX := TXBuilder.Create;
+    TX.sender := from;
+    TX.inputs := from.UTXO;
+    TX.MasterSeed := MasterSeed;
+    TX.addOutput(sendto, Amount);
+    diff := TX.getAllToSPent - (Amount.AsInt64 + Fee.AsInt64);
+    if diff > 0 then
+      TX.addOutput(TX.sender.addr, diff);
+    if Length(TX.getAsHex) mod 2 <> 0 then
+    begin
+      result := createTransaction(from, sendto, Amount, Fee, inputs,
+        MasterSeed);
+      wipeAnsiString(MasterSeed);
+      exit;
+    end;
+    wipeAnsiString(MasterSeed);
+    result := TX.getAsHex;
+  end
+  else
+  begin
+    result := '';
+    TXCash := TXBuilderBIP_143.Create;
+    TXCash.sender := from;
+    TXCash.inputs := from.UTXO;
+    TXCash.MasterSeed := MasterSeed;
+    TXCash.addOutput(sendto, Amount);
+    diff := TXCash.getAllToSPent - (Amount.AsInt64 + Fee.AsInt64);
+    if diff > 0 then
+      TXCash.addOutput(TXCash.sender.addr, diff);
+    if Length(TXCash.getAsHex) mod 2 <> 0 then
+    begin
+      result := createTransaction(from, sendto, Amount, Fee, inputs,
+        MasterSeed);
+      wipeAnsiString(MasterSeed);
+      exit;
+    end;
+    wipeAnsiString(MasterSeed);
+    result := TXCash.getAsHex;
+  end;
+
+end;
+
+function canSegwit(inputs: TUTXOS): Boolean;
+var
+  i: integer;
+begin
+  result := false;
+  for i := 0 to Length(inputs) - 1 do
+  begin
+    if inputType(inputs[i]) > 0 then
+    begin
+      result := true;
+      exit;
+    end;
+
+  end;
+end;
+
+function sendCoinsTO(from: TWalletInfo; sendto: AnsiString;
+  Amount, Fee: BigInteger; MasterSeed: AnsiString; coin: AnsiString = 'bitcoin')
+  : AnsiString;
+var
+  TX: AnsiString;
+  TXBuilder: TXBuilder_ETH;
+begin
+  if CurrentCoin.coin <> 4 then
+  begin
+    if (CurrentCoin.coin = 0) and canSegwit(getUTXO(from)) then
+    begin
+      TX := createSegwitTransaction(from, sendto, Amount, Fee, getUTXO(from),
+        MasterSeed);
+    end
+    else
+    begin
+      TX := createTransaction(from, sendto, Amount, Fee, getUTXO(from),
+        MasterSeed);
+    end;
+  end
+  else
+  begin
+    TXBuilder := TXBuilder_ETH.Create;
+    TXBuilder.sender := CurrentCoin;
+    TXBuilder.nonce := TXBuilder.sender.nonce;
+    TXBuilder.gasPrice := Fee;
+    TXBuilder.value := Amount;
+    TXBuilder.gasLimit := 21000;
+    TXBuilder.receiver := StringReplace(sendto, '0x', '', [rfReplaceAll]);
+    TXBuilder.data := '';
+    if frmHome.isTokenTransfer then
+    begin
+
+      TXBuilder.value := BigInteger.Zero;
+      TXBuilder.receiver := StringReplace(Token(CurrentCryptoCurrency)
+        .ContractAddress, '0x', '', [rfReplaceAll]);
+      TXBuilder.gasLimit := 66666;
+      TXBuilder.data := 'a9059cbb000000000000000000000000' +
+        StringReplace(sendto, '0x', '', [rfReplaceAll]) +
+        BIntTo256Hex(Amount, 64);
+    end;
+
+    TXBuilder.createPreImage;
+    TXBuilder.sign(MasterSeed);
+    TX := TXBuilder.Image;
+  end;
+  result := TX;
+  if TX <> '' then
     result := getDataOverHTTP(HODLER_URL + 'sendTX.php?coin=' + coin +
-      '&tx=' + tx);
+      '&tx=' + TX);
 end;
 
 end.
