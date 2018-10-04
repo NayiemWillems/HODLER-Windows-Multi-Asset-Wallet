@@ -5,7 +5,7 @@ interface
 uses System.IOUtils, sysutils, StrUtils, Velthuis.BigIntegers, System.Classes,
   Math, // uHome ,
   FMX.Graphics, // misc,
-  base58,
+  base58, Json,
   FMX.Dialogs;
 
 type
@@ -17,10 +17,11 @@ type
     values: Array of BigInteger;
     CountValues: BigInteger;
     lastBlock: System.uint64;
-    confirmation : Integer;
-
+    confirmation: System.uint64;
     function toString(): AnsiString;
     procedure FromString(str: AnsiString);
+    function toJsonValue(): TJsonValue;
+    procedure fromJsonValue( JsonValue : TJsonValue);
 
   end;
 
@@ -37,30 +38,30 @@ type
     description: AnsiString;
     orderInWallet: Integer;
     deleted: boolean;
-    EncryptedPrivKey : AnsiString;
-    name , ShortCut : AnsiString;
+    EncryptedPrivKey: AnsiString;
+    name, ShortCut: AnsiString;
 
     constructor Create();
-    destructor Destroy(); override ;
+    destructor Destroy(); override;
 
-    function getIcon() : TBitmap; virtual ;
+    function getIcon(): TBitmap; virtual;
 
     function getFiat: Double;
   end;
+type TCryptoCurrencyArray = array of cryptocurrency;
 
 implementation
 
 uses misc, uHome;
 
-function cryptoCurrency.getIcon() : TBitmap;
+function cryptoCurrency.getIcon(): TBitmap;
 begin
   raise Exception.Create('getIcon not implemented');
 end;
 
-
 destructor cryptoCurrency.Destroy();
 begin
-  SetLength( history , 0 );
+  SetLength(history, 0);
 end;
 
 constructor cryptoCurrency.Create();
@@ -69,10 +70,97 @@ begin
 end;
 
 function cryptoCurrency.getFiat: Double;
+var d:double;
+begin
+  d:=confirmed.asDouble+unconfirmed.AsDouble;
+  if d<0 then d:=0.0;
+  result := currencyConverter.calculate(d) * rate /
+    Math.power(10, decimals);
+
+end;
+
+
+function  transactionHistory.toJsonValue(): TJsonValue;
+var
+  HistJson : TJsonObject;
+  addrArray : TjsonArray;
+  addrValJson : TjsonObject;
+  i : Integer;
+begin
+  HistJson := TJsonObject.Create();
+
+  HistJson.AddPair('type' , typ );
+  HistJson.AddPair('transactionID' , TransactionID );
+  HistJson.AddPair('timeStamp' , data );
+  HistJson.AddPair('countValues' , CountValues.toString() );
+  HistJson.AddPair('lastBlock' , inttostr(lastBlock) );
+  HistJson.AddPair('confirmation' , IntToStr(confirmation) );
+
+  addrArray := TJSONArray.Create();
+
+  for i := 0 to Length(addresses)-1 do
+  begin
+
+    addrValJson := TJsonObject.Create;
+    addrValJson.AddPair('address' , addresses[i]);
+    addrValJson.AddPair('value'  , values[i].ToString() );
+
+    addrArray.Add( addrValJson );
+
+  end;
+
+  HistJson.AddPair('addressList' , addrArray );
+  result := HistJson;
+
+end;
+
+procedure  transactionHistory.fromJsonValue( JsonValue : TJsonValue);
+var
+  i : Integer;
+  conf , lastB, temp, countVal : AnsiString;
+  addrlist : TJsonArray;
+  JsonIt : TJsonValue;
+
 begin
 
-  result := currencyConverter.calculate(confirmed.asDouble) * rate /
-    Math.power(10, decimals);
+  JsonValue.TryGetValue<AnsiString>('type' , typ);
+  JsonValue.TryGetValue<AnsiString>('transactionID' , TransactionID );
+  JsonValue.TryGetValue<AnsiString>('timeStamp' , data );
+  if JsonValue.TryGetValue<AnsiString>('confirmation' , conf ) then
+  begin
+    confirmation := strToIntDef(conf , 0);
+  end;
+  if JsonValue.TryGetValue<AnsiString>('countValues' , CountVal ) then
+  begin
+    BigInteger.TryParse( countVal , 10 , CountValues);
+  end;
+  if JsonValue.TryGetValue<AnsiString>('lastBlock' ,lastB ) then
+  begin
+    lastBlock := strToIntDef( lastB , 0 );
+  end;
+
+  if JsonValue.TryGetValue<TJsonArray>('addressList' , addrlist ) then
+  begin
+    SetLength( addresses , addrList.Count);
+    setLength( values , addrlist.Count );
+
+    i := 0;
+    for JsonIt in addrList do
+    begin
+
+      JsonIt.TryGetValue<AnsiString>( 'address' , addresses[i] );
+
+      if JsonIt.TryGetValue<AnsiString>('value' , temp ) then
+      begin
+
+        BigInteger.TryParse( temp , 10 , values[i] );
+
+      end;
+
+      inc(i);
+    end;
+
+  end;
 
 end;
 
@@ -117,8 +205,8 @@ begin
   data := list.Strings[2];
   size := strtoIntDef(list.Strings[3], 0);
 
-  setLength(addresses, size);
-  setLength(values, size);
+  SetLength(addresses, size);
+  SetLength(values, size);
 
   for i := 0 to size - 1 do
   begin

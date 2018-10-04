@@ -3,7 +3,7 @@ unit bech32;
 interface
 
 uses
-  System.SysUtils , FMX.Dialogs , system.strUtils , WalletStructureData;
+  System.SysUtils, FMX.Dialogs, System.strUtils, WalletStructureData;
 
 {$IFDEF ANDROID}
 
@@ -35,7 +35,7 @@ type
 function segwit_addr_encode(hrp: AnsiString; witver: byte; witprog: AnsiString)
   : AnsiString;
 
-function segwit_addr_decode( segwit :AnsiString ) : TaddressInfo;
+function segwit_addr_decode(segwit: AnsiString): TaddressInfo;
 
 function decode(str: String): Bech32Data;
 
@@ -54,8 +54,8 @@ function decodeBCH(str: String): Bech32Data;
 
 function rawEncode(values: TIntegerArray): String;
 
-function isValidBCHCashAddress( address : String ): Boolean;
-function isCashAddress( address : String ):boolean;
+function isValidBCHCashAddress(address: String): boolean;
+function isCashAddress(address: String): boolean;
 
 var
   charset: String = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
@@ -192,8 +192,6 @@ var
 
 implementation
 
-
-
 function Change(var data: array of System.uint32;
   frombits, tobits: System.uint32; pad: boolean = true): TIntegerArray;
 var
@@ -306,9 +304,10 @@ begin
   Result := c;
 
 end;
+
 function PolyModBCH(v: array of System.uint32): int64;
 var
-  c: Uint64 ;
+  c: Uint64;
   v_i: Uint64;
   c0: Uint64;
 begin
@@ -316,42 +315,42 @@ begin
   for v_i in v do
   begin
     c0 := c shr 35;
-    c := ((c and $07ffffffff) shl 5) xor v_i;
+    c := ((c and $07FFFFFFFF) shl 5) xor v_i;
 
     if (c0 and 1 <> 0) then
-      c := c xor $98f2bc8e61;
+      c := c xor $98F2BC8E61;
     if (c0 and 2 <> 0) then
-      c := c xor $79b76d99e2;
+      c := c xor $79B76D99E2;
     if (c0 and 4 <> 0) then
-      c := c xor $f33e5fb3c4;
+      c := c xor $F33E5FB3C4;
     if (c0 and 8 <> 0) then
-      c := c xor $ae2eabe2a8;
+      c := c xor $AE2EABE2A8;
     if (c0 and 16 <> 0) then
-      c := c xor $1e4f43e470;
+      c := c xor $1E4F43E470;
 
   end;
   Result := c;
 
 end;
 
-function prefix_expand(hrp : String) : TIntegerArray;
+function prefix_expand(hrp: String): TIntegerArray;
 var
   i: Integer;
   c: byte;
-  debug : String;
+  debug: String;
 begin
   setlength(Result, Length(hrp) + 1);
   for i := 0 to Length(hrp) - 1 do
   begin
 
-    c := byte(hrp[ i + low(hrp) ]);
+    c := byte(hrp[i + low(hrp)]);
     Result[i] := (c and $1F);
   end;
   Result[Length(hrp)] := 0;
 
-  //for I in result do
-  //  debug := debug + ' ' + inttostr(i);
-  //showmessage(hrp + ' ' + debug);
+  // for I in result do
+  // debug := debug + ' ' + inttostr(i);
+  // showmessage(hrp + ' ' + debug);
 
 end;
 
@@ -363,7 +362,7 @@ begin
   setlength(Result, Length(hrp) * 2 + 1);
   for i := 0 to Length(hrp) - 1 do
   begin
-    c := byte(hrp[ i + low(hrp) ]);
+    c := byte(hrp[i + low(hrp)]);
     Result[i] := (c shr 5);
     Result[i + Length(hrp) + 1] := (c and $1F);
   end;
@@ -387,6 +386,7 @@ begin
     Result[i] := (pmod shr (5 * (5 - i))) and 31;
   end;
 end;
+
 function CreateChecksum8(hrp: String; values: TIntegerArray): TIntegerArray;
 var
   enc: TIntegerArray;
@@ -397,10 +397,10 @@ begin
   enc := Concat(prefix_expand(hrp), values);
   setlength(enc, Length(enc) + 8);
 
-  //for i in enc do
-  //showmessage( inttostr(i) );
+  // for i in enc do
+  // showmessage( inttostr(i) );
   pmod := PolyModBCH(enc) xor 1;
-  //showmessage( inttoStr( pmod ) );
+  // showmessage( inttoStr( pmod ) );
   setlength(Result, 8);
   for i := 0 to 7 do
   begin
@@ -415,12 +415,12 @@ end;
 
 function rawEncode(values: TIntegerArray): String;
 var
-  i : Integer;
+  i: Integer;
 begin
-result := '';
-  for i := 0 to length(values)-1 do
+  Result := '';
+  for i := 0 to Length(values) - 1 do
   begin
-    Result := Result + charset[values[i]+low(charset)];
+    Result := Result + charset[values[i] + low(charset)];
   end;
 end;
 
@@ -433,14 +433,14 @@ begin
   checksum := CreateChecksum(hrp, values);
   combined := Concat(values, checksum);
   Result := hrp + '1';
-  {setlength(Result, Length(hrp) + 1 + Length(combined));
-  for i := Length(hrp) + 1 + 1 to Length(Result) do
-  begin
+  { setlength(Result, Length(hrp) + 1 + Length(combined));
+    for i := Length(hrp) + 1 + 1 to Length(Result) do
+    begin
     Result[i] := charset[combined[i - Length(hrp) - 2] + 1];
-  end;}
-  for i := 0 to length(combined)-1 do
+    end; }
+  for i := 0 to Length(combined) - 1 do
   begin
-    Result := Result + charset[combined[i]+low(charset)];
+    Result := Result + charset[combined[i] + low(charset)];
   end;
 end;
 
@@ -453,7 +453,7 @@ function decodeBCH(str: String): Bech32Data;
 var
   lower, upper: boolean;
   i: Integer;
-  c: char;
+  c: Char;
   pos: Integer;
   values: TIntegerArray;
   rev: Integer;
@@ -499,7 +499,7 @@ begin
   end;
 
   setlength(values, Length(str) - 1 - pos);
-  for i := 0 to Length( values )-1 do
+  for i := 0 to Length(values) - 1 do
   begin
     c := str[i + pos + 1 + low(str)];
     rev := charset_rev[Integer(c)];
@@ -517,8 +517,6 @@ begin
     hrp := hrp + LowerCase(str[i]);
   end;
 
-
-
   if VerifyChecksumBCH(hrp, values) = False then
   begin
     raise Exception.Create('bech32 check sum error');
@@ -534,7 +532,7 @@ function decode(str: String): Bech32Data;
 var
   lower, upper: boolean;
   i: Integer;
-  c: char;
+  c: Char;
   pos: Integer;
   values: TIntegerArray;
   rev: Integer;
@@ -564,7 +562,6 @@ begin
     end;
   end;
 
-
   if (upper and lower) then
     exit;
 
@@ -574,7 +571,7 @@ begin
     exit;
 
   setlength(values, Length(str) - 1 - pos);
-  for i := 0 to Length( values )-1 do
+  for i := 0 to Length(values) - 1 do
   begin
     c := str[i + pos + 1 + low(str)];
     rev := charset_rev[Integer(c)];
@@ -588,8 +585,8 @@ begin
     hrp := hrp + LowerCase(str[i]);
   end;
 
-  Result.hrp := hrp;           // usun
-  Result.values := values;     // usun
+  Result.hrp := hrp; // usun
+  Result.values := values; // usun
 
   if VerifyChecksum(hrp, values) = False then
     exit;
@@ -639,47 +636,46 @@ begin
 
 end;
 
-function segwit_addr_decode( segwit :AnsiString ) : TaddressInfo;
+function segwit_addr_decode(segwit: AnsiString): TaddressInfo;
 var
-  decoded : Bech32Data;
-  intarr : TIntegerArray;
-  witver : byte;
-  hex : AnsiString;
-  tempInt : Integer;
-  i : Integer;
+  decoded: Bech32Data;
+  intarr: TIntegerArray;
+  witver: byte;
+  hex: AnsiString;
+  tempInt: Integer;
+  i: Integer;
 begin
   decoded := decode(segwit);
   witver := decoded.values[0];
-  intarr := copy( decoded.values , 1 , length(decoded.values)-1);
+  intarr := Copy(decoded.values, 1, Length(decoded.values) - 1);
 
-  intarr :=  Change(intarr , 5, 8);
+  intarr := Change(intarr, 5, 8);
 
   hex := '';
-  for i := 0 to length(intarr)-5 do
+  for i := 0 to Length(intarr) - 5 do
   begin
-    tempint := intarr[i];
+    tempInt := intarr[i];
     hex := hex + IntToHex(byte(tempInt));
   end;
 
-  result.Hash := hex;
+  Result.Hash := hex;
   Result.witver := witver;
 
 end;
 
-
-function isValidBCHCashAddress( address : String ): Boolean;
+function isValidBCHCashAddress(address: String): boolean;
 var
-  values : String;
-  hrp : String;
-  intValues : TIntegerArray;
-  intarr , checkArr : TintegerArray;
-  i : Integer;
-  //debugStr : String;
+  values: String;
+  hrp: String;
+  intValues: TIntegerArray;
+  intarr, checkArr: TIntegerArray;
+  i: Integer;
+  // debugStr : String;
 begin
 
-  if leftstr(address , 12) = 'bitcoincash:' then
+  if leftstr(address, 12) = 'bitcoincash:' then
   begin
-    values := rightstr(address , length(address) -12);
+    values := rightstr(address, Length(address) - 12);
   end
   else
   begin
@@ -687,66 +683,62 @@ begin
   end;
   hrp := 'bitcoincash';
 
-  SetLength(intvalues , length(values));
+  setlength(intValues, Length(values));
 
-  for I := 0 to length(intValues)-1 do
+  for i := 0 to Length(intValues) - 1 do
   begin
 
-    intValues[i] := charset_rev[ byte( values[i+low(values)] )];
+    intValues[i] := charset_rev[byte(values[i + low(values)])];
 
   end;
-  intarr := copy(intValues , 0 , length(intvalues)-8);
+  intarr := Copy(intValues, 0, Length(intValues) - 8);
 
+  checkArr := CreateChecksum8(hrp, intarr);
 
-  checkarr := CreateChecksum8(hrp , intarr);
-
-  {for i := 0 to length(intvalues)-1 do
-  begin
-    debugstr := debugstr + ' ' + inttoStr(intvalues[i]);
-  end;
-  debugstr := debugStr + #13#10;
-  for i := 0 to length(intvalues)-1 do
-  begin
-    debugstr := debugstr + ' ' + inttoStr(intvalues[i]);
-  end;}
-
-
-  //showmessage( debugStr );
-
-
-  for I := 0 to 7 do
-  begin
-
-    if checkarr[i] <> intvalues[length(intvalues)-8 + i] then
+  { for i := 0 to length(intvalues)-1 do
     begin
-      result := false;
+    debugstr := debugstr + ' ' + inttoStr(intvalues[i]);
+    end;
+    debugstr := debugStr + #13#10;
+    for i := 0 to length(intvalues)-1 do
+    begin
+    debugstr := debugstr + ' ' + inttoStr(intvalues[i]);
+    end; }
+
+
+  // showmessage( debugStr );
+
+  for i := 0 to 7 do
+  begin
+
+    if checkArr[i] <> intValues[Length(intValues) - 8 + i] then
+    begin
+      Result := False;
       exit;
     end;
 
   end;
-  result := true;
+  Result := true;
 
 end;
 
-
-function isCashAddress( address : String ):boolean;
+function isCashAddress(address: String): boolean;
 var
-  values : String;
+  values: String;
 begin
 
-
-  if leftstr(address , 12) = 'bitcoincash:' then
+  if leftstr(address, 12) = 'bitcoincash:' then
   begin
-    values := rightstr(address , length(address) -12);
+    values := rightstr(address, Length(address) - 12);
   end
   else
   begin
     values := address;
   end;
-  if (values[low(values)] = 'p') or (values[low(values)] = 'q')then
-    result := true
+  if (values[low(values)] = 'p') or (values[low(values)] = 'q') then
+    Result := true
   else
-    result := false;
+    Result := False;
 
 end;
 

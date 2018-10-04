@@ -749,9 +749,6 @@ Coordinates=957,732,44,51
 [CSHeader]
 Coordinates=1871,1136,63,33
 
-[Layout25]
-Coordinates=1802,1136,59,33
-
 [ShortcutValetInfoImage]
 Coordinates=989,298,129,51
 
@@ -1188,4 +1185,7 @@ Coordinates=1846,1210,59,33
 Coordinates=1670,1210,71,69
 Visible=True
 ExplicitSubNodes=ItemIndex;Items.Text
+
+[bpmnemonicLayout]
+Coordinates=1802,1136,59,33
 

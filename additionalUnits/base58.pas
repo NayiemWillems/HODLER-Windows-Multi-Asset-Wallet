@@ -4,7 +4,7 @@ unit base58;
 
 interface
 
-uses System.SysUtils;
+uses System.SysUtils , FMX.Dialogs;
 {$IFDEF ANDROID}
 
 type
@@ -21,7 +21,7 @@ function ToHex(Buffer: array of Byte; Length: Word): AnsiString;
 
 implementation
 
-uses misc,bech32;
+uses misc, bech32;
 
 const
   Codes58: AnsiString =
@@ -192,8 +192,10 @@ begin
     exit;
   end;
   result := false;
+
   if Copy(Address, 0, 3) <> 'bc1' then
   begin
+
     if (Length(Address) < 26) or (Length(Address) > 35) then
       exit;
 
@@ -211,10 +213,10 @@ begin
   else
   begin
     try
-     segwit_addr_decode(address);
+      segwit_addr_decode(Address);
     except
-    on E:Exception do
-    Exit;
+      on E: Exception do
+        exit;
 
     end;
   end;

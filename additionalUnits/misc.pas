@@ -83,8 +83,8 @@ unit misc;
 interface
 
 uses AESObj, SPECKObj, FMX.Objects, IdHash, IdHashSHA, IdSSLOpenSSL, languages,
-  System.Hash, MiscOBJ, SysUtils,
-  System.IOUtils, HashObj, System.Types, System.UITypes,
+  System.Hash, MiscOBJ,
+  SysUtils, System.IOUtils, HashObj, System.Types, System.UITypes,
   System.DateUtils, System.Generics.Collections,
   System.Classes,
   System.Variants, Math,
@@ -101,17 +101,13 @@ uses AESObj, SPECKObj, FMX.Objects, IdHash, IdHashSHA, IdSSLOpenSSL, languages,
 {$IFDEF ANDROID},
 
   Androidapi.JNI.GraphicsContentViewText,
-  // Androidapi.JNI.App,
   Androidapi.JNI.JavaTypes,
   Androidapi.Helpers,
-  // FMX.Platform.Android,
-  // Androidapi.JNI.Provider,
   Androidapi.JNI.Net,
   Androidapi.JNI.Os,
   Androidapi.JNI.Webkit,
   Androidapi.JNIBridge
 {$ELSE}
-  // , Windows
     , ShellApi
 
 {$ENDIF};
@@ -203,8 +199,7 @@ function decodeAddressInfo(address: AnsiString; coinid: integer): TAddressInfo;
 function getHighestBlockNumber(T: Token): System.uint64;
 function toMnemonic(hex: AnsiString): AnsiString;
 function BIntTo256Hex(data: BigInteger; Padding: integer): AnsiString;
-function isEthereum(): boolean;
-// procedure insertToWD(wi: TWalletInfo);
+function isEthereum(): Boolean;
 procedure refreshWalletDat();
 function inttoeth(data: System.uint64): AnsiString; overload;
 function inttoeth(data: BigInteger): AnsiString; overload;
@@ -213,13 +208,11 @@ function speckDecrypt(tcaKey, data: AnsiString): AnsiString;
 function hexatotbytes(H: AnsiString): Tbytes;
 
 function getUTXO(wallet: TWalletInfo): TUTXOS;
-
-function getDataOverHTTP(aURL: String; useCache: boolean = true): AnsiString;
-function parseUTXO(utxos: AnsiString): TUTXOS;
+function getDataOverHTTP(aURL: String; useCache: Boolean = true): AnsiString;
+function parseUTXO(utxos: AnsiString;Y:Integer): TUTXOS;
 function IntToTX(data: System.uint64; Padding: integer): AnsiString; overload;
 function IntToTX(data: BigInteger; Padding: integer): AnsiString; overload;
 function randomHexStream(size: integer): AnsiString;
-// procedure addWalletToList(wd: TWalletInfo);
 procedure wipeWalletDat;
 function AES256CBCDecrypt(tcaKey, data: AnsiString): AnsiString;
 function GetSHA256FromHex(H: AnsiString): AnsiString;
@@ -232,7 +225,7 @@ function GetStrHashSHA256(Str: AnsiString): AnsiString;
 function hash160FromHex(H: AnsiString): AnsiString;
 function TCA(dane: AnsiString): AnsiString;
 function AES256CBCEncrypt(tcaKey, data: AnsiString): AnsiString;
-function isWalletDatExists: boolean;
+function isWalletDatExists: Boolean;
 procedure wipeAnsiString(var toWipe: AnsiString);
 function reverseHexOrder(s: AnsiString): AnsiString;
 function priv256forHD(coin, x, y: integer; MasterSeed: AnsiString): AnsiString;
@@ -243,24 +236,18 @@ function satToBtc(num: BigInteger; decimals: integer): AnsiString; overload;
 function getStringFromImage(img: TBitmap): AnsiString;
 function findAddress(Str: AnsiString): AnsiString;
 function SplitString(Str: AnsiString; separator: AnsiChar = ' '): TStringList;
-function IsHex(s: string): boolean;
+function IsHex(s: string): Boolean;
 function keccak256String(s: AnsiString): AnsiString;
 function keccak256Hex(s: AnsiString): AnsiString;
 procedure createAddWalletView();
-// function countWalletBy(id: integer): integer;
 function cutEveryNChar(n: integer; Str: AnsiString; sep: AnsiChar = ' ')
   : AnsiString;
 function removeSpace(Str: AnsiString): AnsiString;
 function generateIcon(hex: AnsiString): TBitmap;
-// procedure saveTokensToFile();
-// procedure loadTokensFromFile();
-// procedure parseTokenFile();
-// procedure createTokenView(T: Token);
 procedure wipeTokenDat();
 procedure clearVertScrollBox(VSB: TVertScrollBox);
 procedure showMsg(backView: TTabItem; message: AnsiString;
   warningImage: TBitmap = nil);
-// function getWalletId(address: AnsiString): integer;
 function BigIntegerToFloatStr(const num: BigInteger; decimals: integer;
   precision: integer = -1): AnsiString;
 function StrFloatToBigInteger(Str: AnsiString; decimals: integer): BigInteger;
@@ -270,17 +257,16 @@ function fromMnemonic(input: AnsiString): integer; overload;
 function fromMnemonic(input: TStringList): AnsiString; overload;
 function BitmapDataToScaledBitmap(data: TBitmapData; scale: integer): TBitmap;
 function parseQRCode(Str: AnsiString): TStringList;
-function isBech32Address(Str: AnsiString): boolean;
+function isBech32Address(Str: AnsiString): Boolean;
 procedure createHistoryList(wallet: cryptoCurrency);
 procedure RefreshGlobalFiat();
-// procedure paintWD(wd: TWalletInfo);
 procedure Vibrate(ms: int64);
 procedure refreshOrderInDashBrd();
 procedure loadDictionary(langData: WideString);
 procedure refreshComponentText();
 procedure refreshCurrencyValue();
 procedure updateBalanceLabels();
-// procedure updateTokenLabels(T: Token);
+
 Function StrToQRBitmap(Str: AnsiString; pixelSize: integer = 6): TBitmap;
 procedure shareFile(path: AnsiString);
 procedure synchronizeCurrencyValue();
@@ -291,11 +277,11 @@ function CreateNewAccount(name, pass, seed: AnsiString): Account;
 procedure AddAccountToFile(ac: Account);
 
 Procedure CreateNewAccountAndSave(name, pass, seed: AnsiString;
-  userSaveSeed: boolean);
+  userSaveSeed: Boolean);
 
 procedure CreatePanel(crypto: cryptoCurrency);
 
-procedure creatImportPrivKeyCoinList();
+//procedure creatImportPrivKeyCoinList();
 function getETHValidAddress(address: AnsiString): AnsiString;
 function isValidETHAddress(address: AnsiString): boolean;
 
@@ -305,35 +291,29 @@ function getDataFromForeginAPI(aURL: String): AnsiString;
 procedure prepareConfirmSendTabItem();
 procedure DeleteAccount(name: AnsiString);
 
+procedure LoadStyle( name : AnsiString );
+procedure EnlargeQRCode( img :  Tbitmap );
 // procedure refresh
 
 {$WRITEABLECONST ON}
 const
-  HODLER_URL:string = 'https://hodler1.nq.pl/';
-  HODLER_URL2:string = 'https://hodlerstream.net/';
-  HODLER_ETH:string = 'https://hodler2.nq.pl/';
-  HODLER_ETH2:string = 'https://hodlernode.net/';
+  HODLER_URL: string = 'https://hodler1.nq.pl/';
+  HODLER_URL2: string = 'https://hodlerstream.net/';
+  HODLER_ETH: string = 'https://hodler2.nq.pl/';
+  HODLER_ETH2: string = 'https://hodler2.nq.pl/';
   API_PUB = {$I 'public_key.key' };
   API_PRIV = {$I 'private_key.key' };
 
 var
   TCAIterations: integer;
-  // encryptedSeed: AnsiString;
-  userSavedSeed: boolean;
-  saveSeedInfoShowed: boolean = false;
+  userSavedSeed: Boolean;
+  saveSeedInfoShowed: Boolean = false;
   test: AnsiString;
-  // myWallets: array of TWalletInfo;
-  // myTokens: array of Token;
-  // myWalletsCount: integer;
-  // currentWallet: integer;
-  // currentToken: integer;
   globalFiat: single;
-
-  // showmsg
   lastChose: integer;
   lastView: TTabItem;
-  isTokenDataInUse: boolean = false;
-  firstSync: boolean = true;
+  isTokenDataInUse: Boolean = false;
+  firstSync: Boolean = true;
   i: integer;
 
 implementation
@@ -341,13 +321,39 @@ implementation
 uses Bitcoin, uHome, base58, bech32, Ethereum, coinData, strutils, secp256k1
 {$IFDEF ANDROID}
 {$ELSE}
-  // , Winapi.Windows
 {$ENDIF};
 
 var
   bitmapData: TBitmapData;
 
   /// ////////////////////////////////////////////////////////////////
+
+
+procedure EnlargeQRCode( img :  Tbitmap );
+begin
+  with frmHome do
+  begin
+    {BigQRCodeBackTab := PageControl.ActiveTab;
+    PageControl.ActiveTab := BigQRCode;
+    BigQRCodeImage.Bitmap.Assign( img ); }
+
+  end;
+
+
+end;
+
+procedure LoadStyle( name : AnsiString );
+begin
+  stylo.TrySetStyleFromResource(name);
+
+  if name = 'RT_DARK' then
+    frmhome.StatusBarFixer.Fill.Color := TAlphaColorRec.Black
+  else
+    frmhome.StatusBarFixer.Fill.Color := TAlphaColorRec.Whitesmoke;
+
+  currentStyle := name;
+end;
+
 
 procedure DeleteAccount(name: AnsiString);
 var
@@ -363,11 +369,14 @@ begin
   for path in ac.Paths do
   begin
     ts := TStringList.Create;
-    ts.LoadFromFile(path);
-    ts.text := StringofChar('@', Length(ts.text));
-    ts.SaveToFile(path);
-    ts.Free;
-    DeleteFile(path);
+    try
+      ts.LoadFromFile(path);
+      ts.text := StringofChar('@', Length(ts.text));
+      ts.SaveToFile(path);
+    finally
+      DeleteFile(path);
+      ts.Free;
+    end;
   end;
 
   RemoveDir(ac.DirPath);
@@ -376,17 +385,11 @@ begin
   begin
     if AccountsNames[i] = name then
     begin
-      for j := i to Length(AccountsNames) - 2 do
-      begin
-        AccountsNames[j] := AccountsNames[j + 1];
-      end;
+      delete(AccountsNames, i, 1);
     end;
   end;
-
-  setLength(AccountsNames, Length(AccountsNames) - 1);
-
   ac.Free;
-
+  refreshWalletDat;
 end;
 
 procedure prepareConfirmSendTabItem();
@@ -431,12 +434,11 @@ begin
       amount := StrFloatToBigInteger(wvAmount.text,
         CurrentCryptoCurrency.decimals);
     if (not isTokenTransfer) then
-      if amount + tempFee > (CurrentCryptoCurrency.confirmed) then
+      if amount + tempFee > (CurrentAccount.aggregateBalances(CurrentCoin).confirmed) then
       begin
         raise Exception.Create(dictionary['AmountExceed']);
         exit;
       end;
-
     if ((amount) = 0) or ((fee) = 0) then
     begin
       raise Exception.Create(dictionary['InvalidValues']);
@@ -466,7 +468,6 @@ begin
     end;
     // sendCoinsTO(CurrentCoin, Address, amount, fee, MasterSeed,
     // AvailableCoin[CurrentCoin.coin].name)
-
     SendFromLabel.text := CurrentCoin.addr;
     SendToLabel.text := address;
     if ((CurrentCryptoCurrency is TWalletInfo) and
@@ -480,7 +481,9 @@ begin
       end;
     end;
 
-    SendValueLabel.text := BigIntegerToFloatStr(amount, CurrentCoin.decimals);
+    SendValueLabel.text := floatToStrF(CurrencyConverter.calculate( strToFloat( BigIntegerToFloatStr(amount , CurrentCryptoCurrency.decimals) ) *CurrentCryptoCurrency.rate), ffFixed, 15, 2)
+      +' ' + CurrencyConverter.symbol + ' '
+      + '('+ BigIntegerToFloatStr(amount, CurrentCryptoCurrency.decimals) + ')';
 
     if (CurrentCoin.coin = 4) and (CurrentCryptoCurrency is Token) then
     begin
@@ -512,7 +515,7 @@ begin
         WaitTimeLabel.text := 'Fee set by the user';
       end;
 
-      sendFeeLabel.text := BigIntegerToFloatStr(fee, CurrentCoin.decimals);
+      sendFeeLabel.text := BigIntegerToFloatStr(fee, CurrentCryptoCurrency.decimals);
 
     end;
 
@@ -545,12 +548,12 @@ var
   T: Token;
   address, name, decimals, symbol: AnsiString;
   i: integer;
-  createToken: boolean;
-  createFromList: boolean;
+  createToken: Boolean;
+  createFromList: Boolean;
   CreateFromListIndex: integer;
 begin
-  data := getDataFromForeginAPI('https://api.ethplorer.io/getAddressInfo/' +
-    InAddress + '?apiKey=freekey');
+  data := getDataOverHTTP('https://api.ethplorer.io/getAddressInfo/' + InAddress
+    + '?apiKey=freekey');
   JsonValue := TJSONObject.ParseJSONValue(data);
 
   if JsonValue is TJSONObject then
@@ -635,7 +638,7 @@ begin
 
 end;
 
-function isValidETHAddress(address: AnsiString): boolean;
+function isValidETHAddress(address: AnsiString): Boolean;
 begin
   result := address = getETHValidAddress(address);
 end;
@@ -675,7 +678,7 @@ begin
 end;
 
 Procedure CreateNewAccountAndSave(name, pass, seed: AnsiString;
-  userSaveSeed: boolean);
+  userSaveSeed: Boolean);
 var
   thr: TThread;
 var
@@ -701,16 +704,9 @@ begin
   ac.TCAIterations := TCAIterations;
   ac.EncryptedMasterSeed := speckEncrypt((TCA(pass)), seed);
   ac.userSaveSeed := false;
-
+  ac.privTCA:=false;//not frmHome.notPrivTCA1.isChecked;
   GenetareCoinsData(seed, pass, ac);
   result := ac;
-  {
-    ac.SaveFiles();
-
-    SetLength(AccountsNames , length(accountsNames) +1 );
-    AccountsNames[length(accountsNames) -1 ] := ac.name ;
-    refreshWalletDat;
-  }
 
 end;
 
@@ -722,6 +718,7 @@ var
   adrLabel: TLabel;
   coinIMG: TImage;
   price: TLabel;
+
 begin
   with frmhome.WalletList do
   begin
@@ -731,7 +728,6 @@ begin
     Panel.Height := 48;
     Panel.Visible := true;
     Panel.Parent := frmhome.WalletList;
-
     Panel.TagObject := crypto;
 
     Panel.Position.y := crypto.orderInWallet;
@@ -747,7 +743,6 @@ begin
     adrLabel.StyledSettings := adrLabel.StyledSettings - [TStyledSetting.size];
     adrLabel.TextSettings.Font.size := dashBoardFontSize;
     adrLabel.Parent := Panel;
-    // adrLabel.Tag := myWalletsCount;
 
     if crypto.description = '' then
     begin
@@ -766,13 +761,7 @@ begin
     adrLabel.Visible := true;
     adrLabel.TextSettings.WordWrap := false;
     adrLabel.TagString := 'name';
-    // {$IFDEF ANDROID}
-    // adrLabel.OnTap := frmHome.WVTokenChoseInWallet;
-    // {$ELSE}
-    // adrLabel.OnClick := frmHome.WVTokenChoseInWallet;
-    // {$ENDIF}
-    // adrLabel.OnClick := frmHome.WVTokenChoseInWallet;
-
+    //
     balLabel := TLabel.Create(frmhome.WalletList);
     balLabel.StyledSettings := balLabel.StyledSettings - [TStyledSetting.size];
     balLabel.TextSettings.Font.size := dashBoardFontSize;
@@ -782,42 +771,31 @@ begin
       CurrencyConverter.symbol;
     balLabel.TextSettings.HorzAlign := TTextAlign.Trailing;
     balLabel.Visible := true;
-    // balLabel.Width := 200;
+    balLabel.Width := 200;
     balLabel.Height := 48;
     balLabel.Align := TAlignLayout.Top;
     balLabel.TextSettings.Font.size := adrLabel.TextSettings.Font.size - 3;
     balLabel.Margins.Right := 15;
     balLabel.TagString := 'balance';
-    // balLabel.OnClick := frmHome.WVTokenChoseInWallet;
-    // {$IFDEF ANDROID}
-    // balLabel.OnTap := frmHome.WVTokenChoseInWallet;
-    // {$ELSE}
-    // balLabel.OnClick := frmHome.WVTokenChoseInWallet;
-    // {$ENDIF}
+    //
     coinIMG := TImage.Create(frmhome.WalletList);
     coinIMG.Parent := Panel;
     if crypto is TWalletInfo then
       coinIMG.Bitmap := getCoinIcon(TWalletInfo(crypto).coin)
     else
       coinIMG.Bitmap := Token(crypto).Image;
+
     coinIMG.Height := 32.0;
     coinIMG.Width := 50;
     coinIMG.Position.x := 4;
     coinIMG.Position.y := 8;
-    // coinIMG.OnClick := frmHome.WVTokenChoseInWallet;
-    // {$IFDEF ANDROID}
-    // coinIMG.OnTap := frmHome.WVTokenChoseInWallet;
-    // {$ELSE}
-    // coinIMG.OnClick := frmHome.WVTokenChoseInWallet;
-    // {$ENDIF}
-    // coinIMG.Tag := T.idInWallet;
-
+    //
     price := TLabel.Create(Panel);
     price.Parent := Panel;
     price.Visible := true;
     price.text := floatToStrF(CurrencyConverter.calculate(crypto.rate),
       ffFixed, 18, 2);
-    price.Align := TAlignLayout.Bottom;
+    price.Align := TalignLayout.Bottom;
     price.Height := 16;
     price.TextSettings.HorzAlign := TTextAlign.Leading;
     price.Margins.Left := coinIMG.Width + 2;
@@ -826,218 +804,6 @@ begin
     price.TextSettings.Font.size := 9;
   end;
 end;
-
-// create panel wtih Token information  and add to walletView
-(* procedure createTokenView(T: Token);
-  var
-  Panel: Tpanel;
-  coinName: TLabel;
-  balLabel: TLabel;
-  adrLabel: TLabel;
-  coinIMG: TImage;
-  begin
-  with frmHome.WalletList do
-  begin
-
-  Panel := Tpanel.Create(frmHome.WalletList);
-  Panel.Align := Panel.Align.alTop;
-  Panel.Height := 48;
-  Panel.Visible := true;
-  Panel.Parent := frmHome.WalletList;
-  Panel.Tag := T.idInWallet;
-
-  Panel.TagObject := T;
-
-  // Panel.OnClick := frmHome.WVTokenChoseInWallet;
-  Panel.Position.y := T.orderInWallet;
-  // Panel.DragMode := TDragMode.dmAutomatic;
-  Panel.Touch.InteractiveGestures := [TInteractiveGesture.LongTap];
-  Panel.OnGesture := frmHome.SwitchViewToOrganize;
-  {$IFDEF ANDROID}
-  Panel.OnTap := frmHome.WVTokenChoseInWallet;
-  {$ELSE}
-  Panel.OnClick := frmHome.WVTokenChoseInWallet;
-  {$ENDIF}
-  adrLabel := TLabel.Create(frmHome.WalletList);
-  adrLabel.StyledSettings := adrLabel.StyledSettings - [TStyledSetting.size];
-  adrLabel.TextSettings.Font.size := dashBoardFontSize;
-  adrLabel.Parent := Panel;
-  adrLabel.Tag := myWalletsCount;
-
-  if T.description = '' then
-  begin
-  adrLabel.text := T.name + ' (' + T.shortcut + ')';
-  end
-  else
-  adrLabel.text := T.description;
-  adrLabel.AutoSize := false;
-  adrLabel.Visible := true;
-  adrLabel.TextSettings.WordWrap := false;
-  adrLabel.Width := 150;
-  adrLabel.Height := 48;
-  adrLabel.Position.x := 52;
-  adrLabel.Position.y := 0;
-  adrLabel.name := 'name_label_' + inttostr(T.idInWallet) + '_';
-  adrLabel.AutoSize := false;
-  adrLabel.Visible := true;
-  adrLabel.TextSettings.WordWrap := false;
-  // {$IFDEF ANDROID}
-  // adrLabel.OnTap := frmHome.WVTokenChoseInWallet;
-  // {$ELSE}
-  // adrLabel.OnClick := frmHome.WVTokenChoseInWallet;
-  // {$ENDIF}
-  // adrLabel.OnClick := frmHome.WVTokenChoseInWallet;
-
-  balLabel := TLabel.Create(frmHome.WalletList);
-  balLabel.StyledSettings := balLabel.StyledSettings - [TStyledSetting.size];
-  balLabel.TextSettings.Font.size := dashBoardFontSize;
-  balLabel.Parent := Panel;
-  balLabel.Tag := T.idInWallet;
-  balLabel.text := BigIntegerBeautifulStr(T.confirmed, T.decimals) + '    ' +
-  floatToStrF(T.getFiat, ffFixed, 15, 2) + ' ' + CurrencyConverter.symbol;
-  balLabel.TextSettings.HorzAlign := TTextAlign.Trailing;
-  balLabel.Visible := true;
-  balLabel.Width := 200;
-  balLabel.Height := 48;
-  balLabel.Align := TAlignLayout.FitRight;
-  balLabel.TextSettings.Font.size := adrLabel.TextSettings.Font.size - 3;
-  balLabel.Margins.Right := 15;
-  balLabel.name := 'balance_label_' + inttostr(T.idInWallet) + '_';
-  // balLabel.OnClick := frmHome.WVTokenChoseInWallet;
-  // {$IFDEF ANDROID}
-  // balLabel.OnTap := frmHome.WVTokenChoseInWallet;
-  // {$ELSE}
-  // balLabel.OnClick := frmHome.WVTokenChoseInWallet;
-  // {$ENDIF}
-  coinIMG := TImage.Create(frmHome.WalletList);
-  coinIMG.Parent := Panel;
-  coinIMG.Bitmap := T.Image;
-  coinIMG.Height := 32.0;
-  coinIMG.Width := 50;
-  coinIMG.Position.x := 4;
-  coinIMG.Position.y := 8;
-  // coinIMG.OnClick := frmHome.WVTokenChoseInWallet;
-  // {$IFDEF ANDROID}
-  // coinIMG.OnTap := frmHome.WVTokenChoseInWallet;
-  // {$ELSE}
-  // coinIMG.OnClick := frmHome.WVTokenChoseInWallet;
-  // {$ENDIF}
-  // coinIMG.Tag := T.idInWallet;
-  end;
-  end;
-
-  procedure paintWD( { var } wd: TWalletInfo);
-  var
-  Panel: Tpanel;
-  adrLabel: TLabel;
-  balLabel: TLabel;
-  coinIMG: TImage;
-  begin
-  with frmHome.WalletList do
-  begin
-  wd.wid := myWalletsCount;
-  Panel := Tpanel.Create(frmHome.WalletList);
-  Panel.Align := Panel.Align.alTop;
-  Panel.Height := 48;
-  Panel.Visible := true;
-  Panel.Parent := frmHome.WalletList;
-  Panel.Tag := myWalletsCount;
-
-  Panel.TagObject := wd;
-
-  Panel.Position.y := wd.orderInWallet;
-
-  Panel.Touch.InteractiveGestures := [TInteractiveGesture.LongTap];
-  Panel.OnGesture := frmHome.SwitchViewToOrganize;
-
-  // Panel.DragMode := TDragMode.dmAutomatic;
-  {$IFDEF ANDROID}
-  Panel.OnTap := frmHome.switchView;
-  {$ELSE}
-  Panel.OnClick := frmHome.switchView;
-  {$ENDIF}
-  adrLabel := TLabel.Create(frmHome.WalletList);
-
-  adrLabel.StyledSettings := adrLabel.StyledSettings - [TStyledSetting.size];
-  adrLabel.TextSettings.Font.size := dashBoardFontSize;
-
-  adrLabel.Parent := Panel;
-  adrLabel.Tag := myWalletsCount;
-
-  if wd.description = '' then
-  begin
-  adrLabel.text := availablecoin[wd.coin].displayName + ' (' + availablecoin
-  [wd.coin].shortcut + ')';
-  // adrLabel.Text := wd.addr;
-  end
-  else
-  begin
-
-  adrLabel.text := wd.description;
-  end;
-  adrLabel.Visible := true;
-  adrLabel.Width := 200;
-  adrLabel.Height := 48;
-  adrLabel.Position.x := 52;
-  adrLabel.Position.y := 0;
-  adrLabel.name := 'name_label_' + inttostr(myWalletsCount) + '_';
-  adrLabel.AutoSize := false;
-  adrLabel.Visible := true;
-  adrLabel.TextSettings.WordWrap := false;
-  // {$IFDEF ANDROID}
-  // adrLabel.OnTap := frmHome.switchView;
-  // {$ELSE}
-  // adrLabel.OnClick := frmHome.switchView;
-  // {$ENDIF}
-  // adrLabel.OnClick := frmHome.switchView;
-
-  balLabel := TLabel.Create(frmHome.WalletList);
-
-  balLabel.StyledSettings := balLabel.StyledSettings - [TStyledSetting.size];
-  balLabel.TextSettings.Font.size := dashBoardFontSize;
-
-  balLabel.Parent := Panel;
-
-  balLabel.Tag := myWalletsCount;
-  balLabel.text := BigIntegerBeautifulStr(wd.confirmed,
-  availablecoin[wd.coin].decimals) + '    ' + floatToStrF(wd.getFiat,
-  ffFixed, 15, 2) + ' ' + CurrencyConverter.symbol;
-
-  balLabel.TextSettings.HorzAlign := TTextAlign.Trailing;
-  balLabel.Visible := true;
-
-  balLabel.Width := 200;
-  balLabel.Height := 48;
-  balLabel.Align := TAlignLayout.FitRight;
-  balLabel.Margins.Right := 15;
-  balLabel.TextSettings.Font.size := adrLabel.TextSettings.Font.size - 3;
-  balLabel.TextSettings.WordWrap := false;
-  balLabel.AutoSize := false;
-  // balLabel.AutoSize := true;
-  balLabel.name := 'balance_label_' + inttostr(myWalletsCount) + '_';
-  // balLabel.Position.x := frmHome.Width - balLabel.Width - 26;           // zmienić frmHome.width na Panel.width
-  // balLabel.Position.y := 20;
-  // {$IFDEF ANDROID}
-  // balLabel.OnTap := frmHome.switchView;
-  // {$ELSE}
-  // balLabel.OnClick := frmHome.switchView;
-  // {$ENDIF}
-  // balLabel.OnClick := frmHome.switchView;
-
-  coinIMG := TImage.Create(frmHome.WalletList);
-  coinIMG.Parent := Panel;
-
-  coinIMG.Bitmap := getCoinIcon(wd.coin);
-
-  coinIMG.Height := 32.0;
-  coinIMG.Width := 50;
-
-  coinIMG.Position.x := 4;
-  coinIMG.Position.y := 8;
-  coinIMG.Tag := myWalletsCount;
-  end;
-
-  end; *)
 
 function inputType(input: TBitcoinOutput): integer;
 begin
@@ -1065,9 +831,9 @@ begin
   end;
 
   bech := decodeBCH(address);
+
   if bech.hrp = 'FAIL' then
     raise Exception.Create('BECH FAILRE');
-
   intarr := Copy(bech.values, 1, Length(bech.values) - 1);
 
   intarr := Change(bech.values, 5, 8);
@@ -1078,12 +844,13 @@ begin
     tempInt := intarr[i];
     hex := hex + IntToHex(byte(tempInt));
   end;
+
   if Copy(hex, 0, 2) = '08' then
     netbyte := '05'
   else
     netbyte := '00';
 {$IFDEF ANDROID}
-  delete(hex, 0, 2);
+  delete(hex, 1, 2);
 {$ELSE}
   delete(hex, 1, 2);
 {$ENDIF}
@@ -1118,8 +885,6 @@ begin
     1:
       tempStr := '08' + adrInfo.Hash;
   end;
-
-  // tempStr := availableCoin[3].p2pk+ adrInfo.Hash;
 
   setLength(intarr, Length(tempStr));
   i := 0;
@@ -1218,17 +983,19 @@ begin
   ts.Free;
 end;
 
-function isP2PKH(netbyte: AnsiString; coinid: integer): boolean;
+function isP2PKH(netbyte: AnsiString; coinid: integer): Boolean;
 begin
   result := AvailableCoin[coinid].p2pk = netbyte;
 
 end;
 
-function isSegwitAddress(address: AnsiString): boolean;
+function isSegwitAddress(address: AnsiString): Boolean;
 begin
   result := ((AnsiLeftStr(address, 3) = 'bc1') or
     (AnsiLeftStr(address, 3) = 'ltc1')) and (Length(address) > 39);
 end;
+
+
 
 function decodeAddressInfo(address: AnsiString; coinid: integer): TAddressInfo;
 var
@@ -1279,6 +1046,8 @@ var
   intent: JIntent;
   mimetypeStr: JString;
   fileUri: JParcelable;
+  javafile: JFile;
+  Os: TOSVersion;
 {$ELSE}
   saveDialog: TSaveDialog;
 {$ENDIF}
@@ -1286,14 +1055,25 @@ begin
 {$IFDEF ANDROID}
   mimetypeStr := TJMimeTypeMap.JavaClass.getSingleton.getMimeTypeFromExtension
     (StringToJString(StringReplace(TPath.GetExtension(path), '.', '', [])));
-
   intent := TJIntent.Create();
+  intent.setFlags(TJIntent.JavaClass.FLAG_GRANT_READ_URI_PERMISSION);
   intent.SetAction(TJIntent.JavaClass.ACTION_SEND);
   intent.setType(mimetypeStr);
 
-  fileUri := JParcelable(TJnet_Uri.JavaClass.fromFile
-    (TJFile.JavaClass.init(StringToJString(path))));
-
+  if (Os.Major >= 5) then
+  begin
+    // FileProvider for Android 5.1+
+    javafile := TJFile.JavaClass.init(StringToJString(path));
+    fileUri := JParcelable(TJFileProvider.JavaClass.getUriForFile
+      (TAndroidHelper.context, StringToJString('tech.hodler.core.fileProvider'),
+      javafile));
+  end
+  else
+  Begin
+    // Oldschool URL
+    fileUri := JParcelable(TJnet_Uri.JavaClass.fromFile
+      (TJFile.JavaClass.init(StringToJString(path))));
+  end;
   intent.putExtra(TJIntent.JavaClass.EXTRA_STREAM, fileUri);
 
   SharedActivity.startActivity(TJIntent.JavaClass.createChooser(intent,
@@ -1316,11 +1096,8 @@ begin
     TFile.Copy(path, saveDialog.FileName);
     DeleteFile(path);
 
-  end; // ShowMessage('File : '+saveDialog.FileName)
-  // else ShowMessage('Save file was cancelled');
-
+  end;
   saveDialog.Free;
-  // shellexecute( 0 , 'open' , Pchar(path) , nil , nil , SW_SHOWNORMAL );
 
 {$ENDIF}
 end;
@@ -1440,7 +1217,7 @@ begin
       it := dictionary.GetEnumerator();
       While (it.MoveNext) do
       begin
-        // showmessage( it.Current.Key + ' ' + it.Current.Value );
+
         component := frmhome.FindComponent(it.Current.Key);
         if component <> nil then
         begin
@@ -1527,7 +1304,7 @@ end;
 
 procedure refreshOrderInDashBrd();
 var
-  fmxObj: TFmxObject;
+  fmxObj: TFMXObject;
 begin;
 
   if frmhome.WalletList.Content.ChildrenCount = 0 then
@@ -1551,95 +1328,117 @@ var
   lbl: TLabel;
   addrLbl: TLabel;
   datalbl: TLabel;
-  fmxObj: TFmxObject;
+  fmxObj: TFMXObject;
   i: integer;
+
+  cc : cryptoCurrency;
+  CCArray : TCryptoCurrencyArray;
+
 begin
 
   clearVertScrollBox(frmhome.txHistory);
 
-  for i := Length(wallet.history) - 1 downto 0 do
+  if wallet is tWalletInfo then
+  begin
+    CCArray := CurrentAccount.getWalletWithX( TwalletInfo(wallet).x , TwalletInfo(wallet).coin );
+  end
+  else
+  begin
+    Setlength(ccArray , 1);
+    CCArray[0] := wallet;
+  end;
+
+  for cc in CCArray do
   begin
 
-    Panel := Tpanel.Create(frmhome.txHistory);
-    Panel.Align := TAlignLayout.Top;
-    Panel.Height := 36;
-    Panel.Visible := true;
-    Panel.Tag := i;
-    Panel.Parent := frmhome.txHistory;
-    Panel.Position.y := -strToIntdef(wallet.history[i].data, 0);
-{$IFDEF ANDROID}
-    Panel.OnTap := frmhome.ShowHistoryDetails;
-{$ELSE}
-    Panel.OnClick := frmhome.ShowHistoryDetails;
-{$ENDIF}
-    // Panel.Tag:= wallet.history[i];
 
-    addrLbl := TLabel.Create(Panel);
-    addrLbl.Visible := true;
-    addrLbl.Parent := Panel;
-    addrLbl.Width := 400;
-    addrLbl.Height := 18;
-    addrLbl.Position.x := 36;
-    addrLbl.Position.y := 0;
-    addrLbl.text := wallet.history[i].addresses[0];
-    addrLbl.TextSettings.HorzAlign := TTextAlign.Leading;
+      for i := Length(cc.history) - 1 downto 0 do
+      begin
 
-    datalbl := TLabel.Create(Panel);
-    datalbl.Visible := true;
-    datalbl.Parent := Panel;
-    datalbl.Width := 400;
-    datalbl.Height := 18;
-    datalbl.Position.x := 36;
+        Panel := Tpanel.Create(frmhome.txHistory);
+        Panel.Align := TalignLayout.Top;
+        Panel.Height := 36;
+        Panel.Visible := true;
+        Panel.Tag := i;
+        Panel.Parent := frmhome.txHistory;
+        //Panel.Position.y := -strToIntdef(cc.history[i].data, 0);
+    {$IFDEF ANDROID}
+        Panel.OnTap := frmhome.ShowHistoryDetails;
+    {$ELSE}
+        Panel.OnClick := frmhome.ShowHistoryDetails;
+    {$ENDIF}
+        // Panel.Tag:= wallet.history[i];
 
-    datalbl.Position.y := 18;
-    datalbl.text := FormatDateTime('dd mmm yyyy hh:mm',
-      UnixToDateTime(strToIntdef(wallet.history[i].data, 0)));
-    datalbl.TextSettings.HorzAlign := TTextAlign.Leading;
+        addrLbl := TLabel.Create(Panel);
+        addrLbl.Visible := true;
+        addrLbl.Parent := Panel;
+        addrLbl.Width := 400;
+        addrLbl.Height := 18;
+        addrLbl.Position.x := 36;
+        addrLbl.Position.y := 0;
+        addrLbl.text :=  cc.history[i].addresses[0];
+        addrLbl.TextSettings.HorzAlign := TTextAlign.Leading;
 
-    Image := TImage.Create(Panel);
-    Image.Width := 18;
-    Image.Height := 18;
-    Image.Position.x := 9;
-    Image.Position.y := 9;
-    Image.Visible := true;
-    Image.Parent := Panel;
-    if wallet.history[i].typ = 'OUT' then
-      Image.Bitmap := frmhome.sendImage.Bitmap;
-    if wallet.history[i].typ = 'IN' then
-      Image.Bitmap := frmhome.receiveImage.Bitmap;
+        datalbl := TLabel.Create(Panel);
+        datalbl.Visible := true;
+        datalbl.Parent := Panel;
+        datalbl.Width := 400;
+        datalbl.Height := 18;
+        datalbl.Position.x := 36;
 
-    lbl := TLabel.Create(Panel);
-    lbl.Align := TAlignLayout.Bottom;
-    lbl.Height := 18;
-    lbl.TextSettings.HorzAlign := TTextAlign.taTrailing;
-    lbl.Visible := true;
-    lbl.Parent := Panel;
-    lbl.text := BigIntegerBeautifulStr(wallet.history[i].CountValues,
-      wallet.decimals);
+        datalbl.Position.y := 18;
+        datalbl.text := FormatDateTime('dd mmm yyyy hh:mm',
+          UnixToDateTime(strToIntdef(cc.history[i].data, 0)));
+        datalbl.TextSettings.HorzAlign := TTextAlign.Leading;
 
-    if wallet.history[i].confirmation = 0 then
-    begin
-      Panel.Opacity := 0.5;
-      lbl.Opacity := 0.5;
-      Image.Opacity := 0.5;
-      addrLbl.Opacity := 0.5;
-      datalbl.Opacity := 0.5;
-    end;
+        Image := TImage.Create(Panel);
+        Image.Width := 18;
+        Image.Height := 18;
+        Image.Position.x := 9;
+        Image.Position.y := 9;
+        Image.Visible := true;
+        Image.Parent := Panel;
+        if cc.history[i].typ = 'OUT' then
+          Image.Bitmap := frmhome.sendImage.Bitmap;
+        if cc.history[i].typ = 'IN' then
+          Image.Bitmap := frmhome.receiveImage.Bitmap;
+
+        lbl := TLabel.Create(Panel);
+        lbl.Align := TalignLayout.Bottom;
+        lbl.Height := 18;
+        lbl.TextSettings.HorzAlign := TTextAlign.taTrailing;
+        lbl.Visible := true;
+        lbl.Parent := Panel;
+        lbl.text := BigIntegerBeautifulStr(cc.history[i].CountValues,
+          cc.decimals);
+
+        if cc.history[i].confirmation = 0 then
+        begin
+          Panel.Opacity := 0.5;
+          lbl.Opacity := 0.5;
+          Image.Opacity := 0.5;
+          addrLbl.Opacity := 0.5;
+          datalbl.Opacity := 0.5;
+        end;
+
+      end;
+
+
+
 
   end;
-  i := 0;
+  {i := 0;
   if frmhome.txHistory.Content.ChildrenCount <> 0 then
     for fmxObj in frmhome.txHistory.Content.Children do
     begin
       Tpanel(fmxObj).Position.y := -strToIntdef(wallet.history[i].data, 0);
       inc(i);
-    end;
+    end; }
 
-  // sortPanelListByDate( frmHome.txHistory );
 
 end;
 
-function isBech32Address(Str: AnsiString): boolean;
+function isBech32Address(Str: AnsiString): Boolean;
 var
   prefix: AnsiString;
   i: integer;
@@ -1664,7 +1463,7 @@ begin
   Str := StringReplace(Str, '=', #13#10, [rfReplaceAll]);
   result := TStringList.Create;
   result.text := Str;
-  // showmessage(Str);
+
 end;
 
 function BitmapDataToScaledBitmap(data: TBitmapData; scale: integer): TBitmap;
@@ -1717,6 +1516,7 @@ constructor popupWindowYesNo.Create(Yes: TProc; No: TProc; mess: AnsiString;
   YesText: AnsiString = 'Yes'; NoText: AnsiString = 'No'; icon: integer = 2);
 var
   Panel, Panel2: Tpanel;
+  rect : TRectangle;
   i: integer;
 begin
   inherited Create(frmhome.PageControl);
@@ -1739,25 +1539,29 @@ begin
   Panel.Tag := i;
   Panel.Parent := self;
 
-  Panel2 := Panel; // tak wiem     to glupie
+  rect := TRectangle.Create(panel);
+  rect.Parent := panel;
+  rect.Align := TAlignLayout.Contents;
+  rect.Fill.Color := frmHome.StatusBarFixer.Fill.Color;
+  {Panel2 := Panel; // tak wiem     to glupie
   for i := 0 to 5 do
   begin
     Panel := Tpanel.Create(Panel);
-    Panel.Align := TAlignLayout.Client;
+    Panel.Align := TalignLayout.Client;
     Panel.Visible := true;
     Panel.Tag := i;
     Panel.Parent := Panel2;
     Panel2 := Panel;
-  end;
+  end;  }
 
   _ImageLayout := TLayout.Create(Panel);
   _ImageLayout.Visible := true;
-  _ImageLayout.Align := TAlignLayout.MostTop;
+  _ImageLayout.Align := TalignLayout.MostTop;
   _ImageLayout.Parent := Panel;
   _ImageLayout.Height := 96;
 
   _Image := TImage.Create(_ImageLayout);
-  _Image.Align := TAlignLayout.Center;
+  _Image.Align := TalignLayout.Center;
   _Image.Width := 64;
   _Image.Height := 64;
   _Image.Visible := true;
@@ -1774,7 +1578,7 @@ begin
   end;
 
   _lblMessage := TLabel.Create(Panel);
-  _lblMessage.Align := TAlignLayout.Client;
+  _lblMessage.Align := TalignLayout.Client;
   _lblMessage.Visible := true;
   _lblMessage.Parent := Panel;
   _lblMessage.text := mess;
@@ -1782,12 +1586,12 @@ begin
 
   _ButtonLayout := TLayout.Create(Panel);
   _ButtonLayout.Visible := true;
-  _ButtonLayout.Align := TAlignLayout.MostBottom;
+  _ButtonLayout.Align := TalignLayout.MostBottom;
   _ButtonLayout.Parent := Panel;
   _ButtonLayout.Height := 48;
 
   _YesButton := TButton.Create(_ButtonLayout);
-  _YesButton.Align := TAlignLayout.Right;
+  _YesButton.Align := TalignLayout.Right;
   _YesButton.Width := _ButtonLayout.Width / 2;
   _YesButton.Visible := true;
   _YesButton.Parent := _ButtonLayout;
@@ -1795,7 +1599,7 @@ begin
   _YesButton.OnClick := _onYesClick;
 
   _NoButton := TButton.Create(_ButtonLayout);
-  _NoButton.Align := TAlignLayout.Left;
+  _NoButton.Align := TalignLayout.Left;
   _NoButton.Width := _ButtonLayout.Width / 2;
   _NoButton.Visible := true;
   _NoButton.Parent := _ButtonLayout;
@@ -1850,6 +1654,7 @@ ButtonText: AnsiString = 'OK'; icon: integer = 1);
 var
   Panel, Panel2: Tpanel;
   i: integer;
+  rect : TRectangle;
 begin
   inherited Create(frmhome.PageControl);
   Parent := frmhome.PageControl;
@@ -1861,31 +1666,37 @@ begin
   PlacementRectangle := TBounds.Create(RectF(0, 0, 0, 0));
 
   Panel := Tpanel.Create(self);
-  Panel.Align := TAlignLayout.Client;
+  Panel.Align := TalignLayout.Client;
   Panel.Height := 48;
   Panel.Visible := true;
   Panel.Tag := i;
   Panel.Parent := self;
 
-  Panel2 := Panel; // tak wiem     to glupie
+
+  rect := TRectangle.Create(panel);
+  rect.Parent := panel;
+  rect.Align := TAlignLayout.Contents;
+  rect.Fill.Color := frmHome.StatusBarFixer.Fill.Color;
+  {
+  Panel2 := Panel;
   for i := 0 to 5 do
   begin
     Panel := Tpanel.Create(Panel);
-    Panel.Align := TAlignLayout.Client;
+    Panel.Align := TalignLayout.Client;
     Panel.Visible := true;
     Panel.Tag := i;
     Panel.Parent := Panel2;
     Panel2 := Panel;
-  end;
+  end;    }
 
   _ImageLayout := TLayout.Create(Panel);
   _ImageLayout.Visible := true;
-  _ImageLayout.Align := TAlignLayout.MostTop;
+  _ImageLayout.Align := TalignLayout.MostTop;
   _ImageLayout.Parent := Panel;
   _ImageLayout.Height := 96;
 
   _Image := TImage.Create(_ImageLayout);
-  _Image.Align := TAlignLayout.Center;
+  _Image.Align := TalignLayout.Center;
   _Image.Width := 64;
   _Image.Height := 64;
   _Image.Visible := true;
@@ -1902,14 +1713,14 @@ begin
   end;
 
   _lblMessage := TLabel.Create(Panel);
-  _lblMessage.Align := TAlignLayout.Client;
+  _lblMessage.Align := TalignLayout.Client;
   _lblMessage.Visible := true;
   _lblMessage.Parent := Panel;
   _lblMessage.text := mess;
   _lblMessage.TextSettings.HorzAlign := TTextAlign.Center;
 
   _OKbutton := TButton.Create(Panel);
-  _OKbutton.Align := TAlignLayout.Bottom;
+  _OKbutton.Align := TalignLayout.Bottom;
   _OKbutton.Height := 48;
   _OKbutton.Visible := true;
   _OKbutton.Parent := Panel;
@@ -1951,9 +1762,10 @@ constructor popupWindow.Create(mess: AnsiString);
 var
   Panel, Panel2: Tpanel;
   i: integer;
+  rect : TRectangle;
 begin
   inherited Create(frmhome.PageControl);
-  // popup := Tpopup.Create( PageControl );
+
   Parent := frmhome.PageControl;
   Height := 100;
   Width := 300;
@@ -1963,25 +1775,30 @@ begin
   PlacementRectangle := TBounds.Create(RectF(0, 0, 0, 0));
 
   Panel := Tpanel.Create(self);
-  Panel.Align := TAlignLayout.Client;
+  Panel.Align := TalignLayout.Client;
   Panel.Visible := true;
   Panel.Tag := i;
   Panel.Parent := self;
-  // Panel.OnClick := frmHome.choseTokenClick;
-  // popup.AddObject(Panel);
+
+  rect := TRectangle.Create(panel);
+  rect.Parent := panel;
+  rect.Align := TAlignLayout.Contents;
+  rect.Fill.Color := frmHome.StatusBarFixer.Fill.Color;
+  {
+
   Panel2 := Panel; // tak wiem     to glupie
   for i := 0 to 5 do
   begin
     Panel := Tpanel.Create(Panel);
-    Panel.Align := TAlignLayout.Client;
+    Panel.Align := TalignLayout.Client;
     Panel.Visible := true;
     Panel.Tag := i;
     Panel.Parent := Panel2;
     Panel2 := Panel;
-  end;
+  end;       }
 
   messageLabel := TLabel.Create(Panel);
-  messageLabel.Align := TAlignLayout.Client;
+  messageLabel.Align := TalignLayout.Client;
   messageLabel.Visible := true;
   messageLabel.Parent := Panel;
   messageLabel.text := mess;
@@ -2054,8 +1871,6 @@ begin
   while Length(result) < 64 do
     result := '0' + result;
 
-  // showmessage(result + '  ' + inttostr(length (result)));
-
 end;
 
 function toMnemonic(hex: AnsiString): AnsiString;
@@ -2070,9 +1885,8 @@ begin
   else
   begin
 
-    // BigInteger.Hexadecimal;
     BigInteger.TryParse(hex, 16, IntSeed);
-    // Biginteger.Decimal;
+
     while IntSeed > 0 do
     begin
       result := result + (frmhome.wordList.Lines.Strings[(IntSeed mod 2048)
@@ -2089,12 +1903,11 @@ begin
   result := BigIntegerToFloatStr(wi.confirmed, AvailableCoin[wi.coin].decimals);
 end;
 
-function isEthereum: boolean;
+function isEthereum: Boolean;
 begin
 
   result := CurrentCoin.coin = 4;
 
-  // result := (myWallets[currentWallet].coin = 4);
 end;
 
 function BigIntegerBeautifulStr(num: BigInteger; decimals: integer): AnsiString;
@@ -2137,23 +1950,17 @@ begin
     end;
     setLength(Str, Length(Str) - max(0, zeroCounter - 2));
 
-    {if Length(Str) > 9 then
-    begin
-      setLength(Str, Pos(FormatSettings.DecimalSeparator, Str) - 1);
-    end;
-        }
 
-    if (Length(Str)>9) and (Pos(FormatSettings.DecimalSeparator, Str)=2) then
-      SetLength(Str,9);
-    //end;
+    if (Length(Str) > 11) and (Pos(FormatSettings.DecimalSeparator, Str) = 2)
+    then
+      setLength(Str, 11);
+
     if Pos(FormatSettings.DecimalSeparator, Str) > 9 then
     begin
       setLength(Str, Pos(FormatSettings.DecimalSeparator, Str) - 1);
     end;
 
-
     result := Str;
-
   end;
 
 end;
@@ -2163,14 +1970,15 @@ var
   // temp : AnsiString;
   i: integer;
   separator: Char;
-  flag: boolean;
+  flag: Boolean;
   counter: integer;
 begin
   flag := false;
   counter := 0;
-
+  /// Cut additional chars exceeding decimals
   separator := FormatSettings.DecimalSeparator;
   Str := LeftStr(Str, Pos(separator, Str) + decimals);
+
   result := BigInteger.Create(0);
   for i := Low(Str) to High(Str) do
   begin
@@ -2207,7 +2015,7 @@ var
   // len : integer;
   temp: BigInteger;
   Str: AnsiString;
-  minus: boolean;
+  minus: Boolean;
 begin
   if precision = -1 then
     precision := decimals;
@@ -2251,23 +2059,6 @@ begin
 end;
 
 // return index of array where  is wallet with given address
-{ function getWalletId(address: AnsiString): integer;
-  var
-  i: integer;
-  begin
-
-  showmessage('getWaplease not uselletID   ');
-  // result := -1;
-  for i := 0 to length(myWallets) - 1 do
-  begin
-  if myWallets[i].addr = address then
-  begin
-  result := i;
-  exit;
-  end;
-
-  end;
-  end; }
 
 // show message window
 procedure showMsg(backView: TTabItem; message: AnsiString;
@@ -2287,7 +2078,6 @@ begin
   lastView := backView;
   frmhome.lblmessageText.text := message;
   switchTab(frmhome.PageControl, frmhome.showMsgView);
-  // frmhome.PageControl.activeTab := frmhome.showMsgView;
 
 end;
 
@@ -2301,8 +2091,6 @@ begin
   begin
     if VSB.Components[i].ClassType = Tpanel then
     begin
-      // TPanel(VSB.Components[i]).DestroyComponents;
-      // TPanel(VSB.Components[i]).Destroy;
       VSB.Components[i].disposeOf;
       i := VSB.ComponentCount - 1
     end
@@ -2315,8 +2103,6 @@ begin
   begin
     if VSB.Components[i].ClassType = TButton then
     begin
-      // TPanel(VSB.Components[i]).DestroyComponents;
-      // TPanel(VSB.Components[i]).Destroy;
       VSB.Components[i].disposeOf;
       i := VSB.ComponentCount - 1
     end
@@ -2332,115 +2118,13 @@ begin
     (SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.erc20.dat'));
 end;
 
-
-
-// laod information about out token from flie and add panel in WalletView
-{ procedure parseTokenFile();
-  var
-  i: integer;
-  begin
-
-  loadTokensFromFile();
-
-  for i := 0 to length(myTokens) - 1 do
-  begin
-  createTokenView(myTokens[i]);
-  end;
-
-  end; }
-
-// load information about our tokens from file 'hodler.erc20.dat' and save in array myTokens
-(* procedure loadTokensFromFile();
-  var
-  ts, temp: TStringList;
-  T: Token;
-  i: integer;
-  j: integer;
-  histSize: integer;
-
-  begin
-
-  ts := TStringList.Create();
-
-  if not FileExists(TPath.Combine(IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.erc20.dat'))
-  then
-  begin
-  exit();
-  end;
-
-  ts.LoadFromFile(TPath.Combine(IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.erc20.dat'));
-  // clear myTokens
-  setLength(myTokens, 0);
-  i := 0;
-  while i < ts.Count do
-  begin
-
-  // create token from single line
-  T := Token.fromString(ts[i]);
-  inc(i);
-
-  T.idInWallet := length(myTokens) + 10000;
-
-  histSize := strToInt(ts[i]);
-  inc(i);
-  // showmessage( inttostr(histSize));
-
-  { SetLength(t.history , histsize);
-
-  for j := 0 to histSize-1 do
-  begin
-  t.history[j].FromString(ts[i]);
-  inc(i);
-  end; }
-
-  // add new token to array myTokens
-  setLength(myTokens, length(myTokens) + 1);
-  myTokens[length(myTokens) - 1] := T;
-
-  end;
-
-  ts.Free;
-
-  end; *)
-
-// save all out tokens in 'hodler.erc20.dat'
-{ procedure saveTokensToFile();
-  var
-  i: integer;
-  fileData: AnsiString;
-  ts: TStringList;
-  j: integer;
-  begin
-
-  ts := TStringList.Create();
-
-  // convert all tokens to string and save in TStringList
-  for i := 0 to length(myTokens) - 1 do
-  begin
-  if myTokens[i].deleted = false then
-  begin
-  myTokens[i].lastBlock := getHighestBlockNumber(myTokens[i]);
-  fileData := myTokens[i].ToString() + ' ';
-
-  ts.Add(fileData);
-  ts.Add(inttostr(0));
-  end;
-
-  end;
-
-  ts.SaveToFile(TPath.Combine(IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.erc20.dat'));
-
-  ts.Free;
-
-  end; }
-
 // generate icon based on hex
 function generateIcon(hex: AnsiString): TBitmap;
 var
   bitmapData: TBitmapData;
   y: integer;
   x: integer;
-  color: TAlphaColor;
+  Color: TAlphaColor;
   i: integer;
   i_max: integer;
   bb: Tbytes;
@@ -2498,8 +2182,8 @@ begin
     begin
       for y := 0 to 31 do
       begin
-        color := bitmapData.GetPixel(x, y);
-        bitmapData.SetPixel(31 - x, y, color);
+        Color := bitmapData.GetPixel(x, y);
+        bitmapData.SetPixel(31 - x, y, Color);
       end;
     end;
   end;
@@ -2510,8 +2194,8 @@ begin
     begin
       for y := 0 to 15 do
       begin
-        color := bitmapData.GetPixel(x, y);
-        bitmapData.SetPixel(x, 31 - y, color);
+        Color := bitmapData.GetPixel(x, y);
+        bitmapData.SetPixel(x, 31 - y, Color);
       end;
     end;
   end;
@@ -2541,8 +2225,9 @@ var
 begin
   inc(n);
   result := Str;
+
   for i := n to Length(Str) + (Length(Str) - 1) div (n - 1) do
-  // nie wiem dlaczego to działa na androidzie
+
   begin
     if i mod n = 0 then
 
@@ -2609,7 +2294,7 @@ begin
   end;
 end;
 
-procedure creatImportPrivKeyCoinList();
+{procedure creatImportPrivKeyCoinList();
 var
   Panel: Tpanel;
   coinName: TLabel;
@@ -2655,7 +2340,7 @@ begin
 
     end;
   end;
-end;
+end;}
 
 function TStateToHEX(bb: TKeccakMaxDigest): AnsiString;
 var
@@ -2666,7 +2351,7 @@ begin
     result := result + IntToHex(bb[i], 2);
 end;
 
-function IsHex(s: string): boolean;
+function IsHex(s: string): Boolean;
 var
   i: integer;
 begin
@@ -2696,17 +2381,16 @@ var
   i: integer;
 
 begin
-  // s := 'transfer(address,uint256)';
+
   setLength(buf, Length(s));
   for i := 0 to Length(s) - 1 do
     buf[i] := System.UInt8(ord(s[i{$IFNDEF ANDROID} + 1{$ENDIF}]));
 
   init(K256State, 256);
 
-  Update(K256State, buf, (Length(s)) * 8);
+  update(K256State, buf, (Length(s)) * 8);
   Final(K256State, @K256Dig);
   result := TStateToHEX(K256Dig);
-  // ('transfer(address,uint256)');
 
 end;
 
@@ -2733,7 +2417,7 @@ begin
 
   init(K256State, 256);
 
-  Update(K256State, buf, (Length(bb)) * 8);
+  update(K256State, buf, (Length(bb)) * 8);
   Final(K256State, @K256Dig);
   result := TStateToHEX(K256Dig);
 
@@ -2751,20 +2435,9 @@ begin
 
 end;
 
-// try read readable text and return it
 function getStringFromImage(img: TBitmap): AnsiString;
 begin
-  { frmHome.FOcr1.Active := False;
-    frmHome.FOcr1.DataPath := ExtractFilePath(ParamStr(0));
-    {$IFDEF ANDROID }
-  // frmHome.FOcr1.DataPath := IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable('APPDATA'));
-  // {$ENDIF}
-  // frmHome.FOcr1.Picture.Assign(img);
-  //
-  // frmHome.FOcr1.Active := True;
-  // frmHome.FOcr1.Parameter['tessedit_char_whitelist'] :=
-  // '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-  // result := frmHome.FOcr1.Text;
+
 end;
 
 function OCRFix(Str: AnsiString): AnsiString;
@@ -2819,7 +2492,7 @@ end;
 function satToBtc(num: BigInteger; decimals: integer): AnsiString;
 begin
   result := BigIntegerToFloatStr(num, decimals);
-  // FloatToStr( num / Power(10 , decimals) , ffFixed, 15, decimals) ;
+
 end;
 
 function inttoeth(data: System.uint64): AnsiString;
@@ -2827,9 +2500,6 @@ var
   ll: integer;
 begin
   ll := ceil(Length(IntToHex(data, 0)) / 2);
-  // if ll<2 then ll:=2;
-  // if ll mod 2 <>0 then inc(ll);
-
   result := IntToHex(data, ll * 2);
 end;
 
@@ -2961,7 +2631,7 @@ var
   i: integer;
   conv: TConvert;
 begin
-  result := '';
+  result := 'NOCACHE';
   if fileExists(CurrentAccount.DirPath + '/cache.dat') = false then
     exit;
 
@@ -3005,16 +2675,15 @@ begin
   end;
 end;
 
-function apiStatus(aURL, aResult:string;exceptional:boolean=false): string;
+function apiStatus(aURL, aResult: string; exceptional: Boolean = false): string;
 var
   switch: Boolean;
   tmp: string;
 begin
-switch:= exceptional;
+  switch := exceptional;
   result := '';
   if Pos('Transport endpoint is not connected', aResult) > 0 then
     switch := true;
-
 
   if (Pos(HODLER_URL, aURL) > 0) and (switch) then
   begin
@@ -3033,8 +2702,9 @@ switch:= exceptional;
     HODLER_ETH := tmp;
   end;
   if switch then
-  result := getDataOverHTTP(aURL) else
-  result:=aResult;
+    result := getDataOverHTTP(aURL) 
+  else
+    result:=aResult;
 end;
 
 function getDataOverHTTP(aURL: String; useCache: Boolean = true): AnsiString;
@@ -3043,32 +2713,34 @@ var
   LResponse: IHTTPResponse;
   urlHash: AnsiString;
 begin
+  //usecache := false;
   urlHash := GetStrHashSHA256(aURL);
   if (firstSync and useCache) then
   begin
     result := loadCache(urlHash);
   end;
   try
-    if (result = '') or (not firstSync) then
+    if (result = 'NOCACHE') or (not firstSync) then
     begin
 
       req := THTTPClient.Create();
       aURL := aURL + buildAuth(aURL);
       LResponse := req.get(aURL);
-      result := apiStatus(aURL,LResponse.ContentAsString());
+      result := apiStatus(aURL, LResponse.ContentAsString());
       saveCache(urlHash, result);
-      if LResponse.StatusCode<>200 then
-      result := apiStatus(aURL,'',true);
+      if LResponse.StatusCode <> 200 then
+        result := apiStatus(aURL, '', true);
     end;
   except
     on E: Exception do
     begin
-      result:=apiStatus(aURL,'',true);
+      result := apiStatus(aURL, '', true);
 
     end;
   end;
   req.Free;
 end;
+
 function hash160FromHex(H: AnsiString): AnsiString;
 var
   ripemd160: TRIPEMD160Hash;
@@ -3104,7 +2776,7 @@ begin
   end;
 end;
 
-function isWalletDatExists: boolean;
+function isWalletDatExists: Boolean;
 var
   WDPath: AnsiString;
 begin
@@ -3185,7 +2857,7 @@ begin
   bb := hexatotbytes(H);
   HashSHA := THashSHA2.Create;
   HashSHA.Reset;
-  HashSHA.Update(bb, (Length(H) div 2));
+  HashSHA.update(bb, (Length(H) div 2));
   result := HashSHA.HashAsString;
 
 end;
@@ -3244,14 +2916,26 @@ function TCA(dane: AnsiString): AnsiString;
 var
   i: integer;
   s: AnsiString;
-
+  allowAnim: Boolean;
 begin
   s := dane;
+  allowAnim := frmhome.PageControl.ActiveTab = frmhome.DescryptSeed;
+  if allowAnim then
+  begin
 
+    frmhome.TCAInfoPanel.Visible := true;
+    Application.ProcessMessages;
+  end;
   for i := 0 to TCAIterations do
     s := GetStrHashSHA256
       (GetStrHashSHA256(GetStrHashSHA256(GetStrHashBobJenkins(s))));
   result := s;
+  if allowAnim then
+  begin
+
+    frmhome.TCAInfoPanel.Visible := false;
+    Application.ProcessMessages;
+  end;
 end;
 
 function TBytesToString(bb: Tbytes): WideString;
@@ -3415,6 +3099,10 @@ function priv256forHD(coin, x, y: integer; MasterSeed: AnsiString): AnsiString;
 var
   bi: BigInteger;
 begin
+{if CurrentAccount.privTCA then
+  result := GetSHA256FromHex(TCA(IntToHex(x, 32) + GetSHA256FromHex(IntToHex(coin,
+    8) + GetSHA256FromHex(IntToHex(coin, 8) + IntToHex(x, 32) + MasterSeed +
+    IntToHex(y, 32))) + IntToHex(y, 32))) else  }
   result := GetSHA256FromHex(IntToHex(x, 32) + GetSHA256FromHex(IntToHex(coin,
     8) + GetSHA256FromHex(IntToHex(coin, 8) + IntToHex(x, 32) + MasterSeed +
     IntToHex(y, 32))) + IntToHex(y, 32));
@@ -3449,94 +3137,115 @@ begin
   wipeAnsiString(seed);
 end;
 
-{ procedure InsertWDPubInfo(data: TWalletInfo; var wd: TStringList);
-  begin
-  wd.Add(inttostr(data.coin)); // Coin ID
-  wd.Add(inttostr(data.x)); // X
-  wd.Add(inttostr(data.y)); // Y
-  wd.Add(data.addr);
-  wd.Add(data.description);
-  wd.Add(inttostr(data.creationTime));
-  wd.Add(inttostr(data.orderInWallet));
-  wd.Add(data.pub);
-  end; }
-
 procedure refreshWalletDat();
 var
   wd: TWalletInfo;
-  ts, oldFile: TStringList;
+  ts{, oldFile}: TStringList;
   i: integer;
+  FLock: TObject;
+  JsonObject : TJsonObject;
+  JsonArray : TJsonArray;
 begin
-  if not fileExists(TPath.Combine(IncludeTrailingPathDelimiter
-    (SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.wallet.dat')) then
-  begin
-    exit;
+  FLock := TObject.Create;
+  TMonitor.Enter(FLock);
+  try
+    if not fileExists(TPath.Combine(IncludeTrailingPathDelimiter
+      (SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.wallet.dat'))
+    then
+    begin
+      exit;
+    end;
+
+    ts := TStringList.Create;
+    //oldFile := TStringList.Create;
+    //oldFile.LoadFromFile(TPath.Combine(TPath.GetDocumentsPath,
+    //  'hodler.wallet.dat'));
+    JsonArray := tJsonArray.Create();
+
+      for i := 0 to length(AccountsNames)-1 do
+      begin
+        JsonArray.AddElement( TJSONString.Create( AccountsNames[i] ) );
+      end;
+
+      JSonObject := TJsonObject.Create();
+
+      JsonObject.AddPair('languageIndex' , intToStr(frmhome.LanguageBox.ItemIndex) );
+      JsonObject.AddPair('currency' , CurrencyConverter.symbol );
+      if CurrentAccount <> nil then
+        JsonObject.AddPair('lastOpen' , CurrentAccount.name )
+      else
+        JsonObject.AddPair('lastOpen' , lastClosedAccount );
+      JsonObject.AddPair('accounts' , JsonArray );
+      JsonObject.AddPair('styleName', CurrentStyle );
+
+    {ts.Add(intToStr(frmhome.LanguageBox.ItemIndex));
+    ts.Add(CurrencyConverter.symbol);
+
+    if lastClosedAccount = '' then
+      if CurrentAccount <> nil then
+        ts.Add(CurrentAccount.name)
+      else
+        ts.Add('')
+    else
+      ts.Add(lastClosedAccount);
+
+    ts.Add(intToStr(Length(AccountsNames)));
+    for i := 0 to Length(AccountsNames) - 1 do
+      ts.Add(AccountsNames[i]);               }
+    ts.Text := JsonObject.ToString;
+    ts.SaveToFile(TPath.Combine(IncludeTrailingPathDelimiter
+      (SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.wallet.dat'));
+    ts.Free;
+
+    //oldFile.Free; // ?
+  finally
+    TMonitor.exit(FLock);
   end;
 
-  ts := TStringList.Create;
-  oldFile := TStringList.Create;
-  oldFile.LoadFromFile
-    (TPath.Combine(IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable
-    ('APPDATA')), 'hodler.wallet.dat'));
-
-  // ts.Add(oldFile.Strings[0]);
-  // ts.Add(oldFile.Strings[1]);
-  // ts.Add(booltoStr(userSavedSeed));
-  ts.Add(intToStr(frmhome.LanguageBox.ItemIndex));
-  ts.Add(CurrencyConverter.symbol);
-
-  if lastClosedAccount = '' then
-    if CurrentAccount <> nil then
-      ts.Add(CurrentAccount.name)
-    else
-      ts.Add('')
-  else
-    ts.Add(lastClosedAccount);
-
-  ts.Add(intToStr(Length(AccountsNames)));
-  for i := 0 to Length(AccountsNames) - 1 do
-    ts.Add(AccountsNames[i]);
-
-  ts.SaveToFile(TPath.Combine(IncludeTrailingPathDelimiter
-    (SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.wallet.dat'));
-  ts.Free;
-
-  oldFile.Free; // ?
-
 end;
-
-{ procedure insertToWD(wi: TWalletInfo);
-  var
-  ts: TStringList;
-  begin
-  ts := TStringList.Create;
-  ts.LoadFromFile(TPath.Combine(IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.wallet.dat'));
-  InsertWDPubInfo(wi, ts);
-  ts.SaveToFile(TPath.Combine(IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.wallet.dat'));
-  ts.Free;
-  end; }
 
 procedure createWalletDat();
 var
   ts: TStringList;
   genThr: TThread;
+  JsonObject : TJsonObject;
+  JsonArray  : TJsonArray ;
 begin
 
-  ts := TStringList.Create;
+  JsonArray := tJsonArray.Create();
 
-  // ts.Add(inttostr(TCAIterations));
+  for i := 0 to length(AccountsNames)-1 do
+  begin
+    JsonArray.AddElement( TJSONString.Create( AccountsNames[i] ) );
+  end;
+
+  JSonObject := TJsonObject.Create();
+
+  JsonObject.AddPair('languageIndex' , intToStr(frmhome.LanguageBox.ItemIndex) );
+  JsonObject.AddPair('currency' , CurrencyConverter.symbol );
+  JsonObject.AddPair('lastOpen' , '' );
+  JsonObject.AddPair('accounts' , JsonArray );
+  JsonObject.AddPair('styleName', 'RT_WHITE');
+
+
+
+  ts := TStringList.Create;
+  ts.Text := JsonObject.ToString;
+ { // ts.Add(inttostr(TCAIterations));
   // ts.Add(speckEncrypt((TCA(password)), seed));
   // ts.Add(booltoStr(userSavedSeed));
-  ts.Add(intToStr(frmhome.LanguageBox.ItemIndex));
+  ts.Add( intToStr(frmhome.LanguageBox.ItemIndex) );
   ts.Add(CurrencyConverter.symbol);
   ts.Add(''); // last open
   ts.Add('0'); // account quantity
-  // ts.Add('default');
+  // ts.Add('default');  }
 
   ts.SaveToFile(TPath.Combine(IncludeTrailingPathDelimiter
-    (SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.wallet.dat'));
+      (SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.wallet.dat'));
 
   ts.Free;
+
+  JsonObject.Free;
 
 end;
 
@@ -3546,10 +3255,10 @@ var
   wd: TWalletInfo;
 var
 
-  ti: TokenInfo;
   T: Token;
   EthAddress: AnsiString;
   Position: integer;
+  I,j : integer;
 begin
   Position := 0;
 
@@ -3563,61 +3272,115 @@ begin
 
   // begin
   try
-
-    frmhome.WaitForGenerationProgressBar.Value := 0;
-    frmhome.WaitForGenerationLabel.text := 'Generating BTC Wallet';
-
-    // Put first addresses (0,0) of 4 coins
-    wd := Bitcoin_createHD(0, 0, 0, seed);
-    wd.orderInWallet := Position;
-    inc(Position, 48);
-    ac.AddCoin(wd);
-
-    frmhome.WaitForGenerationProgressBar.Value := 20;
-    frmhome.WaitForGenerationLabel.text := 'Generating LTC Wallet';
-
-    wd := Bitcoin_createHD(1, 0, 0, seed);
-    wd.orderInWallet := Position;
-    inc(Position, 48);
-    ac.AddCoin(wd);
-
-    frmhome.WaitForGenerationProgressBar.Value := 40;
-    frmhome.WaitForGenerationLabel.text := 'Generating DASH Wallet';
-
-    wd := Bitcoin_createHD(2, 0, 0, seed);
-    wd.orderInWallet := Position;
-    inc(Position, 48);
-    ac.AddCoin(wd);
-
-    frmhome.WaitForGenerationProgressBar.Value := 60;
-    frmhome.WaitForGenerationLabel.text := 'Generating BCH Wallet';
-
-    wd := Bitcoin_createHD(3, 0, 0, seed);
-    wd.orderInWallet := Position;
-    inc(Position, 48);
-    ac.AddCoin(wd);
-
-    frmhome.WaitForGenerationProgressBar.Value := 80;
-    frmhome.WaitForGenerationLabel.text := 'Generating ETH Wallet';
-
-    wd := Ethereum_createHD(4, 0, 0, seed);
-    wd.orderInWallet := Position;
-    inc(Position, 48);
-    ac.AddCoin(wd);
-    EthAddress := wd.addr;
-
-    frmhome.WaitForGenerationProgressBar.Value := 100;
-
-    for ti in Token.availableToken do
+TThread.Synchronize(nil,
+    procedure
     begin
-      T := Token.Create(ti.id - 10000, EthAddress);
-      T.orderInWallet := Position;
-      inc(Position, 48);
+      frmhome.WaitForGenerationProgressBar.Value := 0;
+      frmhome.WaitForGenerationProgressBar.Max := 25;
+      frmhome.WaitForGenerationLabel.text := 'Generating BTC Wallet';
+    end);
 
-      T.idInWallet := Length(ac.myTokens) + 10000;
-      ac.addToken(T);
+  // Put first addresses (0,0) of 4 coins
+  for j := 0 to 3 do
+  begin
+    for i := 0 to 4 do
+    begin
+      wd := Bitcoin_createHD(j, 0, i, seed);
+      wd.orderInWallet := Position;
+      inc(Position, 48);
+      ac.AddCoin(wd);
+      TThread.Synchronize(nil,
+      procedure
+      begin
+        frmhome.WaitForGenerationLabel.text := 'Generating '+ availableCoin[j].shortcut+' Wallet';
+        frmhome.WaitForGenerationProgressBar.value := frmhome.WaitForGenerationProgressBar.Value + 1;
+      end);
 
     end;
+  end;
+
+  {
+
+
+
+
+  wd := Bitcoin_createHD(1, 0, 0, seed);
+  wd.orderInWallet := Position;
+  inc(Position, 48);
+  ac.AddCoin(wd);
+
+  TThread.Synchronize(nil,
+    procedure
+    begin
+
+      frmhome.WaitForGenerationProgressBar.value := frmhome.WaitForGenerationProgressBar.Value + 1;
+      frmhome.WaitForGenerationLabel.text := 'Generating DASH Wallet';
+    end);
+
+  wd := Bitcoin_createHD(2, 0, 0, seed);
+  wd.orderInWallet := Position;
+  inc(Position, 48);
+  ac.AddCoin(wd);
+
+  TThread.Synchronize(nil,
+    procedure
+    begin
+      frmhome.WaitForGenerationProgressBar.Value := 60;
+      frmhome.WaitForGenerationLabel.text := 'Generating BCH Wallet';
+    end);
+
+  wd := Bitcoin_createHD(3, 0, 0, seed);
+  wd.orderInWallet := Position;
+  inc(Position, 48);
+  ac.AddCoin(wd); }
+
+  for i := 0 to 4 do
+    begin
+      wd := Ethereum_createHD(j, 0, i, seed);
+      wd.orderInWallet := Position;
+      inc(Position, 48);
+      ac.AddCoin(wd);
+      TThread.Synchronize(nil,
+      procedure
+      begin
+        frmhome.WaitForGenerationLabel.text := 'Generating ETH Wallet';
+        frmhome.WaitForGenerationProgressBar.value := frmhome.WaitForGenerationProgressBar.Value + 1;
+      end);
+
+      if i = 0 then
+        EthAddress := wd.addr;
+
+    end;
+
+
+
+  {wd := Ethereum_createHD(4, 0, 0, seed);
+  wd.orderInWallet := Position;
+  inc(Position, 48);
+  ac.AddCoin(wd);
+  EthAddress := wd.addr; }
+
+  TThread.Synchronize(nil,
+    procedure
+    var
+
+      ti: TokenInfo;
+    begin
+      frmhome.WaitForGenerationProgressBar.Value := 100;
+
+      for ti in Token.availableToken do
+      begin
+        T := Token.Create(ti.id - 10000, EthAddress);
+        T.orderInWallet := Position;
+        inc(Position, 48);
+
+        T.idInWallet := Length(ac.myTokens) + 10000;
+        ac.addToken(T);
+
+      end;
+
+    end);
+
 
     searchTokens(EthAddress);
 
@@ -3681,23 +3444,51 @@ var
   ts: TStringList;
   i, j: integer;
   wd: TWalletInfo;
+  JsonObject : TJsonObject;
+  JsonArray : TJsonArray;
+  JsonValue : TJsonvalue;
 begin
   ts := TStringList.Create;
   ts.LoadFromFile(TPath.Combine(IncludeTrailingPathDelimiter
-    (SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.wallet.dat'));
+      (SysUtils.GetEnvironmentVariable('APPDATA')), 'hodler.wallet.dat'));
 
-  // TCAIterations := strToInt(ts.Strings[0]);
-  // encryptedSeed := ts.Strings[1];
-  // userSavedSeed := strToBool(ts.Strings[2]);
-  frmhome.LanguageBox.ItemIndex := strToInt(ts[0]);
-  CurrencyConverter.setCurrency(ts[1]);
-
-  lastClosedAccount := ts[2];
-
-  setLength(AccountsNames, strToInt(ts[3]));
-  for i := 0 to strToInt(ts[3]) - 1 do
+  if ts.Text[low(ts.Text)] = '{' then
   begin
-    AccountsNames[i] := ts[4 + i];
+    JsonObject := TJsonObject(TJSONObject.ParseJSONValue( ts.Text ));
+
+    JsonArray := TJsonArray(JsonObject.GetValue('accounts'));
+
+    frmhome.LanguageBox.ItemIndex := strToInt( JsonObject.GetValue<string>('languageIndex') );
+    CurrencyConverter.setCurrency( JsonObject.GetValue<string>('currency') );
+
+    lastClosedAccount := JsonObject.GetValue<string>('lastOpen');
+
+    CurrentStyle := JsonObject.GetValue<string>( 'styleName' );
+
+    setLength(AccountsNames, JsonArray.Count );
+    i := 0;
+    for Jsonvalue in JsonArray do
+    begin
+      AccountsNames[i] := JsonValue.Value;
+      inc(i);
+    end;
+
+    JsonObject.Free;
+  end
+  else
+  begin
+
+    frmhome.LanguageBox.ItemIndex := strToInt(ts[0]);
+    CurrencyConverter.setCurrency(ts[1]);
+
+    lastClosedAccount := ts[2];
+
+    setLength(AccountsNames, strToInt(ts[3]));
+    for i := 0 to strToInt(ts[3]) - 1 do
+    begin
+      AccountsNames[i] := ts[4 + i];
+    end;
+
   end;
 
   ts.Free;
@@ -3708,7 +3499,7 @@ procedure updateBalanceLabels();
 var
   i: integer;
   component: TLabel;
-  fmxObj: TFmxObject;
+  fmxObj: TFMXObject;
   Panel: Tpanel;
   cc: cryptoCurrency;
 begin
@@ -3752,7 +3543,7 @@ procedure updateNameLabels();
 var
   i: integer;
   component: TLabel;
-  fmxObj: TFmxObject;
+  fmxObj: TFMXObject;
   Panel: Tpanel;
   cc: cryptoCurrency;
 begin
@@ -3783,43 +3574,6 @@ begin
 
 end;
 
-{ procedure updateTokenLabels(T: Token);
-  var
-  i: integer;
-  component: TLabel;
-  begin
-  showmessage('UpdateTokenLabel not implemented yet');
-  for i := 0 to frmHome.WalletList.ComponentCount - 1 do
-  begin
-  component := TLabel(frmHome.WalletList.Components[i]);
-
-  if (('name_label_' + inttostr(T.idInWallet) +
-  '_' = frmHome.WalletList.Components[i].name)) then
-  begin
-  if T.description = '' then
-  begin
-  TLabel(component).text := T.name + ' (' + T.shortcut + ')';
-  end
-  else
-  begin
-
-  TLabel(component).text := T.description;
-
-  end;
-
-  // TLabel(Component).Text := myWallets[getWalletId(t.WalletAddress)].description;
-
-  end;
-  if (('balance_label_' + inttostr(T.idInWallet) +
-  '_' = frmHome.WalletList.Components[i].name)) then // do dopisania
-  begin
-  TLabel(component).text := BigIntegerBeautifulStr(T.confirmed, T.decimals)
-  + '    ' + floatToStrF(T.getFiat, ffFixed, 15, 2) + ' ' +
-  CurrencyConverter.symbol;
-  end;
-  end;
-  end; }
-
 procedure repaintWalletList;
 var
   i: integer;
@@ -3830,14 +3584,6 @@ begin
   updateNameLabels();
 
 end;
-
-{ procedure addWalletToList(wd: TWalletInfo);
-  begin
-  setLength(myWallets, myWalletsCount + 1);
-  myWallets[myWalletsCount] := wd;
-  paintWD(wd);
-  inc(myWalletsCount);
-  end; }
 
 function getHighestBlockNumber(T: Token): System.uint64;
 var
@@ -3859,7 +3605,7 @@ begin
   result := wallet.UTXO;
 end;
 
-function parseUTXO(utxos: AnsiString): TUTXOS;
+function parseUTXO(utxos: AnsiString;Y:Integer): TUTXOS;
 var
   ts: TStringList;
   i: integer;
@@ -3874,8 +3620,8 @@ begin
     result[i].txid := ts.Strings[(i * 4) + 0];
     result[i].n := strToInt(ts.Strings[(i * 4) + 1]);
     result[i].ScriptPubKey := ts.Strings[(i * 4) + 2];
-    result[i].amount := StrToInt64(ts.Strings[(i * 4) + 3])
-
+    result[i].amount := StrToInt64(ts.Strings[(i * 4) + 3]) ;
+    result[i].Y:=Y;
   end;
 
   ts.Free;
